@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "effector": "^23.1.0",
     "html-webpack-plugin": "^5.6.0",
     "pixi.js": "^7.3.3",
     "webpack": "^5.90.0",
