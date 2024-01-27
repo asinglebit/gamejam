@@ -4,7 +4,10 @@
 
 - Aseprite https://www.aseprite.org/
 
-Jan 26, 2024 - 2hrs
+Jan 26, 2024 - 2hrs Artem, Ali
 
 Jan 26, 2024 - 2hrs Artem
 
+Jan 27, 2024 - 2hrs Artem, Ali
+
+Jan 27, 2024 - 3hrs Ali
