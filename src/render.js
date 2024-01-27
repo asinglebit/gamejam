@@ -89,7 +89,7 @@ export const renderTile = (container, col, row, tileNumber) => {
   return tile
 }
 
-export const renderProjectile = (container, X, Y) => {
+export const createBulletSprite = () => {
   const projectileSprite = new PIXI.AnimatedSprite([
     spriteSheet.textures["ice_projectile_1.png"],
     spriteSheet.textures["ice_projectile_2.png"],
@@ -104,13 +104,9 @@ export const renderProjectile = (container, X, Y) => {
     spriteSheet.textures["ice_projectile_11.png"],
     spriteSheet.textures["ice_projectile_12.png"],
   ])
-  // projectileSprite.anchor.set(0.5)
-  projectileSprite.x = X
-  projectileSprite.y = Y
-  projectileSprite.play()
-  projectileSprite.animationSpeed = 0.1666
 
-  container.addChild(projectileSprite)
+  projectileSprite.animationSpeed = 0.1666
+  projectileSprite.play()
 
   return projectileSprite
 }

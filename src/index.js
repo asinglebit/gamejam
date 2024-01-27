@@ -1,7 +1,9 @@
 import * as PIXI from "pixi.js"
 
 import { $state } from "./store"
-import { loadSprites, renderProjectile, renderRanged, renderTile, renderUndead } from "./render"
+import { loadSprites, createBulletSprite, renderRanged, renderTile, renderUndead } from "./render"
+import { createBullet } from "./bullet"
+import { createGameController } from "./gameController"
 
 // unity_types = "ranged" | "producer" | "obstacle"
 
@@ -11,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 const startApp = () => {
+  
   const app = new PIXI.Application({ background: "#1099bb", resizeTo: window })
   globalThis.__PIXI_APP__ = app
   document.body.appendChild(app.view)
@@ -20,6 +23,8 @@ const startApp = () => {
   container.width = app.screen.width
   container.height = app.screen.height
   app.stage.addChild(container)
+
+  const MAX_SCENE_WIDTH = app.screen.width
 
   // Cells
   for (let row_index = 0; row_index < 5; ++row_index) {
@@ -49,12 +54,21 @@ const startApp = () => {
       }
     })
   })
-
+  const GLOBAL_CONTROLLER = createGameController()
   renderUndead(container, 5, 2)
-  const ball = renderProjectile(container, 10, 10)
-  // renderRanged(container, 0, 0)
+
+
+  
+  setInterval(() => {
+    GLOBAL_CONTROLLER.addGameObj(createBullet(container, Math.random() * 128 , Math.floor(Math.random() * 128 * 5)))
+
+  }, 250)
+  for (let i = 0; i < 100; i++) {
+  }
+
 
   app.ticker.add((delta) => {
-    ball.x += 5
+
+    GLOBAL_CONTROLLER.update(delta)
   })
 }
