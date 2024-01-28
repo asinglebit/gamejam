@@ -8,9 +8,8 @@ import * as Scenes from "./constants/scenes"
 const startApp = () => {
 
   // Initialize pixi
-  const app = new PIXI.Application({ background: "#111111", resizeTo: window })
-  
-  document.body.appendChild(app.view)
+  const app = new PIXI.Application({ background: "#111111", autoResize: true, roundPixels: true, autoDensity: true, antialias : false, resolution: window.devicePixelRatio })
+  document.querySelector('#root').appendChild(app.view);
   globalThis.__PIXI_APP__ = app
 
   // Initialize scene controller

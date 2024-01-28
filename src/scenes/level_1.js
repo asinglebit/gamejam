@@ -20,27 +20,40 @@ export const createSceneLevel1 = (app, EventController) => {
      */
 
     const mount = () => {
+        
         // Stage
         container = new PIXI.Container()
-        container.width = app.screen.width
-        container.height = app.screen.height
         app.stage.addChild(container)
+        const factor = app.screen.width / 1280
+        container.scale.x = factor
+        container.scale.y = factor
+        container.y = app.screen.height / 2 - 640 * factor / 2
+
         // Background tiles
         for (let row_index = 0; row_index < 5; ++row_index) {
             for (let column_index = 0; column_index < 10; ++column_index) {
                 GameObjectController.add(createTile(container, column_index * CELL_SIZE, row_index * CELL_SIZE))
             }
         }
+        
         // Projectile for testing
         GameObjectController.add(createProjectile(container, Math.random() * 128 , Math.floor(Math.random() * 128 * 5)))
 
+        // Events
         EventController.subscribe(Events.ENTER_PAUSE_MENU, Scenes.LEVEL_1, () => {
             GameObjectController.pause()
         })   
 
         EventController.subscribe(Events.LEAVE_PAUSE_MENU, Scenes.LEVEL_1, () => {
             GameObjectController.play()
-        })   
+        })
+
+        EventController.subscribe(Events.RESIZE, Scenes.MENU, () => {
+            const factor = app.screen.width / 1280
+            container.scale.x = factor
+            container.scale.y = factor
+            container.y = app.screen.height / 2 - 640 * factor / 2
+        })
     }
 
     const update = (delta) => {

@@ -51,9 +51,15 @@ export const createSceneController = (app) => {
    * Events
    */
 
+  EventController.subscribe(Events.RESIZE_APP, "scenecontroller", () => {
+    const parent = app.view.parentNode;
+    app.renderer.resize(parent.clientWidth, parent.clientHeight);
+    EventController.emit(Events.RESIZE)
+  })
+
   EventController.subscribe(Events.CHANGE_SCENES, "scenecontroller", (scene) => {
     switch (scene) {
-      case Scenes.MENU : {
+      case Scenes.MENU: {
         load(Scenes.MENU)
         break
       }
@@ -84,6 +90,9 @@ export const createSceneController = (app) => {
       paused = false
     })
   })
+
+  window.addEventListener('resize', () => EventController.emit(Events.RESIZE_APP));
+  EventController.emit(Events.RESIZE_APP)
 
   /**
    * Api

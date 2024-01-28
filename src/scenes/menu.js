@@ -21,26 +21,26 @@ export const createSceneMenu = (app, EventController) => {
     const mount = () => {
         // Stage
         container = new PIXI.Container()
-        container.width = app.screen.width
-        container.height = 640
         app.stage.addChild(container)
+
         // Title
         GameObjectController.add(createText({
             container,
             color: 0xFFFFFF,
             placement: {
-                x: app.screen.width / 2,
-                y: 640 / 4
+                x: 0,
+                y: 0
             },
             title: "Game by A&A"
         }))
+
         // Levels
         GameObjectController.add(createText({
             container,
             color: 0x888888,
             placement: {
-                x: app.screen.width / 2,
-                y: 250
+                x: 0,
+                y: 100
             },
             title: "Level 1",
             EventController,
@@ -53,8 +53,8 @@ export const createSceneMenu = (app, EventController) => {
             container,
             color: 0x888888,
             placement: {
-                x: app.screen.width / 2,
-                y: 250 + 30
+                x: 0,
+                y: 130
             },
             title: "Level 2",
             EventController,
@@ -63,6 +63,16 @@ export const createSceneMenu = (app, EventController) => {
                 payload: Scenes.LEVEL_2
             }
         }))
+        
+        // Center container
+        container.x = app.screen.width / 2
+        container.y = app.screen.height / 2 - container.getLocalBounds().height / 2
+
+        // Subscribe to events
+        EventController.subscribe(Events.RESIZE, Scenes.MENU, () => {
+            container.x = app.screen.width / 2
+            container.y = app.screen.height / 2 - container.getLocalBounds().height / 2
+        })
     }
 
     const update = (delta) => {
@@ -72,6 +82,7 @@ export const createSceneMenu = (app, EventController) => {
     const unmount = () => {
         GameObjectController.unmount()
         if (container) container.destroy()
+        EventController.unsubscribe(Scenes.MENU)
     }
     
     /**

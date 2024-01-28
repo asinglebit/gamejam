@@ -51,6 +51,11 @@ export const createText = ({
     text.visible = true
   }
 
+  const place = (x, y) => {
+    text.x = x - bounds.width / 2
+    text.y = y - bounds.height / 2
+  }
+
   // Api
 
   return {
@@ -58,6 +63,7 @@ export const createText = ({
     update,
     unmount,
     hide,
-    show
+    show,
+    place
   }
 }

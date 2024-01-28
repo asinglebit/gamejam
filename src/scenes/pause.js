@@ -13,18 +13,19 @@ export const createScenePause = (app, EventController) => {
     // Game object controller
     const GameObjectController = createGameObjectController()
     let container = null
+    let container_menu = null
 
     /**
      * Methods
      */
 
     const mount = () => {
+        
         // Stage
         container = new PIXI.Container()
-        container.width = app.screen.width
-        container.height = app.screen.height
         app.stage.addChild(container)
-        // Levels
+
+        // Pause button
         const pause_button = createText({
             container,
             color: 0xFFFFFF,
@@ -38,13 +39,21 @@ export const createScenePause = (app, EventController) => {
                 type: Events.ENTER_PAUSE_MENU
             }
         })
+
+        // Pause menu container
+        container_menu = new PIXI.Container()
+        container_menu.x = app.screen.width / 2
+        container_menu.y = app.screen.height / 2
+        container.addChild(container_menu)
+
+        // Pause menu
         const play_button = createText({
             hidden: true,
             color: 0x000000,
-            container,
+            container: container_menu,
             placement: {
-                x: app.screen.width / 2,
-                y: 250
+                x: 0,
+                y: -30
             },
             title: "Resume",
             EventController,
@@ -55,10 +64,10 @@ export const createScenePause = (app, EventController) => {
         const restart_button = createText({
             hidden: true,
             color: 0x000000,
-            container,
+            container: container_menu,
             placement: {
-                x: app.screen.width / 2,
-                y: 250 + 30
+                x: 0,
+                y: 0
             },
             title: "Restart Level",
             EventController,
@@ -69,10 +78,10 @@ export const createScenePause = (app, EventController) => {
         const menu_button = createText({
             hidden: true,
             color: 0x000000,
-            container,
+            container: container_menu,
             placement: {
-                x: app.screen.width / 2,
-                y: 250 + 60
+                x: 0,
+                y: 30
             },
             title: "Return to Menu",
             EventController,
@@ -82,11 +91,13 @@ export const createScenePause = (app, EventController) => {
             }
         })
 
+        // Register game objects
         GameObjectController.add(pause_button)
         GameObjectController.add(play_button)
         GameObjectController.add(restart_button)
         GameObjectController.add(menu_button)
     
+        // Events
         EventController.subscribe(Events.ENTER_PAUSE_MENU, Scenes.PAUSE, () => {
             pause_button.hide()
             play_button.show()
@@ -99,7 +110,13 @@ export const createScenePause = (app, EventController) => {
             play_button.hide()
             restart_button.hide()
             menu_button.hide()
-        })        
+        })  
+
+        EventController.subscribe(Events.RESIZE, Scenes.PAUSE, () => {
+            pause_button.place(app.screen.width - 50, 50)
+            container_menu.x = app.screen.width / 2
+            container_menu.y = app.screen.height / 2
+        })      
     }
 
     const update = (delta) => {
@@ -108,6 +125,7 @@ export const createScenePause = (app, EventController) => {
 
     const unmount = () => {
         GameObjectController.unmount()
+        if (container_menu) container_menu.destroy()
         if (container) container.destroy()
         EventController.unsubscribe(Scenes.PAUSE)
     }
