@@ -35,6 +35,22 @@ export const createGameObjectController = () => {
     gameObjects = []
   }
 
+  const pause = () => {
+    gameObjects.forEach(gameObject => {
+      if (gameObject.pause) {
+        gameObject.pause()
+      }
+    })
+  }
+
+  const play = () => {
+    gameObjects.forEach(gameObject => {
+      if (gameObject.play) {
+        gameObject.play()
+      }
+    })
+  }
+
   /**
    * Api
    */
@@ -42,6 +58,8 @@ export const createGameObjectController = () => {
   return {
     update,
     add,
-    unmount
+    unmount,
+    pause,
+    play
   }
 }

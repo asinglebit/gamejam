@@ -1,25 +1,27 @@
 import * as PIXI from "pixi.js"
 
-import { loadSprites } from "./sprites"
-import { createLevelController } from "./controllers/level_controller"
+import { loadSprites } from "./utils/sprites"
+import { createSceneController } from "./controllers/scene_controller"
+import * as Scenes from "./constants/scenes"
 
 // Main entry point
 const startApp = () => {
 
   // Initialize pixi
-  const app = new PIXI.Application({ background: "#1099bb", resizeTo: window })
-  globalThis.__PIXI_APP__ = app
+  const app = new PIXI.Application({ background: "#111111", resizeTo: window })
+  
   document.body.appendChild(app.view)
+  globalThis.__PIXI_APP__ = app
 
-  // Initialize level controller
-  const LEVEL_CONTROLLER = createLevelController(app)
-  LEVEL_CONTROLLER.select("menu")
+  // Initialize scene controller
+  const SceneController = createSceneController(app)
+  SceneController.load(Scenes.MENU)
 
   // Game loop
   app.ticker.add((delta) => {
 
-    // Level controller handles updates for the selected context
-    LEVEL_CONTROLLER.update(delta)
+    // Scene controller handles updates for the selected context
+    SceneController.update(delta)
   })
 }
 

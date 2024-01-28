@@ -1,4 +1,4 @@
-import { createSpriteProjectile } from "../sprites"
+import { createSpriteProjectile } from "../utils/sprites"
 
 export const createProjectile = (container, X, Y, speed = 5) => {
 
@@ -36,9 +36,19 @@ export const createProjectile = (container, X, Y, speed = 5) => {
     sprite.destroy()
   }
 
+  const pause = () => {
+    sprite.stop()
+  }
+
+  const play = () => {
+    sprite.play()
+  }
+
   // Game object
 
   return {
+    pause,
+    play,
     shouldBeUnmounted: () => shouldBeUnmounted,
     update,
     unmount

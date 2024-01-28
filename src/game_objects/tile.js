@@ -1,4 +1,4 @@
-import { createSpriteTile } from "../sprites"
+import { createSpriteTile } from "../utils/sprites"
 
 export const createTile = (container, X, Y) => {
 
