@@ -2,23 +2,32 @@ import * as PIXI from "pixi.js"
 
 import { loadSprites } from "./utils/sprites"
 import { createSceneController } from "./controllers/scene_controller"
-import * as Scenes from "./constants/scenes"
+import { SCENE_NAMES } from "./constants/scenes"
 
 // Main entry point
 const startApp = () => {
-
   // Initialize pixi
-  const app = new PIXI.Application({ background: "#111111", autoResize: true, roundPixels: true, autoDensity: true, antialias : false, resolution: window.devicePixelRatio })
-  document.querySelector('#root').appendChild(app.view);
-  globalThis.__PIXI_APP__ = app
+  const app = new PIXI.Application({
+    background: "#111111",
+    // @ts-ignore TODO fix typings
+    autoResize: true,
+    roundPixels: true,
+    autoDensity: true,
+    antialias: false,
+    resolution: window.devicePixelRatio,
+  })
+
+  window.__PIXI_APP__ = app
+
+  // @ts-ignore TODO fix typings
+  document.querySelector("#root").appendChild(app.view)
 
   // Initialize scene controller
   const SceneController = createSceneController(app)
-  SceneController.load(Scenes.MENU)
+  SceneController.load([SCENE_NAMES.MENU])
 
   // Game loop
   app.ticker.add((delta) => {
-
     // Scene controller handles updates for the selected context
     SceneController.update(delta)
   })

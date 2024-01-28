@@ -1,17 +1,18 @@
+import * as PIXI from "pixi.js"
+import { GameObject } from "../controllers/game_object_controller"
 import { createSpriteTile } from "../utils/sprites"
 
-export const createTile = (container, X, Y) => {
-
+export const createTile = (container: PIXI.Container, { x, y }: Coordinates): GameObject => {
   // Construction
 
   const sprite = createSpriteTile()
-  sprite.x = X
-  sprite.y = Y
+  sprite.x = x
+  sprite.y = y
   container.addChild(sprite)
 
   // Api
 
-  const update = (delta) => {}
+  const update = (dt: number) => {}
 
   const unmount = () => {
     sprite.destroy()
@@ -22,6 +23,6 @@ export const createTile = (container, X, Y) => {
   return {
     shouldBeUnmounted: () => false,
     update,
-    unmount
+    unmount,
   }
 }
