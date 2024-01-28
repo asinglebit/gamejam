@@ -29,7 +29,7 @@ export const createText = ({
     if (eventClick) {
       text.cursor = 'pointer'
       text.eventMode = "dynamic"
-      text.on("click", () => {
+      text.on("pointerdown", () => {
         EventController.emit(eventClick.type, eventClick.payload)
       })
     }
