@@ -114,7 +114,7 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     })
 
     EventController.subscribe(Events.RESIZE, sceneName, () => {
-      pause_button.place(app.screen.width - 50, 50)
+      pause_button.place({x: app.screen.width - 50, y: 50})
       container_menu.x = app.screen.width / 2
       container_menu.y = app.screen.height / 2
     })
