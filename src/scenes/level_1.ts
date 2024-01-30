@@ -18,9 +18,8 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
   const sceneName = SCENE_NAMES.LEVEL_1
   const cellRows = 5
   const cellColumns = 10
-  const controlsHeight = 128
   const sceneWidth = CELL_SIZE * cellColumns
-  const sceneHeight = CELL_SIZE * cellRows + controlsHeight
+  const sceneHeight = CELL_SIZE * cellRows
   // Game object controller
   const GameObjectController = createGameObjectController()
   // Container references
@@ -46,12 +45,14 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
     container = new PIXI.Container()
     app.stage.addChild(container)
     containerControls = new PIXI.Container()
-    container.addChild(containerControls)
+    containerControls.x = 20
+    containerControls.y = 20
+    app.stage.addChild(containerControls)
 
     // Controls
     const uiTile = createSpriteUITile()
-    uiTile.scale.x = 2
-    uiTile.scale.y = 2
+    uiTile.scale.x = 1
+    uiTile.scale.y = 1
     containerControls.addChild(uiTile)
     const uiRanged = createSpriteRanged()
     uiRanged.x = 30
@@ -78,7 +79,7 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
       for (let column_index = 0; column_index < cellColumns; ++column_index) {
         const sprite = createSpriteTile()
         sprite.x = column_index * CELL_SIZE
-        sprite.y = controlsHeight + row_index * CELL_SIZE
+        sprite.y = row_index * CELL_SIZE
         sprite.interactive = true
         //@ts-ignore
         sprite.occupied = null

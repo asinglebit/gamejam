@@ -16,6 +16,7 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
   const GameObjectController = createGameObjectController()
   let container: PIXI.Container = null
   let container_menu: PIXI.Container = null
+  let container_pause: PIXI.Container = null
 
   /**
    * Methods
@@ -26,6 +27,12 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     container = new PIXI.Container()
     app.stage.addChild(container)
 
+    // Pause button container
+    container_pause = new PIXI.Container()
+    container_pause.x = app.screen.width - 40
+    container_pause.y = 42
+    container.addChild(container_pause)
+
     // Pause button
     const pause_button =
       new Text({
@@ -33,11 +40,11 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
         color: 0xffffff,
       },
         {
-          x: app.screen.width - 50,
-          y: 50,
+          x: 0,
+          y: 0,
         }
         ,
-        container,
+        container_pause,
         EventController, {
           type: Events.ENTER_PAUSE_MENU
         }
@@ -95,8 +102,6 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
         payload: SCENE_NAMES.MENU,
       })
 
-
-
     // Register game objects
     GameObjectController.add(pause_button)
     GameObjectController.add(play_button)
@@ -119,7 +124,8 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     })
 
     EventController.subscribe(Events.RESIZE, sceneName, () => {
-      // pause_button.place({x: app.screen.width - 50, y: 50})
+      container_pause.x = app.screen.width - 40
+      container_pause.y = 40
       container_menu.x = app.screen.width / 2
       container_menu.y = app.screen.height / 2
     })

@@ -2,16 +2,6 @@ import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
 import { EventController, EventType } from "../controllers/event_controller"
 
-type CreateTextProps = {
-  hidden?: boolean
-  color: string | number
-  container: PIXI.Container
-  placement: Coordinates
-  title: string
-  EventController?: EventController
-  eventClick?: EventType
-}
-
 type TextProps = {
   text: string
   color: string | number
@@ -61,10 +51,4 @@ export class Text implements GameObject {
   show() {
     this.text.visible = true
   }
-
-  // place({ x, y }: Coordinates) {
-  //   const bounds = this.text.getLocalBounds()
-  //   this.text.x = x - bounds.width / 2
-  //   this.text.y = y - bounds.height / 2
-  // }
 }

@@ -30,7 +30,6 @@ export class UnitRanged implements GameObject {
     this.sprite.destroy()
   }
 
-
   pause() {
     this.sprite.stop()
   }
