@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { createGameObjectController } from "../controllers/game_object_controller"
-import { createText } from "../game_objects"
+import { Text } from "../game_objects"
 import * as Events from "../constants/events"
 import { SCENE_NAMES } from "../constants/scenes"
 import { EventController } from "../controllers/event_controller"
@@ -27,19 +27,21 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     app.stage.addChild(container)
 
     // Pause button
-    const pause_button = createText({
-      container,
-      color: 0xffffff,
-      placement: {
-        x: app.screen.width - 50,
-        y: 50,
+    const pause_button =
+      new Text({
+        text: "||",
+        color: 0xffffff,
       },
-      title: "||",
-      EventController,
-      eventClick: {
-        type: Events.ENTER_PAUSE_MENU,
-      },
-    })
+        {
+          x: app.screen.width - 50,
+          y: 50,
+        }
+        ,
+        container,
+        EventController, {
+          type: Events.ENTER_PAUSE_MENU
+        }
+      )
 
     // Pause menu container
     container_menu = new PIXI.Container()
@@ -48,49 +50,52 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     container.addChild(container_menu)
 
     // Pause menu
-    const play_button = createText({
-      hidden: true,
-      color: 0x000000,
-      container: container_menu,
-      placement: {
+    const play_button =
+      new Text({
+        text: "Resume",
+        color: 0x000000,
+        hidden: true,
+      }, {
         x: 0,
         y: -30,
       },
-      title: "Resume",
-      EventController,
-      eventClick: {
-        type: Events.LEAVE_PAUSE_MENU,
-      },
-    })
-    const restart_button = createText({
+        container_menu,
+        EventController,
+        {
+          type: Events.LEAVE_PAUSE_MENU,
+        }
+      )
+
+    const restart_button = new Text({
+      text: "Restart Level",
       hidden: true,
       color: 0x000000,
-      container: container_menu,
-      placement: {
-        x: 0,
-        y: 0,
-      },
-      title: "Restart Level",
+    }, {
+      x: 0,
+      y: 0,
+    },
+      container_menu,
       EventController,
-      eventClick: {
+      {
         type: Events.RELOAD_SCENES,
-      },
-    })
-    const menu_button = createText({
+      }
+    )
+
+    const menu_button = new Text({
+      text: "Return to Menu",
       hidden: true,
       color: 0x000000,
-      container: container_menu,
-      placement: {
-        x: 0,
-        y: 30,
-      },
-      title: "Return to Menu",
+    }, {
+      x: 0,
+      y: 30,
+    }, container_menu,
       EventController,
-      eventClick: {
+      {
         type: Events.CHANGE_SCENES,
         payload: SCENE_NAMES.MENU,
-      },
-    })
+      })
+
+
 
     // Register game objects
     GameObjectController.add(pause_button)
@@ -114,7 +119,7 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
     })
 
     EventController.subscribe(Events.RESIZE, sceneName, () => {
-      pause_button.place({x: app.screen.width - 50, y: 50})
+      // pause_button.place({x: app.screen.width - 50, y: 50})
       container_menu.x = app.screen.width / 2
       container_menu.y = app.screen.height / 2
     })

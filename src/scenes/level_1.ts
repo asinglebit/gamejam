@@ -1,13 +1,12 @@
 import * as PIXI from "pixi.js"
 import { createGameObjectController } from "../controllers/game_object_controller"
-import { createProjectile, createTile } from "../game_objects"
 import { CELL_SIZE } from "../constants/constants"
 import { SCENE_NAMES } from "../constants/scenes"
 import * as Events from "../constants/events"
 import { Scene } from "../controllers/scene_controller"
 import { EventController } from "../controllers/event_controller"
 import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
-import { createUnitRanged } from "../game_objects/unit_ranged"
+import { UnitRanged } from "../game_objects/unit_ranged"
 
 export const createSceneLevel1 = (app: PIXI.Application, EventController: EventController): Scene => {
 
@@ -96,7 +95,7 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
           if (isPlacing && !sprite.occupied) {
             isPlacing = false
             uiTemporary.visible = false
-            GameObjectController.add(createUnitRanged(EventController, container, uiTemporary.x, uiTemporary.y))
+            GameObjectController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, container))
             //@ts-ignore
             sprite.occupied = true
           }

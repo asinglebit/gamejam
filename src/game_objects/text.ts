@@ -12,67 +12,59 @@ type CreateTextProps = {
   eventClick?: EventType
 }
 
-export const createText = ({
-  hidden,
-  color,
-  container,
-  placement,
-  title,
-  EventController,
-  eventClick,
-}: CreateTextProps): GameObject => {
-  // Construction
-  const text = new PIXI.Text(title, {
-    fontFamily: "Arial",
-    fontSize: 24,
-    fill: color,
-    align: "center",
-  })
-  const bounds = text.getLocalBounds()
-  text.x = placement.x - bounds.width / 2
-  text.y = placement.y - bounds.height / 2
-  if (hidden) text.visible = false
-  container.addChild(text)
+type TextProps = {
+  text: string
+  color: string | number
+  hidden?: boolean
+}
 
-  // Events
+export class Text implements GameObject {
+  public UID: string
+  public shouldBeUnmounted: false
 
-  if (EventController && eventClick) {
-    text.cursor = "pointer"
-    text.eventMode = "dynamic"
-    text.on("pointerdown", () => {
-      EventController.emit(eventClick.type, eventClick.payload)
+  private text: PIXI.Text
+
+  constructor({ text, color, hidden }: TextProps, { x, y }: Coordinates, container: PIXI.Container, eventController?: EventController, eventClick?: EventType) {
+    this.text = new PIXI.Text(text, {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: color,
+      align: "center",
     })
+
+    const bounds = this.text.getLocalBounds()
+
+    this.text.x = x - bounds.width / 2
+    this.text.y = y - bounds.height / 2
+    if (hidden) this.text.visible = false
+    container.addChild(this.text)
+
+    if (eventController && eventClick) {
+      this.text.cursor = "pointer"
+      this.text.eventMode = "dynamic"
+      this.text.on("pointerdown", () => {
+        eventController.emit(eventClick.type, eventClick.payload)
+      })
+    }
   }
 
-  // Methods
+  update(dt: number) { }
 
-  const update = (dt: number) => {}
-
-  const unmount = () => {
-    text.destroy()
+  unmount() {
+    this.text.destroy()
   }
 
-  const hide = () => {
-    text.visible = false
+  hide() {
+    this.text.visible = false
   }
 
-  const show = () => {
-    text.visible = true
+  show() {
+    this.text.visible = true
   }
 
-  const place = ({ x, y }: Coordinates) => {
-    text.x = x - bounds.width / 2
-    text.y = y - bounds.height / 2
-  }
-
-  // Api
-
-  return {
-    shouldBeUnmounted: () => false,
-    update,
-    unmount,
-    hide,
-    show,
-    place,
-  }
+  // place({ x, y }: Coordinates) {
+  //   const bounds = this.text.getLocalBounds()
+  //   this.text.x = x - bounds.width / 2
+  //   this.text.y = y - bounds.height / 2
+  // }
 }

@@ -1,48 +1,33 @@
 import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
 import { createSpriteTile } from "../utils/sprites"
+import { nanoid } from 'nanoid'
 
-export const createTile = (container: PIXI.Container, { x, y }: Coordinates): GameObject => {
-  // Construction
 
-  const sprite = createSpriteTile()
-  sprite.x = x
-  sprite.y = y
-  sprite.interactive = true
-  // sprite.on('mouseover', () => {
-  //   if (isPlacing && !isOccupied) {
-  //     uiTemporary.x = sprite.x + 80
-  //     uiTemporary.y = sprite.y + 60
-  //     uiTemporary.visible = true
-  //   }
-  // })
-  // sprite.on('pointerdown', () => {
-  //   if (isPlacing && !isOccupied) {
-  //     isPlacing = false
-  //     uiTemporary.visible = false
-  //     GameObjectController.add(createUnitRanged(EventController, container, uiTemporary.x, uiTemporary.y))
-  //     isOccupied = true
-  //   }
-  // })
-  container.addChild(sprite)
+export class Tile implements GameObject {
+  public UID: string
+  public shouldBeUnmounted: boolean
 
-  // State 
-  let isPlacing = false
-  let isOccupied = false
+  private sprite: PIXI.Sprite
 
-  // Api
+  public isPlacing = false
+  public isOccupied = false
 
-  const update = (dt: number) => {}
+  constructor({ x, y}: Coordinates, container: PIXI.Container) {
+    this.UID = `Tile_${nanoid()}`
+    this.shouldBeUnmounted = false
+    this.sprite = createSpriteTile()
+    this.sprite.x = x
+    this.sprite.y = y
+    this.sprite.interactive = true
 
-  const unmount = () => {
-    sprite.destroy()
+    container.addChild(this.sprite)
   }
 
-  // Game object
+  update(dt: number){}
 
-  return {
-    shouldBeUnmounted: () => false,
-    update,
-    unmount,
+  unmount() {
+    this.sprite.destroy()
   }
+
 }

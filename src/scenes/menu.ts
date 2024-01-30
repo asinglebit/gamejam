@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { createGameObjectController } from "../controllers/game_object_controller"
-import { createText } from "../game_objects"
+import { Text } from "../game_objects"
 import * as Events from "../constants/events"
 import { SCENE_NAMES } from "../constants/scenes"
 import { EventController } from "../controllers/event_controller"
@@ -27,49 +27,31 @@ export const createSceneMenu = (app: PIXI.Application, EventController: EventCon
 
     // Title
     GameObjectController.add(
-      createText({
-        container,
+      new Text({
+        text: "Game by A&A",
         color: 0xffffff,
-        placement: {
-          x: 0,
-          y: 0,
-        },
-        title: "Game by A&A",
-      })
+      }, {
+        x: 0,
+        y: 0,
+      }, container)
     )
 
     // Levels
     GameObjectController.add(
-      createText({
-        container,
+      new Text({
+        text:  "Level 1",
         color: 0x888888,
-        placement: {
-          x: 0,
-          y: 100,
-        },
-        title: "Level 1",
-        EventController,
-        eventClick: {
-          type: Events.CHANGE_SCENES,
-          payload: SCENE_NAMES.LEVEL_1,
-        },
-      })
-    )
-    GameObjectController.add(
-      createText({
-        container,
-        color: 0x888888,
-        placement: {
-          x: 0,
-          y: 130,
-        },
-        title: "Level 2",
-        EventController,
-        eventClick: {
-          type: Events.CHANGE_SCENES,
-          payload: SCENE_NAMES.LEVEL_2,
-        },
-      })
+      },{
+        x: 0,
+        y: 100,
+      },
+      container,
+      EventController,
+      {
+        type: Events.CHANGE_SCENES,
+        payload: SCENE_NAMES.LEVEL_1,
+      }
+      )
     )
 
     // Center container

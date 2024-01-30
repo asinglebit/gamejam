@@ -1,57 +1,57 @@
-import * as PIXI from "pixi.js"
-import { GameObject } from "../controllers/game_object_controller"
-import { createSpriteProjectile } from "../utils/sprites"
+// import * as PIXI from "pixi.js"
+// import { GameObject } from "../controllers/game_object_controller"
+// import { createSpriteProjectile } from "../utils/sprites"
 
-export const createProjectile = (container: PIXI.Container, X: number, Y: number, speed = 5): GameObject => {
-  // Construction
+// export const createProjectile = (container: PIXI.Container, X: number, Y: number, speed = 5): GameObject => {
+//   // Construction
 
-  const sprite = createSpriteProjectile()
-  sprite.x = X
-  sprite.y = Y
-  container.addChild(sprite)
+//   const sprite = createSpriteProjectile()
+//   sprite.x = X
+//   sprite.y = Y
+//   container.addChild(sprite)
 
-  // Members
+//   // Members
 
-  let shouldBeUnmounted = false
+//   let shouldBeUnmounted = false
 
-  // Methods
+//   // Methods
 
-  const move = (x: number, dt: number) => {
-    return x + speed * dt
-  }
+//   const move = (x: number, dt: number) => {
+//     return x + speed * dt
+//   }
 
-  // Api
+//   // Api
 
-  const update = (dt: number) => {
-    sprite.x = move(sprite.x, dt)
+//   const update = (dt: number) => {
+//     sprite.x = move(sprite.x, dt)
 
-    // Determine hit or miss conditions
-    if (sprite.x > 1280) {
-      shouldBeUnmounted = true
-    }
-  }
+//     // Determine hit or miss conditions
+//     if (sprite.x > 1280) {
+//       shouldBeUnmounted = true
+//     }
+//   }
 
-  const unmount = () => {
-    // stop timers
-    // destroy sprite
-    sprite.destroy()
-  }
+//   const unmount = () => {
+//     // stop timers
+//     // destroy sprite
+//     sprite.destroy()
+//   }
 
-  const pause = () => {
-    sprite.stop()
-  }
+//   const pause = () => {
+//     sprite.stop()
+//   }
 
-  const play = () => {
-    sprite.play()
-  }
+//   const play = () => {
+//     sprite.play()
+//   }
 
-  // Game object
+//   // Game object
 
-  return {
-    pause,
-    play,
-    shouldBeUnmounted: () => shouldBeUnmounted,
-    update,
-    unmount,
-  }
-}
+//   return {
+//     pause,
+//     play,
+//     shouldBeUnmounted: () => shouldBeUnmounted,
+//     update,
+//     unmount,
+//   }
+// }

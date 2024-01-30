@@ -1,63 +1,42 @@
 import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
 import { createSpriteRanged } from "../utils/sprites"
-import { createGameObjectController } from "../controllers/game_object_controller"
-import { EventController } from "../controllers/event_controller"
-import * as Events from "../constants/events"
-import { createProjectile } from "./"
 
-export const createUnitRanged = (EventController: EventController, container: PIXI.Container, x: number, y: number): GameObject => {
-  // Construction
+export class UnitRanged implements GameObject {
+  public UID: string
+  public shouldBeUnmounted: false
 
-  const sprite = createSpriteRanged()
-  sprite.x = x
-  sprite.y = y
-  container.addChild(sprite)
-  // Game object controller
-  const GameObjectController = createGameObjectController()
-  // State
-  let projectileTimer = 40
+  private sprite: PIXI.AnimatedSprite
+  private projectileTimer = 0
 
-  // Members
+  constructor({ x, y }: Coordinates, container: PIXI.Container) {
+    this.sprite = createSpriteRanged()
+    this.sprite.x = x
+    this.sprite.y = y
+    container.addChild(this.sprite)
+  }
 
-  let shouldBeUnmounted = false
+  lshouldBeUnmounted = false
 
-  // Methods
-
-  // Api
-
-  const update = (delta: number) => {
-    projectileTimer += delta
-    if (projectileTimer >= 80) {
-      projectileTimer = 0
-      GameObjectController.add(createProjectile(container, sprite.x, sprite.y))
+  update(delta: number) {
+    this.projectileTimer += delta
+    if (this.projectileTimer >= 80) {
+      this.projectileTimer = 0
+      console.log("GameObjectController.add(createProjectile(container, this.sprite.x, this.sprite.y))")
     }
-    GameObjectController.update(delta)
   }
 
-  const unmount = () => {
-    GameObjectController.unmount()
-    sprite.destroy()
-    EventController.unsubscribe("unit")
+  unmount() {
+    this.sprite.destroy()
   }
 
-  const pause = () => {
-    sprite.stop()
-    GameObjectController.pause()
+
+  pause() {
+    this.sprite.stop()
   }
 
-  const play = () => {
-    sprite.play()
-    GameObjectController.play()
-  }
-
-  // Game object
-
-  return {
-    pause,
-    play,
-    shouldBeUnmounted: () => shouldBeUnmounted,
-    update,
-    unmount,
+  play() {
+    this.sprite.play()
   }
 }
+

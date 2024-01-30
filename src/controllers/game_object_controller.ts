@@ -1,10 +1,13 @@
-export type GameObject = {
+export interface GameObject  {
   pause?: VoidFunction
   play?: VoidFunction
-  shouldBeUnmounted: () => boolean
+  shouldBeUnmounted: boolean
   update: (dt: number) => void
   unmount: VoidFunction
-} & Record<string, any>
+  UID: string
+  hide?: VoidFunction
+  show?: VoidFunction
+}
 
 export const createGameObjectController = () => {
   /**
@@ -21,7 +24,7 @@ export const createGameObjectController = () => {
   const update = (delta: number) => {
     // Unmount game objects scheduled for unmounting
     gameObjects = gameObjects.filter((gameObject) => {
-      if (gameObject.shouldBeUnmounted()) {
+      if (gameObject.shouldBeUnmounted) {
         gameObject.unmount()
         return false
       }

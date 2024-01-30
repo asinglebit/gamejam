@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js"
-import { createSceneMenu, createScenePause, createSceneLevel1, createSceneLevel2 } from "../scenes"
+import { createSceneMenu, createScenePause, createSceneLevel1 } from "../scenes"
 import { createEventController } from "./event_controller"
 import * as Events from "../constants/events"
 import { SCENE_NAMES } from "../constants/scenes"
@@ -21,7 +21,6 @@ export const createSceneController = (app: PIXI.Application) => {
     [SCENE_NAMES.MENU]: createSceneMenu(app, EventController),
     [SCENE_NAMES.PAUSE]: createScenePause(app, EventController),
     [SCENE_NAMES.LEVEL_1]: createSceneLevel1(app, EventController),
-    [SCENE_NAMES.LEVEL_2]: createSceneLevel2(app, EventController),
   }
   let loaded: Scene[] = []
   let paused = false
@@ -75,10 +74,7 @@ export const createSceneController = (app: PIXI.Application) => {
         load([SCENE_NAMES.LEVEL_1, SCENE_NAMES.PAUSE])
         break
       }
-      case SCENE_NAMES.LEVEL_2: {
-        load([SCENE_NAMES.LEVEL_2, SCENE_NAMES.PAUSE])
-        break
-      }
+     
     }
     paused = false
   })
