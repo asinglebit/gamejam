@@ -1,3 +1,3 @@
 export * from "./menu"
-export * from "./pause"
+export * from "../game_objects/pause"
 export * from "./level_1"

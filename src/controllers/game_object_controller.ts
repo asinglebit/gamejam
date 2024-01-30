@@ -1,4 +1,6 @@
-export interface GameObject  {
+import * as PIXI from "pixi.js"
+
+export interface IGameObject  {
   pause?: VoidFunction
   play?: VoidFunction
   shouldBeUnmounted: boolean
@@ -9,12 +11,31 @@ export interface GameObject  {
   show?: VoidFunction
 }
 
+
+export class GameObject implements IGameObject {
+  public UID: string
+  public shouldBeUnmounted: false
+
+  protected sprite: PIXI.Sprite
+
+  constructor() {
+  }
+
+  update(dt: number){}
+
+  unmount() {
+    this.sprite.destroy(true)
+  }
+}
+
+
+
 export const createGameObjectController = () => {
   /**
    * Construction
    */
 
-  let gameObjects: GameObject[] = []
+  let gameObjects: IGameObject[] = []
 
   /**
    * Methods
@@ -35,7 +56,7 @@ export const createGameObjectController = () => {
   }
 
   // Computes the state of each of the game objects for the next tick
-  const add = (gameObject: GameObject) => {
+  const add = (gameObject: IGameObject) => {
     gameObjects.push(gameObject)
   }
 

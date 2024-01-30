@@ -1,15 +1,8 @@
 import * as PIXI from "pixi.js"
-import { createSceneMenu, createScenePause, createSceneLevel1 } from "../scenes"
+import { Level1Stage, Stage, MenuStage } from "../scenes"
 import { createEventController } from "./event_controller"
 import * as Events from "../constants/events"
 import { SCENE_NAMES } from "../constants/scenes"
-
-export type Scene = {
-  name: string
-  update: (dt: number) => void
-  unmount: VoidFunction
-  mount: VoidFunction
-}
 
 export const createSceneController = (app: PIXI.Application) => {
   /**
@@ -17,13 +10,12 @@ export const createSceneController = (app: PIXI.Application) => {
    */
 
   const EventController = createEventController()
-  let scenes: Record<SCENE_NAMES, Scene> = {
-    [SCENE_NAMES.MENU]: createSceneMenu(app, EventController),
-    [SCENE_NAMES.PAUSE]: createScenePause(app, EventController),
-    [SCENE_NAMES.LEVEL_1]: createSceneLevel1(app, EventController),
+  let stages: Record<SCENE_NAMES, Stage> = {
+    [SCENE_NAMES.MENU]: new MenuStage(app, EventController),
+    [SCENE_NAMES.LEVEL_1]: new Level1Stage(app, EventController),
   }
-  let loaded: Scene[] = []
-  let paused = false
+  let loaded: Stage[] = []
+  let isPaused = false
 
   /**
    * Methods
@@ -32,13 +24,14 @@ export const createSceneController = (app: PIXI.Application) => {
   // Update level
   const update = (dt: number) => {
     loaded.forEach((scene) => {
-      switch (scene.name) {
+      switch (scene.stageName) {
         case SCENE_NAMES.MENU:
-        case SCENE_NAMES.PAUSE:
           scene.update(dt)
           break
+        case SCENE_NAMES.LEVEL_1:
+          scene.update(dt, isPaused)
         default:
-          if (!paused) scene.update(dt)
+          if (!isPaused) scene.update(dt)
           break
       }
     })
@@ -48,8 +41,8 @@ export const createSceneController = (app: PIXI.Application) => {
   const load = (sceneNames: SCENE_NAMES[]) => {
     loaded.forEach((scene) => scene.unmount())
     loaded = sceneNames.map((sceneName) => {
-      scenes[sceneName].mount()
-      return scenes[sceneName]
+      stages[sceneName].mount()
+      return stages[sceneName]
     })
   }
 
@@ -65,33 +58,34 @@ export const createSceneController = (app: PIXI.Application) => {
   })
 
   EventController.subscribe(Events.CHANGE_SCENES, "scenecontroller", (scene: SCENE_NAMES) => {
+    // debugger
     switch (scene) {
       case SCENE_NAMES.MENU: {
         load([SCENE_NAMES.MENU])
         break
       }
       case SCENE_NAMES.LEVEL_1: {
-        load([SCENE_NAMES.LEVEL_1, SCENE_NAMES.PAUSE])
+        load([SCENE_NAMES.LEVEL_1])
         break
       }
      
     }
-    paused = false
+    isPaused = false
   })
 
   EventController.subscribe(Events.ENTER_PAUSE_MENU, "scenecontroller", () => {
-    paused = true
+    isPaused = true
   })
 
   EventController.subscribe(Events.LEAVE_PAUSE_MENU, "scenecontroller", () => {
-    paused = false
+    isPaused = false
   })
 
   EventController.subscribe(Events.RELOAD_SCENES, "scenecontroller", () => {
     loaded.forEach((scene) => {
       scene.unmount()
       scene.mount()
-      paused = false
+      isPaused = false
     })
   })
 

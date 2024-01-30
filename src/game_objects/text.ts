@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
-import { EventController, EventType } from "../controllers/event_controller"
 import { nanoid } from "nanoid"
 
 type TextProps = {
@@ -9,49 +8,50 @@ type TextProps = {
   hidden?: boolean
 }
 
-export class Text implements GameObject {
-  public UID: string
-  public shouldBeUnmounted: false
-
-  private text: PIXI.Text
+export class Text extends GameObject {
+  private container: PIXI.Container
 
   constructor({ text, color, hidden }: TextProps, { x, y }: Coordinates, container: PIXI.Container, onClick?: VoidFunction) {
+    super()
     this.UID = `Text_${nanoid()}`
-    this.text = new PIXI.Text(text, {
+    this.sprite = new PIXI.Text(text, {
       fontFamily: "Arial",
       fontSize: 24,
       fill: color,
       align: "center",
     })
+    this.container = container
 
-    const bounds = this.text.getLocalBounds()
+    const bounds = this.sprite.getLocalBounds()
 
-    this.text.x = x - bounds.width / 2
-    this.text.y = y - bounds.height / 2
-    if (hidden) this.text.visible = false
-    container.addChild(this.text)
+    this.sprite.x = x - bounds.width / 2
+    this.sprite.y = y - bounds.height / 2
+    if (hidden) this.sprite.visible = false
+    container.addChild(this.sprite)
 
     if (onClick) {
-      this.text.cursor = "pointer"
-      this.text.eventMode = "dynamic"
+      this.sprite.cursor = "pointer"
+      this.sprite.eventMode = "dynamic"
 
-      this.text.on("pointerdown", () => {
-        onClick()
-      })
+      this.sprite.onclick = onClick
+      
+      // on("pointerdown", () => {
+      //   onClick()
+      // })
     }
   }
 
-  update(dt: number) { }
 
-  unmount() {
-    this.text.destroy()
+  unmount(): void {
+    this.sprite.onclick = undefined
+    this.container.removeChild(this.sprite)
   }
 
   hide() {
-    this.text.visible = false
+    this.sprite.visible = false
   }
 
   show() {
-    this.text.visible = true
+    this.sprite.visible = true
   }
 }

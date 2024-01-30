@@ -3,14 +3,12 @@ import { GameObject } from "../controllers/game_object_controller"
 import { createSpriteRanged } from "../utils/sprites"
 import { nanoid } from "nanoid"
 
-export class UnitRanged implements GameObject {
-  public UID: string
-  public shouldBeUnmounted: false
-
-  private sprite: PIXI.AnimatedSprite
+export class UnitRanged extends GameObject {
+  protected sprite: PIXI.AnimatedSprite
   private projectileTimer = 0
 
   constructor({ x, y }: Coordinates, container: PIXI.Container) {
+    super()
     this.UID = `UnitRanged_${nanoid()}`
     this.sprite = createSpriteRanged()
     this.sprite.x = x
@@ -18,18 +16,12 @@ export class UnitRanged implements GameObject {
     container.addChild(this.sprite)
   }
 
-  lshouldBeUnmounted = false
-
   update(delta: number) {
     this.projectileTimer += delta
     if (this.projectileTimer >= 80) {
       this.projectileTimer = 0
       console.log("GameObjectController.add(createProjectile(container, this.sprite.x, this.sprite.y))")
     }
-  }
-
-  unmount() {
-    this.sprite.destroy()
   }
 
   pause() {

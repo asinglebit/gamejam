@@ -24,13 +24,15 @@ const startApp = () => {
 
   // Initialize scene controller
   const SceneController = createSceneController(app)
-  SceneController.load([SCENE_NAMES.LEVEL_1, SCENE_NAMES.PAUSE])
+  SceneController.load([SCENE_NAMES.LEVEL_1])
 
   // Game loop
   app.ticker.add((delta) => {
     // Scene controller handles updates for the selected context
     SceneController.update(delta)
   })
+
+
 }
 
 // Wait for the page to load, load all resources and start the game

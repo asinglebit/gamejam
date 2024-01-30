@@ -4,16 +4,13 @@ import { createSpriteTile } from "../utils/sprites"
 import { nanoid } from 'nanoid'
 
 
-export class Tile implements GameObject {
-  public UID: string
-  public shouldBeUnmounted: boolean
-
-  private sprite: PIXI.Sprite
-
+export class Tile extends GameObject {
   public isPlacing = false
   public isOccupied = false
 
   constructor({ x, y}: Coordinates, container: PIXI.Container) {
+    super()
+
     this.UID = `Tile_${nanoid()}`
     this.shouldBeUnmounted = false
     this.sprite = createSpriteTile()
@@ -23,11 +20,4 @@ export class Tile implements GameObject {
 
     container.addChild(this.sprite)
   }
-
-  update(dt: number){}
-
-  unmount() {
-    this.sprite.destroy()
-  }
-
 }

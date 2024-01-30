@@ -3,57 +3,93 @@ import { createGameObjectController } from "../controllers/game_object_controlle
 import { CELL_SIZE } from "../constants/constants"
 import { SCENE_NAMES } from "../constants/scenes"
 import * as Events from "../constants/events"
-import { Scene } from "../controllers/scene_controller"
 import { EventController } from "../controllers/event_controller"
 import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
 import { UnitRanged } from "../game_objects/unit_ranged"
+import { PauseOverlay } from "../game_objects/pause"
 
-export const createSceneLevel1 = (app: PIXI.Application, EventController: EventController): Scene => {
+export class Stage {
+  public stageName: string
+  protected pauseOverlay: PauseOverlay
+  protected stage: PIXI.Container
+  protected app: PIXI.Application
+  protected eventController: EventController
 
-  /**
-   * Construction
-   */
+  constructor(app: PIXI.Application, eventController: EventController, isPausable: boolean) {
+    this.stage = new PIXI.Container()
+    this.stage.sortableChildren = true
 
-  // Constants
-  const sceneName = SCENE_NAMES.LEVEL_1
-  const cellRows = 5
-  const cellColumns = 10
-  const sceneWidth = CELL_SIZE * cellColumns
-  const sceneHeight = CELL_SIZE * cellRows
-  // Game object controller
-  const GameObjectController = createGameObjectController()
-  // Container references
-  let container: PIXI.Container = null
-  let containerControls: PIXI.Container = null
-  // State
-  let isPlacing = false
+    if (isPausable) {
+      this.pauseOverlay = new PauseOverlay(app, this.stage, eventController)
+    }
+    this.app = app
+    this.eventController = eventController
+  }
+  update(dt: number, isPaused?: boolean) { }
 
-  /**
-   * Methods
-   */
-
-  const relayout = () => {
-    const factor = app.screen.width / sceneWidth
-    container.scale.x = factor
-    container.scale.y = factor
-    container.y = app.screen.height / 2 - (sceneHeight * factor) / 2
+  mount() {
+    this.stage.name = this.stageName
+    this.pauseOverlay && this.pauseOverlay.mount()
   }
 
-  const mount = () => {
+  unmount() {
+    this.pauseOverlay && this.pauseOverlay.unmount()
+    // this.app.stage.removeChild(this.stage)
+   }
+}
 
+
+export class Level1Stage extends Stage {
+
+  private cellRows = 5
+  private cellColumns = 10
+  private sceneWidth = this.cellColumns * CELL_SIZE
+  private sceneHeight = this.cellRows * CELL_SIZE
+
+  private gameObjectController: {}
+
+  private fieldContainer: PIXI.Container
+  private containerControls: PIXI.Container
+  private isPlacing = false
+
+
+  constructor(app: PIXI.Application, eventController: EventController) {
+    super(app, eventController, true)
+
+    // this.sceneWidth = this.cellColumns * CELL_SIZE
+    // this.sceneHeight = this.cellRows * CELL_SIZE
+    this.stageName = SCENE_NAMES.LEVEL_1
+    this.gameObjectController = createGameObjectController()
+  }
+
+  relayout() {
+    const factor = this.app.screen.width / this.sceneWidth
+    this.fieldContainer.scale.x = factor
+    this.fieldContainer.scale.y = factor
+    this.fieldContainer.y = this.app.screen.height / 2 - (this.sceneHeight * factor) / 2
+  }
+
+  mount() {
+    super.mount()
     // Containers
-    container = new PIXI.Container()
-    app.stage.addChild(container)
-    containerControls = new PIXI.Container()
-    containerControls.x = 20
-    containerControls.y = 20
-    app.stage.addChild(containerControls)
+    this.app.stage.addChild(this.stage)
 
+    this.fieldContainer = new PIXI.Container()
+    this.stage.addChild(this.fieldContainer)
+
+
+
+    this.containerControls = new PIXI.Container()
+    this.containerControls.x = 20
+    this.containerControls.y = 20
+    this.stage.addChild(this.containerControls)
+
+    // debugger
     // Controls
     const uiTile = createSpriteUITile()
     uiTile.scale.x = 1
     uiTile.scale.y = 1
-    containerControls.addChild(uiTile)
+    this.containerControls.addChild(uiTile)
     const uiRanged = createSpriteRanged()
     uiRanged.x = 30
     uiRanged.y = 21
@@ -63,20 +99,20 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
     uiTile.addChild(uiRanged)
     uiTile.interactive = true
     uiTile.on('pointerdown', () => {
-      isPlacing = true
+      this.isPlacing = true
     })
 
     // Reset layout
-    relayout()
-    
+    this.relayout()
+
     // Temporary tiles
     const uiTemporary = createSpriteRanged()
     uiTemporary.stop()
     uiTemporary.visible = false;
 
     // Background tiles
-    for (let row_index = 0; row_index < cellRows; ++row_index) {
-      for (let column_index = 0; column_index < cellColumns; ++column_index) {
+    for (let row_index = 0; row_index < this.cellRows; ++row_index) {
+      for (let column_index = 0; column_index < this.cellColumns; ++column_index) {
         const sprite = createSpriteTile()
         sprite.x = column_index * CELL_SIZE
         sprite.y = row_index * CELL_SIZE
@@ -85,7 +121,7 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
         sprite.occupied = null
         sprite.on('mouseover', () => {
           //@ts-ignore
-          if (isPlacing && !sprite.occupied) {
+          if (this.isPlacing && !sprite.occupied) {
             uiTemporary.x = sprite.x + 80
             uiTemporary.y = sprite.y + 60
             uiTemporary.visible = true
@@ -93,49 +129,48 @@ export const createSceneLevel1 = (app: PIXI.Application, EventController: EventC
         })
         sprite.on('pointerdown', () => {
           //@ts-ignore
-          if (isPlacing && !sprite.occupied) {
-            isPlacing = false
+          if (this.isPlacing && !sprite.occupied) {
+            this.isPlacing = false
             uiTemporary.visible = false
-            GameObjectController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, container))
+            // @ts-ignore
+            this.gameObjectController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
             //@ts-ignore
             sprite.occupied = true
           }
         })
-        container.addChild(sprite)
+        this.fieldContainer.addChild(sprite)
       }
     }
 
-    container.addChild(uiTemporary)
-    
+    this.fieldContainer.addChild(uiTemporary)
+
 
     // Projectile for testing
-    
+
 
     // Events
-    EventController.subscribe(Events.ENTER_PAUSE_MENU, sceneName, GameObjectController.pause)
-    EventController.subscribe(Events.LEAVE_PAUSE_MENU, sceneName, GameObjectController.play)
-    EventController.subscribe(Events.RESIZE, sceneName, relayout)
+    // @ts-ignore
+    this.eventController.subscribe(Events.ENTER_PAUSE_MENU, this.stageName, this.gameObjectController.pause)
+    // @ts-ignore
+    this.eventController.subscribe(Events.LEAVE_PAUSE_MENU, this.stageName, this.gameObjectController.play)
+    this.eventController.subscribe(Events.RESIZE, this.stageName, this.relayout)
   }
 
-  const update = (dt: number) => {
-    GameObjectController.update(dt)
+  unmount() {
+    super.unmount()
+    // @ts-ignore
+    this.gameObjectController.unmount()
+    this.containerControls?.destroy(true)
+    this.fieldContainer?.destroy(true)
+    this.eventController.unsubscribe(this.stageName)
   }
 
-  const unmount = () => {
-    GameObjectController.unmount()
-    if (containerControls) containerControls.destroy()
-    if (container) container.destroy()
-    EventController.unsubscribe(sceneName)
+  update(dt: number, isPaused: boolean) {
+    this.pauseOverlay&& this.pauseOverlay.update(dt)
+
+    // @ts-ignore
+    !isPaused && this.gameObjectController.update(dt)
   }
 
-  /**
-   * Api
-   */
-
-  return {
-    name: sceneName,
-    mount,
-    update,
-    unmount,
-  }
 }
+

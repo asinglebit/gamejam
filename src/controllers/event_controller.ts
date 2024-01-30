@@ -33,11 +33,14 @@ export const createEventController = (): EventController => {
   }
 
   const subscribe = (type: string, id: string, callback: Function) => {
+    console.log("subscribe", id)
     events[type] = events[type] || {}
     events[type][id] = callback
+    console.log(events)
   }
 
   const unsubscribe = (id: string) => {
+    console.log("unsubscribe", id)
     events = Object.keys(events).reduce((accumulator_event_types, current_event_type) => {
       const callbacks = Object.keys(events[current_event_type]).reduce((accumulator_ids, current_id) => {
         return {
@@ -50,6 +53,7 @@ export const createEventController = (): EventController => {
         ...(Object.keys(callbacks).length !== 0 ? { [current_event_type]: callbacks } : {}),
       }
     }, {})
+    console.log(events)
   }
 
   return {
