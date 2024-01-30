@@ -3,11 +3,13 @@ import * as PIXI from "pixi.js"
 let RANGED_ANIMATIONS
 
 let spriteSheet
+let spriteSheetUI
 
 // Load spritesheet
 
 export const loadSprites = async () => {
-  spriteSheet = await PIXI.Assets.load("/resources/sprites.json")
+  spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
+  spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
     attack: [
       spriteSheet.textures["ranged_attack_9.png"],
@@ -89,5 +91,10 @@ export const createSpriteProjectile = () => {
   ])
   sprite.animationSpeed = 0.1666
   sprite.play()
+  return sprite
+}
+
+export const createSpriteUITile = () => {
+  const sprite = new PIXI.Sprite(spriteSheetUI.textures[`buttonSquare_beige.png`])
   return sprite
 }

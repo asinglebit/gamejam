@@ -424,7 +424,7 @@
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.1",
-	"image": "sprites.png",
+	"image": "grass.png",
 	"format": "RGBA8888",
 	"size": {"w":1584,"h":528},
 	"scale": "1",

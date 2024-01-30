@@ -50,7 +50,7 @@ export const createSceneLevel2 = (app: PIXI.Application, EventController: EventC
       GameObjectController.play()
     })
 
-    EventController.subscribe(Events.RESIZE, SCENE_NAMES.MENU, () => {
+    EventController.subscribe(Events.RESIZE, sceneName, () => {
       const factor = app.screen.width / 1280
       container.scale.x = factor
       container.scale.y = factor

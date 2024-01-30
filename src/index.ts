@@ -24,7 +24,7 @@ const startApp = () => {
 
   // Initialize scene controller
   const SceneController = createSceneController(app)
-  SceneController.load([SCENE_NAMES.MENU])
+  SceneController.load([SCENE_NAMES.LEVEL_1, SCENE_NAMES.PAUSE])
 
   // Game loop
   app.ticker.add((delta) => {
