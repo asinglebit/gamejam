@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js"
-import { createGameObjectController } from "../controllers/game_object_controller"
+import { GameObject, createGameObjectController } from "../controllers/game_object_controller"
 import { Text } from "../game_objects"
 import * as Events from "../constants/events"
 import { SCENE_NAMES } from "../constants/scenes"
 import { EventController } from "../controllers/event_controller"
 import { Scene } from "../controllers/scene_controller"
+
 
 export const createScenePause = (app: PIXI.Application, EventController: EventController): Scene => {
   /**
@@ -45,8 +46,8 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
         }
         ,
         container_pause,
-        EventController, {
-          type: Events.ENTER_PAUSE_MENU
+        () => {
+          EventController.emit(Events.ENTER_PAUSE_MENU)
         }
       )
 
@@ -67,9 +68,8 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
         y: -30,
       },
         container_menu,
-        EventController,
-        {
-          type: Events.LEAVE_PAUSE_MENU,
+        () => {
+          EventController.emit(Events.LEAVE_PAUSE_MENU)
         }
       )
 
@@ -82,9 +82,8 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
       y: 0,
     },
       container_menu,
-      EventController,
-      {
-        type: Events.RELOAD_SCENES,
+      () => {
+        EventController.emit(Events.RELOAD_SCENES)
       }
     )
 
@@ -96,11 +95,10 @@ export const createScenePause = (app: PIXI.Application, EventController: EventCo
       x: 0,
       y: 30,
     }, container_menu,
-      EventController,
-      {
-        type: Events.CHANGE_SCENES,
-        payload: SCENE_NAMES.MENU,
+      () => {
+        EventController.emit(Events.CHANGE_SCENES, SCENE_NAMES.MENU)
       })
+
 
     // Register game objects
     GameObjectController.add(pause_button)

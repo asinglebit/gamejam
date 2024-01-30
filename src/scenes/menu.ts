@@ -6,6 +6,11 @@ import { SCENE_NAMES } from "../constants/scenes"
 import { EventController } from "../controllers/event_controller"
 import { Scene } from "../controllers/scene_controller"
 
+// class Stage  Menu Level Setting etc
+
+// class PauseOverlay gameObj
+
+
 export const createSceneMenu = (app: PIXI.Application, EventController: EventController): Scene => {
   /**
    * Construction
@@ -39,18 +44,16 @@ export const createSceneMenu = (app: PIXI.Application, EventController: EventCon
     // Levels
     GameObjectController.add(
       new Text({
-        text:  "Level 1",
+        text: "Level 1",
         color: 0x888888,
-      },{
+      }, {
         x: 0,
         y: 100,
       },
-      container,
-      EventController,
-      {
-        type: Events.CHANGE_SCENES,
-        payload: SCENE_NAMES.LEVEL_1,
-      }
+        container,
+        () => {
+          EventController.emit(Events.CHANGE_SCENES, SCENE_NAMES.LEVEL_1)
+        }
       )
     )
 

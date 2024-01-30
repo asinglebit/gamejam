@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
 import { EventController, EventType } from "../controllers/event_controller"
+import { nanoid } from "nanoid"
 
 type TextProps = {
   text: string
@@ -14,7 +15,8 @@ export class Text implements GameObject {
 
   private text: PIXI.Text
 
-  constructor({ text, color, hidden }: TextProps, { x, y }: Coordinates, container: PIXI.Container, eventController?: EventController, eventClick?: EventType) {
+  constructor({ text, color, hidden }: TextProps, { x, y }: Coordinates, container: PIXI.Container, onClick?: VoidFunction) {
+    this.UID = `Text_${nanoid()}`
     this.text = new PIXI.Text(text, {
       fontFamily: "Arial",
       fontSize: 24,
@@ -29,11 +31,12 @@ export class Text implements GameObject {
     if (hidden) this.text.visible = false
     container.addChild(this.text)
 
-    if (eventController && eventClick) {
+    if (onClick) {
       this.text.cursor = "pointer"
       this.text.eventMode = "dynamic"
+
       this.text.on("pointerdown", () => {
-        eventController.emit(eventClick.type, eventClick.payload)
+        onClick()
       })
     }
   }

@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { GameObject } from "../controllers/game_object_controller"
 import { createSpriteRanged } from "../utils/sprites"
+import { nanoid } from "nanoid"
 
 export class UnitRanged implements GameObject {
   public UID: string
@@ -10,6 +11,7 @@ export class UnitRanged implements GameObject {
   private projectileTimer = 0
 
   constructor({ x, y }: Coordinates, container: PIXI.Container) {
+    this.UID = `UnitRanged_${nanoid()}`
     this.sprite = createSpriteRanged()
     this.sprite.x = x
     this.sprite.y = y
