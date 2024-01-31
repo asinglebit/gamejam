@@ -1,13 +1,16 @@
 import * as PIXI from "pixi.js"
-import { createComponentController } from "../controllers/component_controller"
-import { Text } from "../game_objects"
+
 import { EVENTS } from "../enums/events"
 import { STAGES } from "../enums/stages"
-import { EventController } from "../controllers/event_controller"
+
+import { ComponentController } from "../core/component_controller"
+import { EventController } from "../core/event_controller"
 import { Stage } from "../core/stage"
 
+import { Text } from "../components"
+
 export class MenuStage extends Stage {
-  private componentController: {}
+  private componentController: ComponentController
   private menuContainer: PIXI.Container
 
   constructor(app: PIXI.Application, eventController: EventController) {
@@ -16,14 +19,13 @@ export class MenuStage extends Stage {
     super(STAGES.MENU, app, eventController, false)
 
     // Setup private members
-    this.componentController = createComponentController()
+    this.componentController = new ComponentController()
 
     // Continue stage initialization
     this.menuContainer = new PIXI.Container()
     this.stage.addChild(this.menuContainer)
 
     // Main title
-    // @ts-ignore
     this.componentController.add(
       new Text(
         { text: "Game by A&A", color: 0xffffff, },
@@ -33,7 +35,6 @@ export class MenuStage extends Stage {
     )
 
     // List of levels
-    // @ts-ignore
     this.componentController.add(
       new Text(
         { text: "Level 1", color: 0x888888 },
@@ -58,12 +59,10 @@ export class MenuStage extends Stage {
   }
 
   update(dt: number) {
-    // @ts-ignore
     this.componentController.update(dt)
   }
 
   unmount() {
-    // @ts-ignore
     this.componentController.unmount()
     this.eventController.unsubscribe(this.stageName)
     super.unmount()

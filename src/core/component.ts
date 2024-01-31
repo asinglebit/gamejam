@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid"
+
 export interface IComponent  {
     UID: string
     shouldBeUnmounted: boolean
@@ -13,7 +15,9 @@ export class Component implements IComponent {
     public UID: string
     public shouldBeUnmounted: false
   
-    constructor() {}
+    constructor(tag: string) {
+        this.UID = `${tag}_${nanoid()}`
+    }
   
     update(dt: number){}
   

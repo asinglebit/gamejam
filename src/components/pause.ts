@@ -1,10 +1,12 @@
 import * as PIXI from "pixi.js"
-import { Component } from "../core/component"
-import { Text } from "."
+
 import { EVENTS } from "../enums/events"
 import { STAGES } from "../enums/stages"
-import { EventController } from "../controllers/event_controller"
-import { nanoid } from "nanoid"
+
+import { Component } from "../core/component"
+import { EventController } from "../core/event_controller"
+
+import { Text } from "."
 
 export class PauseOverlay extends Component {
   
@@ -14,13 +16,16 @@ export class PauseOverlay extends Component {
   private stage: PIXI.Container
 
   constructor(app: PIXI.Application, stage: PIXI.Container, eventController: EventController) {
-    super()
-    
-    this.UID = `PauseOverlay_${nanoid()}`
+
+    // Super constructor
+    super("PauseOverlay")
+
+    // Store arguments
     this.app = app
     this.stage = stage
     this.eventController = eventController
-
+  
+    // Initialize component
     this.container = new PIXI.Container()
     this.container.name = "Pause"
     this.container.zIndex = 9999
@@ -53,14 +58,12 @@ export class PauseOverlay extends Component {
       container_menu,
       () => this.eventController.emit(EVENTS.UNPAUSE)
     )
-
     const restart_button = new Text(
       { text: "Restart Level", hidden: true, color: 0x000000 },
       { x: 0, y: 0 },
       container_menu,
       () => this.eventController.emit(EVENTS.RELOAD_STAGE)
     )
-
     const menu_button = new Text(
       { text: "Return to Menu", hidden: true, color: 0x000000 },
       { x: 0, y: 30 },
@@ -75,14 +78,12 @@ export class PauseOverlay extends Component {
       restart_button.show()
       menu_button.show()
     })
-
     this.eventController.subscribe(EVENTS.UNPAUSE, this.UID, () => {
       pause_button.show()
       play_button.hide()
       restart_button.hide()
       menu_button.hide()
     })
-
     this.eventController.subscribe(EVENTS.RESIZE, this.UID, () => {
       container_pause.x = this.app.screen.width - 40
       container_pause.y = 40

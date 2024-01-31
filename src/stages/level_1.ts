@@ -1,12 +1,15 @@
 import * as PIXI from "pixi.js"
-import { createComponentController } from "../controllers/component_controller"
-import { CELL_SIZE } from "../constants"
+
 import { EVENTS } from "../enums/events"
 import { STAGES } from "../enums/stages"
-import { EventController } from "../controllers/event_controller"
-import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
-import { UnitRanged } from "../game_objects/unit_ranged"
+import { CELL_SIZE } from "../constants"
+
 import { Stage } from "../core/stage"
+import { ComponentController } from "../core/component_controller"
+import { EventController } from "../core/event_controller"
+
+import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
+import { UnitRanged } from "../components/unit_ranged"
 
 export class Level1Stage extends Stage {
 
@@ -14,7 +17,7 @@ export class Level1Stage extends Stage {
   private cellColumns = 10
   private sceneWidth = this.cellColumns * CELL_SIZE
   private sceneHeight = this.cellRows * CELL_SIZE
-  private componentController: {}
+  private componentController: ComponentController
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
   private isPlacing = false
@@ -22,7 +25,7 @@ export class Level1Stage extends Stage {
   constructor(app: PIXI.Application, eventController: EventController) {
     super(STAGES.LEVEL_1, app, eventController, true)
 
-    this.componentController = createComponentController()
+    this.componentController = new ComponentController()
     
     this.fieldContainer = new PIXI.Container()
     this.stage.addChild(this.fieldContainer)
@@ -79,7 +82,6 @@ export class Level1Stage extends Stage {
           if (this.isPlacing && !sprite.occupied) {
             this.isPlacing = false
             uiTemporary.visible = false
-            // @ts-ignore
             this.componentController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
             //@ts-ignore
             sprite.occupied = true
@@ -92,10 +94,8 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(uiTemporary)
     
     // Events
-    // @ts-ignore
-    this.eventController.subscribe(EVENTS.PAUSE, this.stageName, this.componentController.pause)
-    // @ts-ignore
-    this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, this.componentController.play)
+    this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => this.componentController.pause())
+    this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => this.componentController.play())
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
@@ -108,13 +108,10 @@ export class Level1Stage extends Stage {
 
   update(dt: number, isPaused: boolean) {
     super.update(dt, isPaused)
-
-    // @ts-ignore
     !isPaused && this.componentController.update(dt)
   }
 
   unmount() {
-    // @ts-ignore
     this.componentController.unmount()
     this.eventController.unsubscribe(this.stageName)
     this.fieldContainer.destroy()

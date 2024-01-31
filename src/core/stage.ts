@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js"
 import { STAGES } from "../enums/stages"
-import { EventController } from "../controllers/event_controller"
-import { PauseOverlay } from "../game_objects/pause"
+import { EventController } from "./event_controller"
+import { PauseOverlay } from "../components/pause"
 
 export class Stage {
   public stageName: STAGES

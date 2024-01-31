@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
 
-import { loadSprites } from "./utils/sprites"
-import { createStageController } from "./controllers/stage_controller"
 import { STAGES } from "./enums/stages"
+import { StageController } from "./core/stage_controller"
+import { loadSprites } from "./utils/sprites"
 
 // Main entry point
 const startApp = () => {
@@ -23,7 +23,7 @@ const startApp = () => {
   document.querySelector("#root").appendChild(app.view)
 
   // Initialize stage controller
-  const stageController = createStageController(app)
+  const stageController = new StageController(app)
   stageController.load(STAGES.MENU)
 
   // Game loop
@@ -31,8 +31,6 @@ const startApp = () => {
     // Stage controller handles updates for the selected context
     stageController.update(delta)
   })
-
-
 }
 
 // Wait for the page to load, load all resources and start the game

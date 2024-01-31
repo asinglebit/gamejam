@@ -1,19 +1,19 @@
 import * as PIXI from "pixi.js"
+
 import { Component } from "../core/component"
+
 import { createSpriteTile } from "../utils/sprites"
-import { nanoid } from 'nanoid'
 
 export class Tile extends Component {
+
   private sprite: PIXI.Sprite
 
   constructor({ x, y}: Coordinates, container: PIXI.Container) {
 
     // Super constructor
-    super()
+    super("Tile")
     
-    // Initialize game object
-    this.UID = `Tile_${nanoid()}`
-    this.shouldBeUnmounted = false
+    // Initialize component
     this.sprite = createSpriteTile()
     this.sprite.x = x
     this.sprite.y = y

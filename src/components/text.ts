@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
+
 import { Component } from "../core/component"
-import { nanoid } from "nanoid"
 
 type TextProps = {
   text: string
@@ -9,6 +9,7 @@ type TextProps = {
 }
 
 export class Text extends Component {
+
   private sprite: PIXI.Sprite
 
   constructor(
@@ -19,10 +20,9 @@ export class Text extends Component {
   ) {
 
     // Super constructor
-    super()
+    super("Text")
 
-    // Initialize game object
-    this.UID = `Text_${nanoid()}`
+    // Initialize component
     this.sprite = new PIXI.Text(text, {
       fontFamily: "Arial",
       fontSize: 24,
@@ -35,6 +35,7 @@ export class Text extends Component {
     if (hidden) this.sprite.visible = false
     container.addChild(this.sprite)
 
+    // Setup interactive callbacks
     if (onClick) {
       this.sprite.cursor = "pointer"
       this.sprite.eventMode = "dynamic"
@@ -42,7 +43,7 @@ export class Text extends Component {
     }
   }
 
-  unmount(): void {
+  unmount() {
     super.unmount()
   }
 

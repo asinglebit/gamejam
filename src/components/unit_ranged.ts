@@ -1,15 +1,18 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
 import { createSpriteRanged } from "../utils/sprites"
-import { nanoid } from "nanoid"
 
 export class UnitRanged extends Component {
+
   private sprite: PIXI.AnimatedSprite
   private projectileTimer = 0
 
   constructor({ x, y }: Coordinates, container: PIXI.Container) {
-    super()
-    this.UID = `UnitRanged_${nanoid()}`
+
+    // Super constructor
+    super("UnitRanged")
+
+    // Initialize component
     this.sprite = createSpriteRanged()
     this.sprite.x = x
     this.sprite.y = y
