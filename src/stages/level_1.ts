@@ -24,6 +24,7 @@ export class Level1Stage extends Stage {
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
 
+  private isPaused = false
   private isPlacing = false
   private occupiedTiles: string[] = []
 
@@ -56,7 +57,9 @@ export class Level1Stage extends Stage {
     uiTile.addChild(uiRanged)
     uiTile.interactive = true
     uiTile.on('pointerdown', () => {
-      this.isPlacing = true
+      if (!this.isPaused) {
+        this.isPlacing = true
+      }
     })
 
     // Reset layout
@@ -78,7 +81,7 @@ export class Level1Stage extends Stage {
 
         // Interactive callbacks
         const onPointerDown = (uid: string) => {
-          if (this.isPlacing && this.isTileFree(uid)) {
+          if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
             this.isPlacing = false
             uiTemporary.visible = false
             this.addUnit(uiTemporary.x, uiTemporary.y)
@@ -86,7 +89,7 @@ export class Level1Stage extends Stage {
           }
         }
         const onMouseOver = (uid: string) => {
-          if (this.isPlacing && this.isTileFree(uid)) {
+          if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
             uiTemporary.x = x + 80
             uiTemporary.y = y + 60
             uiTemporary.visible = true
@@ -101,8 +104,18 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(uiTemporary)
     
     // Events
-    this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => this.componentController.pause())
-    this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => this.componentController.play())
+    this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
+      this.isPaused = true
+      this.componentController.pause()
+      uiRanged.stop()
+      uiTemporary.stop()
+    })
+    this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
+      this.isPaused = false
+      this.componentController.play()
+      uiRanged.play()
+      uiTemporary.play()
+    })
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
