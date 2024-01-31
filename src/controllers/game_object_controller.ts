@@ -1,34 +1,4 @@
-import * as PIXI from "pixi.js"
-
-export interface IGameObject  {
-  pause?: VoidFunction
-  play?: VoidFunction
-  shouldBeUnmounted: boolean
-  update: (dt: number) => void
-  unmount: VoidFunction
-  UID: string
-  hide?: VoidFunction
-  show?: VoidFunction
-}
-
-
-export class GameObject implements IGameObject {
-  public UID: string
-  public shouldBeUnmounted: false
-
-  protected sprite: PIXI.Sprite
-
-  constructor() {
-  }
-
-  update(dt: number){}
-
-  unmount() {
-    this.sprite.destroy(true)
-  }
-}
-
-
+import { IGameObject } from "../core/game_object"
 
 export const createGameObjectController = () => {
   /**

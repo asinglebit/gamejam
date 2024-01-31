@@ -1,20 +1,17 @@
 import * as PIXI from "pixi.js"
-import { Level1Stage, Stage, MenuStage } from "../scenes"
+import { Level1Stage, MenuStage } from "../scenes"
+import { Stage } from "../core/stage"
 import { createEventController } from "./event_controller"
 import * as Events from "../constants/events"
-import { SCENE_NAMES } from "../constants/scenes"
+import { STAGE_NAME } from "../constants/scenes"
 
 export const createSceneController = (app: PIXI.Application) => {
   /**
    * Construction
    */
 
-  const EventController = createEventController()
-  let stages: Record<SCENE_NAMES, Stage> = {
-    [SCENE_NAMES.MENU]: new MenuStage(app, EventController),
-    [SCENE_NAMES.LEVEL_1]: new Level1Stage(app, EventController),
-  }
-  let loaded: Stage[] = []
+  const eventController = createEventController()
+  let stage: Stage = null
   let isPaused = false
 
   /**
@@ -23,74 +20,37 @@ export const createSceneController = (app: PIXI.Application) => {
 
   // Update level
   const update = (dt: number) => {
-    loaded.forEach((scene) => {
-      switch (scene.stageName) {
-        case SCENE_NAMES.MENU:
-          scene.update(dt)
-          break
-        case SCENE_NAMES.LEVEL_1:
-          scene.update(dt, isPaused)
-        default:
-          if (!isPaused) scene.update(dt)
-          break
-      }
-    })
+    stage && stage.update(dt, isPaused)
   }
 
   // Select level
-  const load = (sceneNames: SCENE_NAMES[]) => {
-    loaded.forEach((scene) => scene.unmount())
-    loaded = sceneNames.map((sceneName) => {
-      stages[sceneName].mount()
-      return stages[sceneName]
-    })
+  const load = (stageName: STAGE_NAME) => {
+    if (stage) stage.unmount()
+    switch(stageName) {
+      case STAGE_NAME.MENU: stage = new MenuStage(app, eventController); break
+      case STAGE_NAME.LEVEL_1: stage = new Level1Stage(app, eventController); break
+    }
+    isPaused = false
   }
 
   /**
    * Events
    */
 
-  EventController.subscribe(Events.RESIZE_APP, "scenecontroller", () => {
+  window.addEventListener("resize", () => eventController.emit(Events.RESIZE_APP))
+
+  eventController.subscribe(Events.CHANGE_SCENES, "scenecontroller", (stageName: STAGE_NAME) => load(stageName))
+  eventController.subscribe(Events.ENTER_PAUSE_MENU, "scenecontroller", () => { isPaused = true })
+  eventController.subscribe(Events.LEAVE_PAUSE_MENU, "scenecontroller", () => { isPaused = false })
+  eventController.subscribe(Events.RELOAD_SCENES, "scenecontroller", () => load(stage.stageName))
+  eventController.subscribe(Events.RESIZE_APP, "scenecontroller", () => {
     const parent = app.view.parentNode
     // @ts-ignore wtf ts html typing
     app.renderer.resize(parent.clientWidth, parent.clientHeight)
-    EventController.emit(Events.RESIZE)
+    eventController.emit(Events.RESIZE)
   })
-
-  EventController.subscribe(Events.CHANGE_SCENES, "scenecontroller", (scene: SCENE_NAMES) => {
-    // debugger
-    switch (scene) {
-      case SCENE_NAMES.MENU: {
-        load([SCENE_NAMES.MENU])
-        break
-      }
-      case SCENE_NAMES.LEVEL_1: {
-        load([SCENE_NAMES.LEVEL_1])
-        break
-      }
-     
-    }
-    isPaused = false
-  })
-
-  EventController.subscribe(Events.ENTER_PAUSE_MENU, "scenecontroller", () => {
-    isPaused = true
-  })
-
-  EventController.subscribe(Events.LEAVE_PAUSE_MENU, "scenecontroller", () => {
-    isPaused = false
-  })
-
-  EventController.subscribe(Events.RELOAD_SCENES, "scenecontroller", () => {
-    loaded.forEach((scene) => {
-      scene.unmount()
-      scene.mount()
-      isPaused = false
-    })
-  })
-
-  window.addEventListener("resize", () => EventController.emit(Events.RESIZE_APP))
-  EventController.emit(Events.RESIZE_APP)
+  
+  eventController.emit(Events.RESIZE_APP)
 
   /**
    * Api

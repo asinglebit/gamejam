@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 
 import { loadSprites } from "./utils/sprites"
 import { createSceneController } from "./controllers/scene_controller"
-import { SCENE_NAMES } from "./constants/scenes"
+import { STAGE_NAME } from "./constants/scenes"
 
 // Main entry point
 const startApp = () => {
@@ -24,7 +24,7 @@ const startApp = () => {
 
   // Initialize scene controller
   const SceneController = createSceneController(app)
-  SceneController.load([SCENE_NAMES.LEVEL_1])
+  SceneController.load(STAGE_NAME.MENU)
 
   // Game loop
   app.ticker.add((delta) => {

@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js"
-import { GameObject } from "../controllers/game_object_controller"
+import { GameObject } from "../core/game_object"
 import { createSpriteRanged } from "../utils/sprites"
 import { nanoid } from "nanoid"
 
 export class UnitRanged extends GameObject {
-  protected sprite: PIXI.AnimatedSprite
+  private sprite: PIXI.AnimatedSprite
   private projectileTimer = 0
 
   constructor({ x, y }: Coordinates, container: PIXI.Container) {
@@ -20,7 +20,6 @@ export class UnitRanged extends GameObject {
     this.projectileTimer += delta
     if (this.projectileTimer >= 80) {
       this.projectileTimer = 0
-      console.log("GameObjectController.add(createProjectile(container, this.sprite.x, this.sprite.y))")
     }
   }
 
@@ -30,6 +29,10 @@ export class UnitRanged extends GameObject {
 
   play() {
     this.sprite.play()
+  }
+
+  unmount() {
+    super.unmount()
   }
 }
 
