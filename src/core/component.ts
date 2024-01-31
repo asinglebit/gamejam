@@ -13,7 +13,7 @@ export interface IComponent  {
   
 export class Component implements IComponent {
     public UID: string
-    public shouldBeUnmounted: false
+    public shouldBeUnmounted: boolean = false
   
     constructor(tag: string) {
         this.UID = `${tag}_${nanoid()}`

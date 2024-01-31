@@ -7,9 +7,12 @@ import { CELL_SIZE } from "../constants"
 import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
+import { IComponent } from "../core/component"
 
-import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
+import { createSpriteUITile, createSpriteRangedIdle, createSpriteTile } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
+import { Projectile } from "../components/projectile"
+import { Enemy } from "../components/enemy"
 
 export class Level1Stage extends Stage {
 
@@ -20,9 +23,11 @@ export class Level1Stage extends Stage {
   private componentController: ComponentController
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
-  private isPlacing = false
 
+  private isPlacing = false
   private occupiedTiles: string[] = []
+
+  private timer = 190
 
   constructor(app: PIXI.Application, eventController: EventController) {
     super(STAGES.LEVEL_1, app, eventController, true)
@@ -42,12 +47,12 @@ export class Level1Stage extends Stage {
     uiTile.scale.x = 1
     uiTile.scale.y = 1
     this.containerControls.addChild(uiTile)
-    const uiRanged = createSpriteRanged()
+    const uiRanged = createSpriteRangedIdle()
     uiRanged.x = 30
     uiRanged.y = 21
     uiRanged.scale.x = 0.4
     uiRanged.scale.y = 0.4
-    uiRanged.stop()
+    uiRanged.play()
     uiTile.addChild(uiRanged)
     uiTile.interactive = true
     uiTile.on('pointerdown', () => {
@@ -58,8 +63,9 @@ export class Level1Stage extends Stage {
     this.relayout()
 
     // Temporary tiles
-    const uiTemporary = createSpriteRanged()
-    uiTemporary.stop()
+    const uiTemporary = createSpriteRangedIdle()
+    uiTemporary.play()
+    uiTemporary.alpha = 0.4
     uiTemporary.visible = false;
 
     // Background tiles
@@ -75,7 +81,7 @@ export class Level1Stage extends Stage {
           if (this.isPlacing && this.isTileFree(uid)) {
             this.isPlacing = false
             uiTemporary.visible = false
-            this.componentController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
+            this.addUnit(uiTemporary.x, uiTemporary.y)
             this.occupyTile(uid)
           }
         }
@@ -100,6 +106,13 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
+  addUnit(x: number, y: number) {
+    const onFireProjectile = () => {
+      this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5, () => {}))
+    }
+    this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
+  }
+
   isTileFree(uid: string): boolean {
     return !this.occupiedTiles.includes(uid)
   }
@@ -114,6 +127,39 @@ export class Level1Stage extends Stage {
     if (index !== -1) this.occupiedTiles.splice(index, 1);
   }
 
+  spawnEnemy() {
+    this.componentController.add(new Enemy(
+      {
+        x: CELL_SIZE * 11,
+        y: CELL_SIZE * Math.floor(Math.random() * 5) + 54
+      },
+      this.fieldContainer
+      )
+    )
+  }
+
+  checkForHits() {
+    const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
+    const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
+    for (let i = 0; i < projectiles.length; ++i) {
+      for (let j = 0; j < enemies.length; ++j) {
+        const projectile = projectiles[i]
+        const enemy = enemies[j]
+        const bounds1 = projectile.sprite.getBounds()
+        const bounds2 = enemy.sprite.getBounds()
+        if (
+          bounds1.x < bounds2.x + bounds2.width
+          && bounds1.x + bounds1.width > bounds2.x
+          && bounds1.y < bounds2.y + bounds2.height
+          && bounds1.y + bounds1.height > bounds2.y
+        ) {
+          projectile.shouldBeUnmounted = true
+          enemy.shouldBeUnmounted = true
+        }
+      }
+    }
+  }
+
   relayout() {
     const factor = this.app.screen.width / this.sceneWidth
     this.fieldContainer.scale.x = factor
@@ -123,7 +169,17 @@ export class Level1Stage extends Stage {
 
   update(dt: number, isPaused: boolean) {
     super.update(dt, isPaused)
-    !isPaused && this.componentController.update(dt)
+    if (!isPaused) {
+      this.componentController.update(dt)
+      this.timer += dt
+
+      this.checkForHits()
+
+      if (this.timer > 200) {
+        this.spawnEnemy()
+        this.timer = 0
+      }
+    }
   }
 
   unmount() {

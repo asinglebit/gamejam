@@ -47,4 +47,10 @@ export class ComponentController {
       }
     })
   }
+
+  get (tag: string): IComponent[] {
+    return this.components.filter(component => {
+      return component.constructor.name === tag
+    })
+  }
 }

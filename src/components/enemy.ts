@@ -1,44 +1,40 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
-import { createSpriteProjectile } from "../utils/sprites"
+import { createSpriteUndead } from "../utils/sprites"
 
-export class Projectile extends Component {
+export class Enemy extends Component {
 
   public sprite: PIXI.AnimatedSprite
-  private speed: number
-  private onHit: VoidFunction = null
+  private speed: number = 2
+  private onGetHit: VoidFunction = null
 
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    speed = 5,
-    onHit?: VoidFunction
   ) {
 
     // Super constructor
-    super("Projectile")
-
-    // Store arguments
-    this.speed = speed
-    this.onHit = onHit
+    super("Enemy")
 
     // Initialize component
-    this.sprite = createSpriteProjectile()
+    this.sprite = createSpriteUndead()
     this.sprite.x = x
     this.sprite.y = y
+    this.sprite.gotoAndPlay(0);
     container.addChild(this.sprite)
+    
+
   }
   
   move (x: number, dt: number) {
-    return x + this.speed * dt
+    return x - this.speed * dt
   }
 
   update(delta: number) {
     this.sprite.x = this.move(this.sprite.x, delta)
-
-    // Determine hit or miss conditions
-    if (this.sprite.x > 1280) {
-        this.shouldBeUnmounted = true
+    
+    if (this.sprite.x < 0) {
+      this.shouldBeUnmounted = true
     }
   }
 
@@ -47,7 +43,7 @@ export class Projectile extends Component {
   }
 
   play() {
-    this.sprite.play()
+    this.sprite.play()    
   }
 
   unmount() {
@@ -55,3 +51,4 @@ export class Projectile extends Component {
     this.sprite.destroy()
   }
 }
+

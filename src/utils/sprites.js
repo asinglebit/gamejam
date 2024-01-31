@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js"
 
-let RANGED_ANIMATIONS
+import { ANIMATION_SPEED } from "../constants"
+
+export let RANGED_ANIMATIONS
 
 let spriteSheet
 let spriteSheetUI
@@ -12,6 +14,8 @@ export const loadSprites = async () => {
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
     attack: [
+      spriteSheet.textures["ranged_attack_21.png"],
+      spriteSheet.textures["ranged_attack_22.png"],
       spriteSheet.textures["ranged_attack_9.png"],
       spriteSheet.textures["ranged_attack_10.png"],
       spriteSheet.textures["ranged_attack_11.png"],
@@ -24,8 +28,6 @@ export const loadSprites = async () => {
       spriteSheet.textures["ranged_attack_18.png"],
       spriteSheet.textures["ranged_attack_19.png"],
       spriteSheet.textures["ranged_attack_20.png"],
-      spriteSheet.textures["ranged_attack_21.png"],
-      spriteSheet.textures["ranged_attack_22.png"],
     ],
     idle: [
       spriteSheet.textures["ranged_idle_1.png"],
@@ -54,17 +56,23 @@ export const createSpriteUndead = () => {
     spriteSheet.textures["Undead-wal_8.png"],
   ])
   sprite.anchor.set(0.5)
-  sprite.animationSpeed = 0.1666
-  sprite.play()
+  sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
 
-export const createSpriteRanged = () => {
+export const createSpriteRangedIdle = () => {
+  const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["idle"])
+  // TODO set correct anchor point
+  sprite.anchor.set(0.5)
+  sprite.animationSpeed = ANIMATION_SPEED
+  return sprite
+}
+
+export const createSpriteRangedAttack = () => {
   const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["attack"])
   // TODO set correct anchor point
   sprite.anchor.set(0.5)
-  sprite.animationSpeed = 0.1666
-  sprite.play()
+  sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
 
@@ -89,7 +97,7 @@ export const createSpriteProjectile = () => {
     spriteSheet.textures["ice_projectile_11.png"],
     spriteSheet.textures["ice_projectile_12.png"],
   ])
-  sprite.animationSpeed = 0.1666
+  sprite.animationSpeed = ANIMATION_SPEED
   sprite.play()
   return sprite
 }
