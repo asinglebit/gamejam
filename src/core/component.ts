@@ -1,4 +1,4 @@
-export interface IGameObject  {
+export interface IComponent  {
     UID: string
     shouldBeUnmounted: boolean
     update: (dt: number) => void
@@ -9,7 +9,7 @@ export interface IGameObject  {
     show?: VoidFunction
 }
   
-export class GameObject implements IGameObject {
+export class Component implements IComponent {
     public UID: string
     public shouldBeUnmounted: false
   

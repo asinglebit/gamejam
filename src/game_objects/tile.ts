@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js"
-import { GameObject } from "../core/game_object"
+import { Component } from "../core/component"
 import { createSpriteTile } from "../utils/sprites"
 import { nanoid } from 'nanoid'
 
-export class Tile extends GameObject {
+export class Tile extends Component {
   private sprite: PIXI.Sprite
 
   constructor({ x, y}: Coordinates, container: PIXI.Container) {

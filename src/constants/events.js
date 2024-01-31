@@ -1,6 +1,0 @@
-export const RESIZE_APP = "RESIZE_APP"
-export const RESIZE = "RESIZE"
-export const CHANGE_SCENES = "CHANGE_SCENES"
-export const RELOAD_SCENES = "RELOAD_SCENES"
-export const ENTER_PAUSE_MENU = "ENTER_PAUSE_MENU"
-export const LEAVE_PAUSE_MENU = "LEAVE_PAUSE_MENU"

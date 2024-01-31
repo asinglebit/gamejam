@@ -1,22 +1,22 @@
 import * as PIXI from "pixi.js"
-import { createGameObjectController } from "../controllers/game_object_controller"
+import { createComponentController } from "../controllers/component_controller"
 import { Text } from "../game_objects"
-import * as Events from "../constants/events"
-import { STAGE_NAME } from "../constants/scenes"
+import { EVENTS } from "../enums/events"
+import { STAGES } from "../enums/stages"
 import { EventController } from "../controllers/event_controller"
 import { Stage } from "../core/stage"
 
 export class MenuStage extends Stage {
-  private gameObjectController: {}
+  private componentController: {}
   private menuContainer: PIXI.Container
 
   constructor(app: PIXI.Application, eventController: EventController) {
 
     // Super constructor
-    super(STAGE_NAME.MENU, app, eventController, false)
+    super(STAGES.MENU, app, eventController, false)
 
     // Setup private members
-    this.gameObjectController = createGameObjectController()
+    this.componentController = createComponentController()
 
     // Continue stage initialization
     this.menuContainer = new PIXI.Container()
@@ -24,7 +24,7 @@ export class MenuStage extends Stage {
 
     // Main title
     // @ts-ignore
-    this.gameObjectController.add(
+    this.componentController.add(
       new Text(
         { text: "Game by A&A", color: 0xffffff, },
         { x: 0, y: 0, },
@@ -34,12 +34,12 @@ export class MenuStage extends Stage {
 
     // List of levels
     // @ts-ignore
-    this.gameObjectController.add(
+    this.componentController.add(
       new Text(
         { text: "Level 1", color: 0x888888 },
         { x: 0, y: 100 },
         this.menuContainer,
-        () => this.eventController.emit(Events.CHANGE_SCENES, STAGE_NAME.LEVEL_1)
+        () => this.eventController.emit(EVENTS.CHANGE_STAGE, STAGES.LEVEL_1)
       )
     )
 
@@ -47,7 +47,7 @@ export class MenuStage extends Stage {
     this.relayout()
 
     // Subscribe to events
-    this.eventController.subscribe(Events.RESIZE, this.stageName, () => {
+    this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => {
       this.relayout()
     })
   }
@@ -59,12 +59,12 @@ export class MenuStage extends Stage {
 
   update(dt: number) {
     // @ts-ignore
-    this.gameObjectController.update(dt)
+    this.componentController.update(dt)
   }
 
   unmount() {
     // @ts-ignore
-    this.gameObjectController.unmount()
+    this.componentController.unmount()
     this.eventController.unsubscribe(this.stageName)
     super.unmount()
   }

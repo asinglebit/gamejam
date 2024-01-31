@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
 
 import { loadSprites } from "./utils/sprites"
-import { createSceneController } from "./controllers/scene_controller"
-import { STAGE_NAME } from "./constants/scenes"
+import { createStageController } from "./controllers/stage_controller"
+import { STAGES } from "./enums/stages"
 
 // Main entry point
 const startApp = () => {
@@ -22,14 +22,14 @@ const startApp = () => {
   // @ts-ignore TODO fix typings
   document.querySelector("#root").appendChild(app.view)
 
-  // Initialize scene controller
-  const SceneController = createSceneController(app)
-  SceneController.load(STAGE_NAME.MENU)
+  // Initialize stage controller
+  const stageController = createStageController(app)
+  stageController.load(STAGES.MENU)
 
   // Game loop
   app.ticker.add((delta) => {
-    // Scene controller handles updates for the selected context
-    SceneController.update(delta)
+    // Stage controller handles updates for the selected context
+    stageController.update(delta)
   })
 
 

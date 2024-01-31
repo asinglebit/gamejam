@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
-import { createGameObjectController } from "../controllers/game_object_controller"
-import { CELL_SIZE } from "../constants/constants"
-import { STAGE_NAME } from "../constants/scenes"
-import * as Events from "../constants/events"
+import { createComponentController } from "../controllers/component_controller"
+import { CELL_SIZE } from "../constants"
+import { EVENTS } from "../enums/events"
+import { STAGES } from "../enums/stages"
 import { EventController } from "../controllers/event_controller"
 import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
 import { UnitRanged } from "../game_objects/unit_ranged"
@@ -14,15 +14,15 @@ export class Level1Stage extends Stage {
   private cellColumns = 10
   private sceneWidth = this.cellColumns * CELL_SIZE
   private sceneHeight = this.cellRows * CELL_SIZE
-  private gameObjectController: {}
+  private componentController: {}
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
   private isPlacing = false
 
   constructor(app: PIXI.Application, eventController: EventController) {
-    super(STAGE_NAME.LEVEL_1, app, eventController, true)
+    super(STAGES.LEVEL_1, app, eventController, true)
 
-    this.gameObjectController = createGameObjectController()
+    this.componentController = createComponentController()
     
     this.fieldContainer = new PIXI.Container()
     this.stage.addChild(this.fieldContainer)
@@ -80,7 +80,7 @@ export class Level1Stage extends Stage {
             this.isPlacing = false
             uiTemporary.visible = false
             // @ts-ignore
-            this.gameObjectController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
+            this.componentController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
             //@ts-ignore
             sprite.occupied = true
           }
@@ -93,10 +93,10 @@ export class Level1Stage extends Stage {
     
     // Events
     // @ts-ignore
-    this.eventController.subscribe(Events.ENTER_PAUSE_MENU, this.stageName, this.gameObjectController.pause)
+    this.eventController.subscribe(EVENTS.PAUSE, this.stageName, this.componentController.pause)
     // @ts-ignore
-    this.eventController.subscribe(Events.LEAVE_PAUSE_MENU, this.stageName, this.gameObjectController.play)
-    this.eventController.subscribe(Events.RESIZE, this.stageName, () => this.relayout())
+    this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, this.componentController.play)
+    this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
   relayout() {
@@ -110,12 +110,12 @@ export class Level1Stage extends Stage {
     super.update(dt, isPaused)
 
     // @ts-ignore
-    !isPaused && this.gameObjectController.update(dt)
+    !isPaused && this.componentController.update(dt)
   }
 
   unmount() {
     // @ts-ignore
-    this.gameObjectController.unmount()
+    this.componentController.unmount()
     this.eventController.unsubscribe(this.stageName)
     this.fieldContainer.destroy()
     this.containerControls.destroy()

@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js"
-import { STAGE_NAME } from "../constants/scenes"
+import { STAGES } from "../enums/stages"
 import { EventController } from "../controllers/event_controller"
 import { PauseOverlay } from "../game_objects/pause"
 
 export class Stage {
-  public stageName: STAGE_NAME
+  public stageName: STAGES
   protected pauseOverlay: PauseOverlay
   protected stage: PIXI.Container
   protected app: PIXI.Application
   protected eventController: EventController
   protected isPausable: boolean
 
-  constructor(stageName: STAGE_NAME, app: PIXI.Application, eventController: EventController, isPausable: boolean) {
+  constructor(stageName: STAGES, app: PIXI.Application, eventController: EventController, isPausable: boolean) {
     
     // Store arguments
     this.app = app
@@ -22,7 +22,7 @@ export class Stage {
     // Stage initialization
     this.stage = new PIXI.Container()
     this.stage.sortableChildren = true
-    this.stage.name = STAGE_NAME[this.stageName]
+    this.stage.name = STAGES[this.stageName]
     this.app.stage.addChild(this.stage)
 
     // Pause overlay

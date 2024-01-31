@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js"
-import { GameObject } from "../core/game_object"
+import { Component } from "../core/component"
 import { nanoid } from "nanoid"
 
 type TextProps = {
@@ -8,7 +8,7 @@ type TextProps = {
   hidden?: boolean
 }
 
-export class Text extends GameObject {
+export class Text extends Component {
   private sprite: PIXI.Sprite
 
   constructor(

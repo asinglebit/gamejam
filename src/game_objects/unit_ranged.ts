@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js"
-import { GameObject } from "../core/game_object"
+import { Component } from "../core/component"
 import { createSpriteRanged } from "../utils/sprites"
 import { nanoid } from "nanoid"
 
-export class UnitRanged extends GameObject {
+export class UnitRanged extends Component {
   private sprite: PIXI.AnimatedSprite
   private projectileTimer = 0
 

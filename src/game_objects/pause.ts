@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js"
-import { GameObject } from "../core/game_object"
+import { Component } from "../core/component"
 import { Text } from "."
-import * as Events from "../constants/events"
-import { STAGE_NAME } from "../constants/scenes"
+import { EVENTS } from "../enums/events"
+import { STAGES } from "../enums/stages"
 import { EventController } from "../controllers/event_controller"
 import { nanoid } from "nanoid"
 
-export class PauseOverlay extends GameObject {
+export class PauseOverlay extends Component {
   
   private app: PIXI.Application
   private container: PIXI.Container
@@ -37,7 +37,7 @@ export class PauseOverlay extends GameObject {
       { text: "||", color: 0xffffff, },
       { x: 0, y: 0, },
       container_pause,
-      () => this.eventController.emit(Events.ENTER_PAUSE_MENU)
+      () => this.eventController.emit(EVENTS.PAUSE)
     )
 
     // Pause menu container
@@ -51,39 +51,39 @@ export class PauseOverlay extends GameObject {
       { text: "Resume", color: 0x000000, hidden: true },
       { x: 0, y: -30, },
       container_menu,
-      () => this.eventController.emit(Events.LEAVE_PAUSE_MENU)
+      () => this.eventController.emit(EVENTS.UNPAUSE)
     )
 
     const restart_button = new Text(
       { text: "Restart Level", hidden: true, color: 0x000000 },
       { x: 0, y: 0 },
       container_menu,
-      () => this.eventController.emit(Events.RELOAD_SCENES)
+      () => this.eventController.emit(EVENTS.RELOAD_STAGE)
     )
 
     const menu_button = new Text(
       { text: "Return to Menu", hidden: true, color: 0x000000 },
       { x: 0, y: 30 },
       container_menu,
-      () => this.eventController.emit(Events.CHANGE_SCENES, STAGE_NAME.MENU)
+      () => this.eventController.emit(EVENTS.CHANGE_STAGE, STAGES.MENU)
     )
 
     // Events
-    this.eventController.subscribe(Events.ENTER_PAUSE_MENU, this.UID, () => {
+    this.eventController.subscribe(EVENTS.PAUSE, this.UID, () => {
       pause_button.hide()
       play_button.show()
       restart_button.show()
       menu_button.show()
     })
 
-    this.eventController.subscribe(Events.LEAVE_PAUSE_MENU, this.UID, () => {
+    this.eventController.subscribe(EVENTS.UNPAUSE, this.UID, () => {
       pause_button.show()
       play_button.hide()
       restart_button.hide()
       menu_button.hide()
     })
 
-    this.eventController.subscribe(Events.RESIZE, this.UID, () => {
+    this.eventController.subscribe(EVENTS.RESIZE, this.UID, () => {
       container_pause.x = this.app.screen.width - 40
       container_pause.y = 40
       container_menu.x = this.app.screen.width / 2
