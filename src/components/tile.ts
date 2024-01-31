@@ -8,7 +8,12 @@ export class Tile extends Component {
 
   private sprite: PIXI.Sprite
 
-  constructor({ x, y}: Coordinates, container: PIXI.Container) {
+  constructor(
+    { x, y}: Coordinates,
+    container: PIXI.Container,
+    onPointerDown?: (uid: string) => void,
+    onMouseOver?: (uid: string) => void
+  ) {
 
     // Super constructor
     super("Tile")
@@ -19,6 +24,16 @@ export class Tile extends Component {
     this.sprite.y = y
     this.sprite.interactive = true
     container.addChild(this.sprite)
+
+    // Setup interactive callbacks
+    if (onPointerDown) {
+      this.sprite.eventMode = "dynamic"
+      this.sprite.on("pointerdown", () => onPointerDown(this.UID))
+    }
+    if (onMouseOver) {
+      this.sprite.eventMode = "dynamic"
+      this.sprite.on("mouseover", () => onMouseOver(this.UID))
+    }
   }
 
   unmount() {

@@ -9,7 +9,7 @@ import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
 import { createSpriteUITile, createSpriteRanged, createSpriteTile } from "../utils/sprites"
-import { UnitRanged } from "../components/unit_ranged"
+import { UnitRanged, Tile } from "../components"
 
 export class Level1Stage extends Stage {
 
@@ -21,6 +21,8 @@ export class Level1Stage extends Stage {
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
   private isPlacing = false
+
+  private occupiedTiles: string[] = []
 
   constructor(app: PIXI.Application, eventController: EventController) {
     super(STAGES.LEVEL_1, app, eventController, true)
@@ -63,31 +65,30 @@ export class Level1Stage extends Stage {
     // Background tiles
     for (let row_index = 0; row_index < this.cellRows; ++row_index) {
       for (let column_index = 0; column_index < this.cellColumns; ++column_index) {
-        const sprite = createSpriteTile()
-        sprite.x = column_index * CELL_SIZE
-        sprite.y = row_index * CELL_SIZE
-        sprite.interactive = true
-        //@ts-ignore
-        sprite.occupied = null
-        sprite.on('mouseover', () => {
-          //@ts-ignore
-          if (this.isPlacing && !sprite.occupied) {
-            uiTemporary.x = sprite.x + 80
-            uiTemporary.y = sprite.y + 60
-            uiTemporary.visible = true
-          }
-        })
-        sprite.on('pointerdown', () => {
-          //@ts-ignore
-          if (this.isPlacing && !sprite.occupied) {
+
+        // Tile position
+        const x = column_index * CELL_SIZE
+        const y = row_index * CELL_SIZE
+
+        // Interactive callbacks
+        const onPointerDown = (uid: string) => {
+          if (this.isPlacing && this.isTileFree(uid)) {
             this.isPlacing = false
             uiTemporary.visible = false
             this.componentController.add(new UnitRanged({ x: uiTemporary.x, y: uiTemporary.y }, this.fieldContainer))
-            //@ts-ignore
-            sprite.occupied = true
+            this.occupyTile(uid)
           }
-        })
-        this.fieldContainer.addChild(sprite)
+        }
+        const onMouseOver = (uid: string) => {
+          if (this.isPlacing && this.isTileFree(uid)) {
+            uiTemporary.x = x + 80
+            uiTemporary.y = y + 60
+            uiTemporary.visible = true
+          }
+        }
+
+        // Add tile
+        this.componentController.add(new Tile({ x, y }, this.fieldContainer, onPointerDown, onMouseOver))
       }
     }
 
@@ -97,6 +98,20 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => this.componentController.pause())
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => this.componentController.play())
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
+  }
+
+  isTileFree(uid: string): boolean {
+    return !this.occupiedTiles.includes(uid)
+  }
+
+  occupyTile(uid: string) {
+    this.freeTile(uid)
+    this.occupiedTiles.push(uid)
+  }
+
+  freeTile(uid: string) {
+    const index = this.occupiedTiles.indexOf(uid);
+    if (index !== -1) this.occupiedTiles.splice(index, 1);
   }
 
   relayout() {
