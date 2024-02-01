@@ -1,13 +1,17 @@
 import * as PIXI from "pixi.js"
 
-export let spriteSheet
-let RANGED_ANIMATIONS
+import { ANIMATION_SPEED } from "../constants"
 
-export const CELL_SIZE = 128
+export let RANGED_ANIMATIONS
+
+let spriteSheet
+let spriteSheetUI
+
+// Load spritesheet
 
 export const loadSprites = async () => {
-  spriteSheet = await PIXI.Assets.load("/resources/sprites.json")
-
+  spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
+  spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
     attack: [
       spriteSheet.textures["ranged_attack_9.png"],
@@ -38,8 +42,10 @@ export const loadSprites = async () => {
   }
 }
 
-export const renderUndead = (container, col, row) => {
-  const undeadSprite = new PIXI.AnimatedSprite([
+// Create sprites
+
+export const createSpriteUndead = () => {
+  const sprite = new PIXI.AnimatedSprite([
     spriteSheet.textures["Undead-wal_1.png"],
     spriteSheet.textures["Undead-wal_2.png"],
     spriteSheet.textures["Undead-wal_3.png"],
@@ -49,48 +55,29 @@ export const renderUndead = (container, col, row) => {
     spriteSheet.textures["Undead-wal_7.png"],
     spriteSheet.textures["Undead-wal_8.png"],
   ])
-  undeadSprite.anchor.set(0.5)
-  undeadSprite.x = col * CELL_SIZE + CELL_SIZE / 2
-  undeadSprite.y = row * CELL_SIZE + CELL_SIZE / 2
-  undeadSprite.play()
-  undeadSprite.animationSpeed = 0.1666
-
-  container.addChild(undeadSprite)
-
-  return undeadSprite
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.57
+  sprite.animationSpeed = ANIMATION_SPEED
+  return sprite
 }
 
-export const renderRanged = (container, col, row) => {
-  const rangedSprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["attack"])
-
-  // TODO set correct anchor point
-  rangedSprite.anchor.set(0.5)
-  rangedSprite.x = col * CELL_SIZE + CELL_SIZE / 2
-  rangedSprite.y = row * CELL_SIZE + CELL_SIZE / 2
-  rangedSprite.play()
-  rangedSprite.animationSpeed = 0.1666
-
-  container.addChild(rangedSprite)
-
-  // change animation
-  // rangedSprite.textures = RANGED_ANIMATIONS["idle"]
-  // rangedSprite.play()
+export const createSpriteRangedIdle = () => {
+  const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["idle"])
+  sprite.anchor.x = 0.35
+  sprite.anchor.y = 0.6
+  sprite.animationSpeed = ANIMATION_SPEED
+  return sprite
 }
 
-export const renderTile = (container, col, row, tileNumber) => {
-  if (!tileNumber) {
-    tileNumber = Math.floor(Math.random() * 4) + 1
-  }
-  const tile = new PIXI.Sprite(spriteSheet.textures[`grass_tile_${tileNumber}.png`])
-
-  tile.x = col * CELL_SIZE
-  tile.y = row * CELL_SIZE
-  container.addChild(tile)
-  return tile
+export const createSpriteTile = (tileNumber) => {
+  const variation = tileNumber ?? Math.floor(Math.random() * 4) + 1
+  const sprite = new PIXI.Sprite(spriteSheet.textures[`grass_tile_${variation}.png`])
+  sprite.anchor.set(0.5)
+  return sprite
 }
 
-export const createBulletSprite = () => {
-  const projectileSprite = new PIXI.AnimatedSprite([
+export const createSpriteProjectile = () => {
+  const sprite = new PIXI.AnimatedSprite([
     spriteSheet.textures["ice_projectile_1.png"],
     spriteSheet.textures["ice_projectile_2.png"],
     spriteSheet.textures["ice_projectile_3.png"],
@@ -104,9 +91,13 @@ export const createBulletSprite = () => {
     spriteSheet.textures["ice_projectile_11.png"],
     spriteSheet.textures["ice_projectile_12.png"],
   ])
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.play()
+  return sprite
+}
 
-  projectileSprite.animationSpeed = 0.1666
-  projectileSprite.play()
-
-  return projectileSprite
+export const createSpriteUITile = () => {
+  const sprite = new PIXI.Sprite(spriteSheetUI.textures[`buttonSquare_beige.png`])
+  sprite.anchor.set(0.5)
+  return sprite
 }

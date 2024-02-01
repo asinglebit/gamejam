@@ -1,0 +1,10 @@
+export enum EVENTS {
+    RESIZE_APP = "RESIZE_APP",
+    RESIZE = "RESIZE",
+    CHANGE_STAGE = "CHANGE_STAGE",
+    RELOAD_STAGE = "RELOAD_STAGE",
+    PAUSE = "PAUSE",
+    UNPAUSE = "UNPAUSE",
+    GAME_OVER = "GAME_OVER"
+}
+  
