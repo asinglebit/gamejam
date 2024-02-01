@@ -212,9 +212,12 @@ export class Level1Stage extends Stage {
   }
 
   relayout() {
-    const factor = this.app.screen.width / this.sceneWidth
+    const factorX = (this.app.screen.width / this.sceneWidth)
+    const factorY = (this.app.screen.height / this.sceneHeight)
+    const factor = Math.min(factorX, factorY)
     this.fieldContainer.scale.x = factor
     this.fieldContainer.scale.y = factor
+    this.fieldContainer.x = this.app.screen.width / 2 - (this.sceneWidth * factor) / 2
     this.fieldContainer.y = this.app.screen.height / 2 - (this.sceneHeight * factor) / 2
   }
 
