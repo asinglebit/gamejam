@@ -151,15 +151,29 @@ export class Level1Stage extends Stage {
   }
 
   checkForHits() {
+    const rangedUnits: UnitRanged[] = this.componentController.get("UnitRanged") as UnitRanged[]
     const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
     const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
-    for (let i = 0; i < projectiles.length; ++i) {
-      for (let j = 0; j < enemies.length; ++j) {
-        const projectile = projectiles[i]
-        const enemy = enemies[j]
+   
+    for (let i = 0; i < enemies.length; ++i) {
+
+      // Check projectile hits
+      for (let j = 0; j < projectiles.length; ++j) {
+        const projectile = projectiles[j]
+        const enemy = enemies[i]
         if (projectile.isIntersecting(enemy)) {
           enemy.onGetHit(projectile.getDamage())
           projectile.onHit()
+        }
+      }
+
+      // Check ranged unit hits
+      for (let j = 0; j < rangedUnits.length; ++j) {
+        const rangedUnit = rangedUnits[j]
+        const enemy = enemies[i]
+        if (rangedUnit.isIntersecting(enemy)) {
+          // TODO: Do something
+          
         }
       }
     }

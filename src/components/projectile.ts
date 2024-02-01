@@ -9,6 +9,10 @@ export class Projectile extends Component {
   private speed: number
   private damage: number = 1
 
+  /// #if DEBUG
+      private debug_damage: PIXI.Text
+  /// #endif
+
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
@@ -28,11 +32,20 @@ export class Projectile extends Component {
     container.addChild(this.sprite)
 
     /// #if DEBUG
-      const debug  = new PIXI.Graphics();
-      debug.lineStyle(2, 0xFF0000); 
-      debug.drawCircle(0, 0, this.getCollisionRegion().radius);
-      debug.endFill();
-      this.sprite.addChild(debug)
+        const collider = new PIXI.Graphics();
+        collider.lineStyle(2, 0xFF0000); 
+        collider.beginFill(0xFF0000, 0.5);
+        collider.drawCircle(0, 0, this.getCollisionRegion().radius);
+        collider.endFill();
+        this.sprite.addChild(collider)
+        this.debug_damage = new PIXI.Text(this.damage, {
+          fontFamily: "Arial",
+          fontSize: 18,
+          fill: 0xFFFFFF,
+          align: "center",
+        });
+        this.debug_damage.anchor.set(0.5)
+        this.sprite.addChild(this.debug_damage)
     /// #endif
   }
   

@@ -31,16 +31,18 @@ export class Enemy extends Component {
     /// #if DEBUG
         const collider = new PIXI.Graphics();
         collider.lineStyle(2, 0xFF0000); 
+        collider.beginFill(0xFF0000, 0.5);
         collider.drawCircle(0, 0, this.getCollisionRegion().radius);
         collider.endFill();
         this.sprite.addChild(collider)
-        this.debug_health = new PIXI.Text(this.health, {
+        this.debug_health = new PIXI.Text(`HP:${this.health}`, {
           fontFamily: "Arial",
-          fontSize: 24,
-          fill: 0xFF0000,
+          fontSize: 18,
+          fill: 0xFFFFFF,
           align: "center",
         });
         this.debug_health.anchor.set(0.5)
+        this.debug_health.y -= 50
         this.sprite.addChild(this.debug_health)
     /// #endif
   }
@@ -54,7 +56,7 @@ export class Enemy extends Component {
     if (this.health <= 0) this.shouldBeUnmounted = true
 
     /// #if DEBUG
-        this.debug_health.text = this.health
+        this.debug_health.text = `HP:${this.health}`
     /// #endif
   }
 

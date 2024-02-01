@@ -3,6 +3,7 @@ import { Component } from "../core/component"
 import { Timer } from "../core/timer"
 import { createSpriteRangedIdle, RANGED_ANIMATIONS } from "../utils/sprites"
 import { ANIMATION_SPEED } from "../constants"
+import { CollisionRegion } from "../core/collision_region"
 
 export class UnitRanged extends Component {
 
@@ -11,6 +12,11 @@ export class UnitRanged extends Component {
 
   // Sprite specifics
   private timer: Timer
+  private health: number = 5
+
+  /// #if DEBUG
+      private debug_health: PIXI.Text
+  /// #endif
 
   constructor(
     { x, y }: Coordinates,
@@ -62,6 +68,24 @@ export class UnitRanged extends Component {
         }
       }
     ])
+    
+    /// #if DEBUG
+        const collider = new PIXI.Graphics();
+        collider.lineStyle(2, 0xFF0000); 
+        collider.beginFill(0xFF0000, 0.5);
+        collider.drawCircle(0, 0, this.getCollisionRegion().radius);
+        collider.endFill();
+        this.sprite.addChild(collider)
+        this.debug_health = new PIXI.Text(`HP:${this.health}`, {
+          fontFamily: "Arial",
+          fontSize: 18,
+          fill: 0xFFFFFF,
+          align: "center",
+        });
+        this.debug_health.anchor.set(0.5)
+        this.debug_health.y -= 40
+        this.sprite.addChild(this.debug_health)
+    /// #endif
   }
 
   update(delta: number) {
@@ -78,5 +102,15 @@ export class UnitRanged extends Component {
 
   unmount() {
     super.unmount()
+  }
+  
+  getCollisionRegion(): CollisionRegion {
+    return {
+      center: {
+        x: this.sprite.x,
+        y: this.sprite.y
+      },
+      radius: 20
+    }
   }
 }
