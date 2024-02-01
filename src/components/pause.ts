@@ -115,6 +115,8 @@ export class PauseOverlay extends Component {
       container_pause.y = 40
       container_menu.x = this.app.screen.width / 2
       container_menu.y = this.app.screen.height / 2
+      text_result.x = app.screen.width / 2
+      text_result.y = app.screen.height / 2 - 60
     })
   }
 
