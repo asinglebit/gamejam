@@ -31,6 +31,12 @@ export class Component implements IComponent {
     }
 
     isIntersecting(component: IComponent): boolean {
-        return false
-    }   
+      const selfCR = this.getCollisionRegion()
+      const otherCR = component.getCollisionRegion()
+      if (!selfCR || !otherCR) return false
+      var a = selfCR.center.x - otherCR.center.x;
+      var b = selfCR.center.y - otherCR.center.y;
+      const distance = Math.sqrt(a * a + b * b)
+      return (distance <= selfCR.radius + otherCR.radius)
+    } 
 }

@@ -120,7 +120,7 @@ export class Level1Stage extends Stage {
 
   addUnit(x: number, y: number) {
     const onFireProjectile = () => {
-      this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5, () => {}))
+      this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
     }
     this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
   }
@@ -158,8 +158,8 @@ export class Level1Stage extends Stage {
         const projectile = projectiles[i]
         const enemy = enemies[j]
         if (projectile.isIntersecting(enemy)) {
-          projectile.shouldBeUnmounted = true
-          enemy.shouldBeUnmounted = true
+          enemy.onGetHit(projectile.getDamage())
+          projectile.onHit()
         }
       }
     }

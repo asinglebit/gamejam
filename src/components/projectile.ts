@@ -7,13 +7,12 @@ export class Projectile extends Component {
 
   public sprite: PIXI.AnimatedSprite
   private speed: number
-  private onHit: VoidFunction = null
+  private damage: number = 1
 
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    speed = 5,
-    onHit?: VoidFunction
+    speed = 5
   ) {
 
     // Super constructor
@@ -21,7 +20,6 @@ export class Projectile extends Component {
 
     // Store arguments
     this.speed = speed
-    this.onHit = onHit
 
     // Initialize component
     this.sprite = createSpriteProjectile()
@@ -37,14 +35,20 @@ export class Projectile extends Component {
     this.sprite.addChild(debug)
   }
   
-  move (x: number, dt: number) {
+  move(x: number, dt: number) {
     return x + this.speed * dt
+  }
+
+  onHit() {
+    this.shouldBeUnmounted = true
+  }
+
+  getDamage() {
+    return this.damage
   }
 
   update(delta: number) {
     this.sprite.x = this.move(this.sprite.x, delta)
-
-    // Determine hit or miss conditions
     if (this.sprite.x > 1280) {
         this.shouldBeUnmounted = true
     }
@@ -71,18 +75,5 @@ export class Projectile extends Component {
       },
       radius: 10
     }
-  }
-
-  isIntersecting(component: IComponent): boolean {
-    const selfCR = this.getCollisionRegion()
-    const otherCR = component.getCollisionRegion()
-
-    if (!selfCR || !otherCR) return false
-
-    var a = selfCR.center.x - otherCR.center.x;
-    var b = selfCR.center.y - otherCR.center.y;
-    const distance = Math.sqrt(a * a + b * b)
-
-    return (distance <= selfCR.radius + otherCR.radius)
   }
 }

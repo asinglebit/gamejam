@@ -13,12 +13,12 @@ export const loadSprites = async () => {
   spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
-    attack: [
-      spriteSheet.textures["ranged_attack_21.png"],
-      spriteSheet.textures["ranged_attack_22.png"],
+    attack_prepare: [
       spriteSheet.textures["ranged_attack_9.png"],
       spriteSheet.textures["ranged_attack_10.png"],
       spriteSheet.textures["ranged_attack_11.png"],
+    ],
+    attack_complete: [
       spriteSheet.textures["ranged_attack_12.png"],
       spriteSheet.textures["ranged_attack_13.png"],
       spriteSheet.textures["ranged_attack_14.png"],
@@ -28,6 +28,8 @@ export const loadSprites = async () => {
       spriteSheet.textures["ranged_attack_18.png"],
       spriteSheet.textures["ranged_attack_19.png"],
       spriteSheet.textures["ranged_attack_20.png"],
+      spriteSheet.textures["ranged_attack_21.png"],
+      spriteSheet.textures["ranged_attack_22.png"],
     ],
     idle: [
       spriteSheet.textures["ranged_idle_1.png"],
@@ -63,14 +65,6 @@ export const createSpriteUndead = () => {
 
 export const createSpriteRangedIdle = () => {
   const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["idle"])
-  sprite.anchor.x = 0.35
-  sprite.anchor.y = 0.6
-  sprite.animationSpeed = ANIMATION_SPEED
-  return sprite
-}
-
-export const createSpriteRangedAttack = () => {
-  const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["attack"])
   sprite.anchor.x = 0.35
   sprite.anchor.y = 0.6
   sprite.animationSpeed = ANIMATION_SPEED

@@ -7,7 +7,8 @@ export class Enemy extends Component {
 
   public sprite: PIXI.AnimatedSprite
   private speed: number = 2
-  private onGetHit: VoidFunction = null
+  private health: number = 2
+  private debug_health: PIXI.Text
 
   constructor(
     { x, y }: Coordinates,
@@ -24,16 +25,30 @@ export class Enemy extends Component {
     this.sprite.gotoAndPlay(0);
     container.addChild(this.sprite)
     
-    // Debug collision region
-    const debug  = new PIXI.Graphics();
-    debug.lineStyle(2, 0xFF0000); 
-    debug.drawCircle(0, 0, this.getCollisionRegion().radius);
-    debug.endFill();
-    this.sprite.addChild(debug)
+    // Debug
+    const collider = new PIXI.Graphics();
+    collider.lineStyle(2, 0xFF0000); 
+    collider.drawCircle(0, 0, this.getCollisionRegion().radius);
+    collider.endFill();
+    this.sprite.addChild(collider)
+    this.debug_health = new PIXI.Text(this.health, {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xFF0000,
+      align: "center",
+    });
+    this.debug_health.anchor.set(0.5)
+    this.sprite.addChild(this.debug_health)
   }
   
-  move (x: number, dt: number) {
+  move(x: number, dt: number) {
     return x - this.speed * dt
+  }
+
+  onGetHit(damage: number) {
+    this.health -= damage
+    this.debug_health.text = this.health
+    if (this.health <= 0) this.shouldBeUnmounted = true
   }
 
   update(delta: number) {
