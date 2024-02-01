@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
 import { createSpriteUndead } from "../utils/sprites"
+import { CollisionRegion } from "../core/collision_region"
 
 export class Enemy extends Component {
 
@@ -23,7 +24,12 @@ export class Enemy extends Component {
     this.sprite.gotoAndPlay(0);
     container.addChild(this.sprite)
     
-
+    // Debug collision region
+    const debug  = new PIXI.Graphics();
+    debug.lineStyle(2, 0xFF0000); 
+    debug.drawCircle(0, 0, this.getCollisionRegion().radius);
+    debug.endFill();
+    this.sprite.addChild(debug)
   }
   
   move (x: number, dt: number) {
@@ -49,6 +55,16 @@ export class Enemy extends Component {
   unmount() {
     super.unmount()
     this.sprite.destroy()
+  }
+  
+  getCollisionRegion(): CollisionRegion {
+    return {
+      center: {
+        x: this.sprite.x,
+        y: this.sprite.y
+      },
+      radius: 20
+    }
   }
 }
 

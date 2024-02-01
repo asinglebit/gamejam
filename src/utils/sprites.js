@@ -55,23 +55,24 @@ export const createSpriteUndead = () => {
     spriteSheet.textures["Undead-wal_7.png"],
     spriteSheet.textures["Undead-wal_8.png"],
   ])
-  sprite.anchor.set(0.5)
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.57
   sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
 
 export const createSpriteRangedIdle = () => {
   const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["idle"])
-  // TODO set correct anchor point
-  sprite.anchor.set(0.5)
+  sprite.anchor.x = 0.35
+  sprite.anchor.y = 0.6
   sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
 
 export const createSpriteRangedAttack = () => {
   const sprite = new PIXI.AnimatedSprite(RANGED_ANIMATIONS["attack"])
-  // TODO set correct anchor point
-  sprite.anchor.set(0.5)
+  sprite.anchor.x = 0.35
+  sprite.anchor.y = 0.6
   sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
@@ -79,6 +80,7 @@ export const createSpriteRangedAttack = () => {
 export const createSpriteTile = (tileNumber) => {
   const variation = tileNumber ?? Math.floor(Math.random() * 4) + 1
   const sprite = new PIXI.Sprite(spriteSheet.textures[`grass_tile_${variation}.png`])
+  sprite.anchor.set(0.5)
   return sprite
 }
 
@@ -104,5 +106,6 @@ export const createSpriteProjectile = () => {
 
 export const createSpriteUITile = () => {
   const sprite = new PIXI.Sprite(spriteSheetUI.textures[`buttonSquare_beige.png`])
+  sprite.anchor.set(0.5)
   return sprite
 }

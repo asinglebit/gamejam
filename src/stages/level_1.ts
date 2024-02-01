@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 
 import { EVENTS } from "../enums/events"
 import { STAGES } from "../enums/stages"
-import { CELL_SIZE } from "../constants"
+import { CELL_HALF_SIZE, CELL_SIZE } from "../constants"
 
 import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
@@ -39,18 +39,17 @@ export class Level1Stage extends Stage {
     this.stage.addChild(this.fieldContainer)
     
     this.containerControls = new PIXI.Container()
-    this.containerControls.x = 20
-    this.containerControls.y = 20
+    this.containerControls.x = 45
+    this.containerControls.y = 45
     this.stage.addChild(this.containerControls)
 
     // Controls
     const uiTile = createSpriteUITile()
+
     uiTile.scale.x = 1
     uiTile.scale.y = 1
     this.containerControls.addChild(uiTile)
     const uiRanged = createSpriteRangedIdle()
-    uiRanged.x = 30
-    uiRanged.y = 21
     uiRanged.scale.x = 0.4
     uiRanged.scale.y = 0.4
     uiRanged.play()
@@ -76,22 +75,22 @@ export class Level1Stage extends Stage {
       for (let column_index = 0; column_index < this.cellColumns; ++column_index) {
 
         // Tile position
-        const x = column_index * CELL_SIZE
-        const y = row_index * CELL_SIZE
+        const x = CELL_HALF_SIZE + column_index * CELL_SIZE
+        const y = CELL_HALF_SIZE + row_index * CELL_SIZE
 
         // Interactive callbacks
         const onPointerDown = (uid: string) => {
           if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
             this.isPlacing = false
             uiTemporary.visible = false
-            this.addUnit(uiTemporary.x, uiTemporary.y)
+            this.addUnit(x, y)
             this.occupyTile(uid)
           }
         }
         const onMouseOver = (uid: string) => {
           if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
-            uiTemporary.x = x + 80
-            uiTemporary.y = y + 60
+            uiTemporary.x = x
+            uiTemporary.y = y
             uiTemporary.visible = true
           }
         }
@@ -158,14 +157,7 @@ export class Level1Stage extends Stage {
       for (let j = 0; j < enemies.length; ++j) {
         const projectile = projectiles[i]
         const enemy = enemies[j]
-        const bounds1 = projectile.sprite.getBounds()
-        const bounds2 = enemy.sprite.getBounds()
-        if (
-          bounds1.x < bounds2.x + bounds2.width
-          && bounds1.x + bounds1.width > bounds2.x
-          && bounds1.y < bounds2.y + bounds2.height
-          && bounds1.y + bounds1.height > bounds2.y
-        ) {
+        if (projectile.isIntersecting(enemy)) {
           projectile.shouldBeUnmounted = true
           enemy.shouldBeUnmounted = true
         }

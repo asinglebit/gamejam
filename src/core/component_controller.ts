@@ -32,7 +32,7 @@ export class ComponentController {
     this.components = []
   }
 
-  pause () {
+  pause() {
     this.components.forEach((component) => {
       if (component.pause) {
         component.pause()
@@ -40,7 +40,7 @@ export class ComponentController {
     })
   }
 
-  play () {
+  play() {
     this.components.forEach((component) => {
       if (component.play) {
         component.play()
@@ -48,7 +48,7 @@ export class ComponentController {
     })
   }
 
-  get (tag: string): IComponent[] {
+  get(tag: string): IComponent[] {
     return this.components.filter(component => {
       return component.constructor.name === tag
     })

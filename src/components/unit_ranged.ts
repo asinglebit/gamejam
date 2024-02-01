@@ -1,12 +1,11 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
-import { createSpriteRangedIdle, createSpriteRangedAttack } from "../utils/sprites"
+import { createSpriteRangedIdle, createSpriteRangedAttack, RANGED_ANIMATIONS } from "../utils/sprites"
 import { ANIMATION_SPEED } from "../constants"
 
 export class UnitRanged extends Component {
 
-  private sprite_idle: PIXI.AnimatedSprite
-  private sprite_attack: PIXI.AnimatedSprite
+  private sprite: PIXI.AnimatedSprite
   private timer = 0
   private onFireProjectile: VoidFunction = null
 
@@ -35,47 +34,34 @@ export class UnitRanged extends Component {
     this.onFireProjectile = onFireProjectile
 
     // Initialize component
-    this.sprite_idle = createSpriteRangedIdle()
-    this.sprite_idle.x = x
-    this.sprite_idle.y = y
-    this.sprite_idle.gotoAndPlay(0);
-    container.addChild(this.sprite_idle)
-    this.sprite_attack = createSpriteRangedAttack()
-    this.sprite_attack.x = x
-    this.sprite_attack.y = y
-    this.sprite_attack.visible = false
-    container.addChild(this.sprite_attack)
-    
+    this.sprite = createSpriteRangedIdle()
+    this.sprite.x = x
+    this.sprite.y = y
+    this.sprite.gotoAndPlay(0);
+    container.addChild(this.sprite)
   }
 
   update(delta: number) {
     const oldTime = this.timer
     this.timer += delta
-
     if (oldTime < this.switchToAttackPreparation && this.timer > this.switchToAttackPreparation) {
-      this.sprite_idle.stop()
-      this.sprite_idle.visible = false
-      this.sprite_attack.gotoAndPlay(0);
-      this.sprite_attack.visible = true
+      this.sprite.textures = RANGED_ANIMATIONS["attack"]
+      this.sprite.gotoAndPlay(0);
     } else if (oldTime < this.switchToAttack && this.timer > this.switchToAttack) {
       this.onFireProjectile()
     } else if (oldTime < this.switchToIdle && this.timer > this.switchToIdle) {
-      this.sprite_idle.gotoAndPlay(0);
-      this.sprite_idle.visible = true
-      this.sprite_attack.stop()
-      this.sprite_attack.visible = false
+      this.sprite.textures = RANGED_ANIMATIONS["idle"]
+      this.sprite.gotoAndPlay(0);
       this.timer = 0
     }
   }
 
   pause() {
-    this.sprite_idle.stop()
-    this.sprite_attack.stop()
+    this.sprite.stop()
   }
 
   play() {
-    if (this.sprite_idle.visible) this.sprite_idle.stop()
-    else this.sprite_attack.play()    
+    this.sprite.play() 
   }
 
   unmount() {
