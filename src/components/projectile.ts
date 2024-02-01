@@ -27,12 +27,13 @@ export class Projectile extends Component {
     this.sprite.y = y
     container.addChild(this.sprite)
 
-    // Debug collision region
-    const debug  = new PIXI.Graphics();
-    debug.lineStyle(2, 0xFF0000); 
-    debug.drawCircle(0, 0, this.getCollisionRegion().radius);
-    debug.endFill();
-    this.sprite.addChild(debug)
+    /// #if DEBUG
+      const debug  = new PIXI.Graphics();
+      debug.lineStyle(2, 0xFF0000); 
+      debug.drawCircle(0, 0, this.getCollisionRegion().radius);
+      debug.endFill();
+      this.sprite.addChild(debug)
+    /// #endif
   }
   
   move(x: number, dt: number) {

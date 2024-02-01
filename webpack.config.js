@@ -1,7 +1,7 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 
-module.exports = {
+module.exports = (env) => ({
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -11,7 +11,10 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        use: "ts-loader",
+        use: [
+          { loader: "ts-loader" }, 
+          { loader: "ifdef-loader", options: { DEBUG: env.development } } 
+        ],
         exclude: /node_modules/,
       },
       { test: /\.txt$/, use: "raw-loader" },
@@ -22,4 +25,4 @@ module.exports = {
     extensions: [".ts", ".js"],
   },
   plugins: [new HtmlWebpackPlugin({ template: "./public/index.html" })],
-}
+})
