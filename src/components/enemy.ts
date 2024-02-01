@@ -46,13 +46,13 @@ export class Enemy extends Component {
     container.addChild(this.sprite)
 
     // Initialize timer
-    this.attackTimer = new Timer([{
-      checkpoint: this.attackSpeed,
-      callback: () => {
-        onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
-      }
-    }
-  ])
+  //   this.attackTimer = new Timer([{
+  //     checkpoint: this.attackSpeed,
+  //     callback: () => {
+  //       onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
+  //     }
+  //   }
+  // ])
     
     /// #if DEBUG
         const collider = new PIXI.Graphics();

@@ -13,12 +13,10 @@ export const loadSprites = async () => {
   spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
-    attack_prepare: [
+    attack: [
       spriteSheet.textures["ranged_attack_9.png"],
       spriteSheet.textures["ranged_attack_10.png"],
       spriteSheet.textures["ranged_attack_11.png"],
-    ],
-    attack_complete: [
       spriteSheet.textures["ranged_attack_12.png"],
       spriteSheet.textures["ranged_attack_13.png"],
       spriteSheet.textures["ranged_attack_14.png"],

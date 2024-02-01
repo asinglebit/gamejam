@@ -26,10 +26,14 @@ const startApp = () => {
   const stageController = new StageController(app)
   stageController.load(STAGES.LEVEL_1)
 
+  // console.time("tick")
   // Game loop
   app.ticker.add((delta) => {
+    // console.timeEnd("tick")
+
     // Stage controller handles updates for the selected context
     stageController.update(delta)
+    // console.time("tick")
   })
 }
 
