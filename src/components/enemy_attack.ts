@@ -1,13 +1,12 @@
 import * as PIXI from "pixi.js"
-import { Component, IComponent } from "../core/component"
+import { Component } from "../core/component"
 import { createSpriteProjectile } from "../utils/sprites"
 import { CollisionRegion } from "../core/collision_region"
 
-export class Projectile extends Component {
+export class EnemyAttack extends Component {
 
   public sprite: PIXI.AnimatedSprite
-  private speed: number
-  private damage: number = 1
+  private damage: number
 
   /// #if DEBUG
       private debug_damage: PIXI.Text
@@ -16,14 +15,14 @@ export class Projectile extends Component {
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    speed = 5
+    damage: number
   ) {
 
     // Super constructor
-    super("Projectile")
+    super("EnemyAttack")
 
     // Store arguments
-    this.speed = speed
+    this.damage = damage
 
     // Initialize component
     this.sprite = createSpriteProjectile()
@@ -49,32 +48,13 @@ export class Projectile extends Component {
         this.sprite.addChild(this.debug_damage)
     /// #endif
   }
-  
-  move(x: number, dt: number) {
-    return x + this.speed * dt
-  }
-
-  onHit() {
-    this.shouldBeUnmounted = true
-  }
 
   getDamage() {
     return this.damage
   }
 
   update(delta: number) {
-    this.sprite.x = this.move(this.sprite.x, delta)
-    if (this.sprite.x > 1280) {
-        this.shouldBeUnmounted = true
-    }
-  }
-
-  pause() {
-    this.sprite.stop()
-  }
-
-  play() {
-    this.sprite.play()
+    this.shouldBeUnmounted = true
   }
 
   unmount() {
@@ -88,7 +68,7 @@ export class Projectile extends Component {
         x: this.sprite.x,
         y: this.sprite.y
       },
-      radius: 10
+      radius: 30
     }
   }
 }

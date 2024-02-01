@@ -29,6 +29,7 @@ export class Text extends Component {
       fill: color,
       align: "center",
     })
+    this.sprite.name = this.UID
     const bounds = this.sprite.getLocalBounds()
     this.sprite.x = x - bounds.width / 2
     this.sprite.y = y - bounds.height / 2

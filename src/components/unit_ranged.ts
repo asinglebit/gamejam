@@ -32,6 +32,7 @@ export class UnitRanged extends Component {
 
     // Initialize component
     this.sprite = createSpriteRangedIdle()
+    this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
     this.sprite.gotoAndPlay(0);
@@ -81,10 +82,20 @@ export class UnitRanged extends Component {
           fontSize: 18,
           fill: 0xFFFFFF,
           align: "center",
+          strokeThickness: 5
         });
         this.debug_health.anchor.set(0.5)
         this.debug_health.y -= 40
         this.sprite.addChild(this.debug_health)
+    /// #endif
+  }
+
+  onGetHit(damage: number) {
+    this.health -= damage
+    if (this.health <= 0) this.shouldBeUnmounted = true
+
+    /// #if DEBUG
+        this.debug_health.text = `HP:${this.health}`
     /// #endif
   }
 
@@ -102,6 +113,7 @@ export class UnitRanged extends Component {
 
   unmount() {
     super.unmount()
+    this.sprite.destroy()
   }
   
   getCollisionRegion(): CollisionRegion {

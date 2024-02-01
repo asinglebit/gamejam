@@ -27,7 +27,7 @@ export class PauseOverlay extends Component {
   
     // Initialize component
     this.container = new PIXI.Container()
-    this.container.name = "Pause"
+    this.container.name = this.UID
     this.container.zIndex = 9999
     this.stage.addChild(this.container)
 

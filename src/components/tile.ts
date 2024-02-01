@@ -20,6 +20,7 @@ export class Tile extends Component {
     
     // Initialize component
     this.sprite = createSpriteTile()
+    this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
     this.sprite.interactive = true

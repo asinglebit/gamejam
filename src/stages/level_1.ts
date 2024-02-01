@@ -12,7 +12,8 @@ import { IComponent } from "../core/component"
 import { createSpriteUITile, createSpriteRangedIdle, createSpriteTile } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/projectile"
-import { Enemy } from "../components/enemy"
+import { ENEMY_ACTIVITY, Enemy } from "../components/enemy"
+import { EnemyAttack } from "../components/enemy_attack"
 
 export class Level1Stage extends Stage {
 
@@ -36,20 +37,23 @@ export class Level1Stage extends Stage {
     this.componentController = new ComponentController()
     
     this.fieldContainer = new PIXI.Container()
+    this.fieldContainer.name = "fieldContainer"
     this.stage.addChild(this.fieldContainer)
     
     this.containerControls = new PIXI.Container()
+    this.containerControls.name = "containerControls"
     this.containerControls.x = 45
     this.containerControls.y = 45
     this.stage.addChild(this.containerControls)
 
     // Controls
     const uiTile = createSpriteUITile()
-
+    uiTile.name = "uiTile"
     uiTile.scale.x = 1
     uiTile.scale.y = 1
     this.containerControls.addChild(uiTile)
     const uiRanged = createSpriteRangedIdle()
+    uiRanged.name = "uiRanged"
     uiRanged.scale.x = 0.4
     uiRanged.scale.y = 0.4
     uiRanged.play()
@@ -140,27 +144,33 @@ export class Level1Stage extends Stage {
   }
 
   spawnEnemy() {
+    const onAttack = ({ x, y }: Coordinates, damage: number) => {
+      console.log("Attack!")
+      this.componentController.add(new EnemyAttack({ x, y }, this.fieldContainer, damage))
+    }
     this.componentController.add(new Enemy(
       {
         x: CELL_SIZE * 11,
         y: CELL_SIZE * Math.floor(Math.random() * 5) + 54
       },
-      this.fieldContainer
-      )
-    )
+      this.fieldContainer,
+      onAttack
+    ))
   }
 
   checkForHits() {
     const rangedUnits: UnitRanged[] = this.componentController.get("UnitRanged") as UnitRanged[]
     const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
     const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
+    const enemyAttacks: EnemyAttack[] = this.componentController.get("EnemyAttack") as EnemyAttack[]
    
     for (let i = 0; i < enemies.length; ++i) {
-
+      const enemy = enemies[i]
+      if (enemy.shouldBeUnmounted) continue
       // Check projectile hits
       for (let j = 0; j < projectiles.length; ++j) {
         const projectile = projectiles[j]
-        const enemy = enemies[i]
+        if (projectile.shouldBeUnmounted) continue
         if (projectile.isIntersecting(enemy)) {
           enemy.onGetHit(projectile.getDamage())
           projectile.onHit()
@@ -170,10 +180,23 @@ export class Level1Stage extends Stage {
       // Check ranged unit hits
       for (let j = 0; j < rangedUnits.length; ++j) {
         const rangedUnit = rangedUnits[j]
-        const enemy = enemies[i]
+        if (rangedUnit.shouldBeUnmounted) continue
         if (rangedUnit.isIntersecting(enemy)) {
-          // TODO: Do something
-          
+          enemy.activity = ENEMY_ACTIVITY.ATTACK
+        }
+      }
+    }
+
+    for (let i = 0; i < rangedUnits.length; ++i) {
+      const rangedUnit = rangedUnits[i]
+      if (rangedUnit.shouldBeUnmounted) continue
+      // Check projectile hits
+      for (let j = 0; j < enemyAttacks.length; ++j) {
+        const enemyAttack = enemyAttacks[j]
+        if (enemyAttack.shouldBeUnmounted) continue
+        if (enemyAttack.isIntersecting(rangedUnit)) {
+          enemyAttack.shouldBeUnmounted = true
+          rangedUnit.onGetHit(enemyAttack.getDamage())
         }
       }
     }
