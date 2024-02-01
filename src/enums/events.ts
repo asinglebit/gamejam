@@ -4,6 +4,7 @@ export enum EVENTS {
     CHANGE_STAGE = "CHANGE_STAGE",
     RELOAD_STAGE = "RELOAD_STAGE",
     PAUSE = "PAUSE",
-    UNPAUSE = "UNPAUSE"
+    UNPAUSE = "UNPAUSE",
+    GAME_OVER = "GAME_OVER"
 }
   

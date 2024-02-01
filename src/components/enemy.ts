@@ -18,6 +18,7 @@ export class Enemy extends Component {
   private attackTimer: Timer
   private damage: number = 1
   private attackSpeed: number = 100
+  private onReachEnd: VoidFunction
 
   /// #if DEBUG
       private debug_health: PIXI.Text
@@ -26,11 +27,15 @@ export class Enemy extends Component {
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    onAttack: (coordinates: Coordinates, damage: number) => void
+    onAttack: (coordinates: Coordinates, damage: number) => void,
+    onReachEnd: VoidFunction
   ) {
 
     // Super constructor
     super("Enemy")
+
+    // Store arguments
+    this.onReachEnd = onReachEnd
 
     // Initialize component
     this.sprite = createSpriteUndead()
@@ -71,6 +76,9 @@ export class Enemy extends Component {
   
   walk(dt: number) {
     this.sprite.x -= this.speed * dt
+    if (this.sprite.x <= 0) {
+      this.onReachEnd()
+    }
   }
   
   attack(dt: number) {
@@ -95,9 +103,6 @@ export class Enemy extends Component {
         this.attack(delta)
         this.activity = ENEMY_ACTIVITY.WALK
         break
-    }    
-    if (this.sprite.x < 0) {
-      this.shouldBeUnmounted = true
     }
   }
 

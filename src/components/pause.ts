@@ -12,6 +12,7 @@ export class PauseOverlay extends Component {
   
   private app: PIXI.Application
   private container: PIXI.Container
+  private text_result: PIXI.Text
   private eventController: EventController
   private stage: PIXI.Container
 
@@ -31,8 +32,23 @@ export class PauseOverlay extends Component {
     this.container.zIndex = 9999
     this.stage.addChild(this.container)
 
+    // Game result container
+    const text_result = new PIXI.Text(`Game Over`, {
+      fontFamily: "Arial",
+      fontSize: 42,
+      fill: 0xFF0000,
+      align: "center",
+      strokeThickness: 2
+    });
+    text_result.anchor.set(0.5)
+    text_result.x = app.screen.width / 2
+    text_result.y = app.screen.height / 2 - 60
+    text_result.visible = false
+    this.container.addChild(text_result)
+
     // Pause button container
     const container_pause = new PIXI.Container()
+    container_pause.name = "container_pause"
     container_pause.x = this.app.screen.width - 40
     container_pause.y = 42
     this.container.addChild(container_pause)
@@ -47,6 +63,7 @@ export class PauseOverlay extends Component {
 
     // Pause menu container
     const container_menu = new PIXI.Container()
+    container_menu.name = "container_menu"
     container_menu.x = this.app.screen.width / 2
     container_menu.y = this.app.screen.height / 2
     this.container.addChild(container_menu)
@@ -72,13 +89,22 @@ export class PauseOverlay extends Component {
     )
 
     // Events
+    this.eventController.subscribe(EVENTS.GAME_OVER, this.UID, () => {
+      text_result.visible = true
+      pause_button.hide()
+      play_button.hide()
+      restart_button.show()
+      menu_button.show()
+    })
     this.eventController.subscribe(EVENTS.PAUSE, this.UID, () => {
+      text_result.visible = false
       pause_button.hide()
       play_button.show()
       restart_button.show()
       menu_button.show()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.UID, () => {
+      text_result.visible = false
       pause_button.show()
       play_button.hide()
       restart_button.hide()

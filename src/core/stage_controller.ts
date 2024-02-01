@@ -19,6 +19,7 @@ export class StageController {
     this.app = app
     window.addEventListener("resize", () => this.eventController.emit(EVENTS.RESIZE_APP))
     this.eventController.subscribe(EVENTS.CHANGE_STAGE, "StageController", (stageName: STAGES) => this.load(stageName))
+    this.eventController.subscribe(EVENTS.GAME_OVER, "StageController", () => { this.isPaused = true })
     this.eventController.subscribe(EVENTS.PAUSE, "StageController", () => { this.isPaused = true })
     this.eventController.subscribe(EVENTS.UNPAUSE, "StageController", () => { this.isPaused = false })
     this.eventController.subscribe(EVENTS.RELOAD_STAGE, "StageController", () => this.load(this.stage.stageName))

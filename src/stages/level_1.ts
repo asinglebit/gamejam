@@ -107,6 +107,12 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(uiTemporary)
     
     // Events
+    this.eventController.subscribe(EVENTS.GAME_OVER, this.stageName, () => {
+      this.isPaused = true
+      this.componentController.pause()
+      uiRanged.stop()
+      uiTemporary.stop()
+    })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
@@ -145,8 +151,10 @@ export class Level1Stage extends Stage {
 
   spawnEnemy() {
     const onAttack = ({ x, y }: Coordinates, damage: number) => {
-      console.log("Attack!")
       this.componentController.add(new EnemyAttack({ x, y }, this.fieldContainer, damage))
+    }
+    const onReachEnd = () => {
+      this.eventController.emit(EVENTS.GAME_OVER)
     }
     this.componentController.add(new Enemy(
       {
@@ -154,7 +162,8 @@ export class Level1Stage extends Stage {
         y: CELL_SIZE * Math.floor(Math.random() * 5) + 54
       },
       this.fieldContainer,
-      onAttack
+      onAttack,
+      onReachEnd
     ))
   }
 
