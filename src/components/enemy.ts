@@ -6,22 +6,21 @@ import { Timer } from "../core/timer"
 
 export enum ENEMY_ACTIVITY {
   WALK,
-  ATTACK
+  ATTACK,
 }
 
 export class Enemy extends Component {
-
   public sprite: PIXI.AnimatedSprite
   private speed: number = 2
   private health: number = 10
   public activity: ENEMY_ACTIVITY = ENEMY_ACTIVITY.WALK
-  private attackTimer: Timer
+  private timer: Timer
   private damage: number = 1
-  private attackSpeed: number = 100
+  private attackSpeed: number = 36
   private onReachEnd: VoidFunction
 
   /// #if DEBUG
-      private debug_health: PIXI.Text
+  private debug_health: PIXI.Text
   /// #endif
 
   constructor(
@@ -30,7 +29,6 @@ export class Enemy extends Component {
     onAttack: (coordinates: Coordinates, damage: number) => void,
     onReachEnd: VoidFunction
   ) {
-
     // Super constructor
     super("Enemy")
 
@@ -42,47 +40,45 @@ export class Enemy extends Component {
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.gotoAndPlay(0);
+    this.sprite.gotoAndPlay(0)
     container.addChild(this.sprite)
 
     // Initialize timer
-  //   this.attackTimer = new Timer([{
-  //     checkpoint: this.attackSpeed,
-  //     callback: () => {
-  //       onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
-  //     }
-  //   }
-  // ])
-    
+    this.timer = new Timer()
+
+    this.timer.repeat("attack", this.attackSpeed, () => {
+      onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
+    })
+
     /// #if DEBUG
-        const collider = new PIXI.Graphics();
-        collider.lineStyle(2, 0xFF0000); 
-        collider.beginFill(0xFF0000, 0.5);
-        collider.drawCircle(0, 0, this.getCollisionRegion().radius);
-        collider.endFill();
-        this.sprite.addChild(collider)
-        this.debug_health = new PIXI.Text(`HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`, {
-          fontFamily: "Arial",
-          fontSize: 18,
-          fill: 0xFFFFFF,
-          align: "center",
-          strokeThickness: 5
-        });
-        this.debug_health.anchor.set(0.5)
-        this.debug_health.y -= 50
-        this.sprite.addChild(this.debug_health)
+    const collider = new PIXI.Graphics()
+    collider.lineStyle(2, 0xff0000)
+    collider.beginFill(0xff0000, 0.5)
+    collider.drawCircle(0, 0, this.getCollisionRegion().radius)
+    collider.endFill()
+    this.sprite.addChild(collider)
+    this.debug_health = new PIXI.Text(`HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`, {
+      fontFamily: "Arial",
+      fontSize: 18,
+      fill: 0xffffff,
+      align: "center",
+      strokeThickness: 5,
+    })
+    this.debug_health.anchor.set(0.5)
+    this.debug_health.y -= 50
+    this.sprite.addChild(this.debug_health)
     /// #endif
   }
-  
+
   walk(dt: number) {
     this.sprite.x -= this.speed * dt
     if (this.sprite.x <= 0) {
       this.onReachEnd()
     }
   }
-  
+
   attack(dt: number) {
-    this.attackTimer.tick(dt)
+    this.timer.tick(dt)
   }
 
   onGetHit(damage: number) {
@@ -90,16 +86,16 @@ export class Enemy extends Component {
     if (this.health <= 0) this.shouldBeUnmounted = true
 
     /// #if DEBUG
-        this.debug_health.text = `HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`
+    this.debug_health.text = `HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`
     /// #endif
   }
 
   update(delta: number) {
     switch (this.activity) {
-      case ENEMY_ACTIVITY.WALK: 
+      case ENEMY_ACTIVITY.WALK:
         this.walk(delta)
         break
-      case ENEMY_ACTIVITY.ATTACK: 
+      case ENEMY_ACTIVITY.ATTACK:
         this.attack(delta)
         this.activity = ENEMY_ACTIVITY.WALK
         break
@@ -111,22 +107,21 @@ export class Enemy extends Component {
   }
 
   play() {
-    this.sprite.play()    
+    this.sprite.play()
   }
 
   unmount() {
     super.unmount()
     this.sprite.destroy()
   }
-  
+
   getCollisionRegion(): CollisionRegion {
     return {
       center: {
         x: this.sprite.x,
-        y: this.sprite.y
+        y: this.sprite.y,
       },
-      radius: 20
+      radius: 20,
     }
   }
 }
-
