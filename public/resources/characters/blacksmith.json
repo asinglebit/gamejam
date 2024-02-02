@@ -1,0 +1,204 @@
+{"frames": {
+
+"blacksmith-transition-5.png":
+{
+	"frame": {"x":227,"y":160,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-4.png":
+{
+	"frame": {"x":171,"y":160,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-3.png":
+{
+	"frame": {"x":115,"y":160,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-2.png":
+{
+	"frame": {"x":59,"y":160,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-1.png":
+{
+	"frame": {"x":3,"y":160,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-13.png":
+{
+	"frame": {"x":3,"y":3,"w":50,"h":49},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":49},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-12.png":
+{
+	"frame": {"x":59,"y":3,"w":50,"h":48},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":48},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-11.png":
+{
+	"frame": {"x":227,"y":109,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-10.png":
+{
+	"frame": {"x":171,"y":109,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-9.png":
+{
+	"frame": {"x":115,"y":109,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-8.png":
+{
+	"frame": {"x":59,"y":109,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-7.png":
+{
+	"frame": {"x":3,"y":109,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-6.png":
+{
+	"frame": {"x":227,"y":58,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-5.png":
+{
+	"frame": {"x":171,"y":58,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-4.png":
+{
+	"frame": {"x":115,"y":58,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-3.png":
+{
+	"frame": {"x":59,"y":58,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-2.png":
+{
+	"frame": {"x":3,"y":58,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-1.png":
+{
+	"frame": {"x":227,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-6.png":
+{
+	"frame": {"x":171,"y":211,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-5.png":
+{
+	"frame": {"x":115,"y":211,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-4.png":
+{
+	"frame": {"x":59,"y":211,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-3.png":
+{
+	"frame": {"x":171,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-2.png":
+{
+	"frame": {"x":115,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-1.png":
+{
+	"frame": {"x":3,"y":211,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "warrior.png",
+	"format": "RGBA8888",
+	"size": {"w":280,"h":280},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:62f19c138287ca8805e3e37ae112e4e0:558a639b950d82059a07554292cfefcc:380ec401ba9cf63cd4c0319d938fb695$"
+}
+}
