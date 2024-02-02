@@ -30,10 +30,14 @@ export class Level1Stage extends Stage {
   private componentController: ComponentController
   private fieldContainer: PIXI.Container
   private containerControls: PIXI.Container
+  private containerBalance: PIXI.Container
+  private textBalance: PIXI.Text
 
   private isPaused = false
   private placingUnitType: UnitType
   private occupiedTiles: string[] = []
+
+  private balance: number = 0
 
   private timer = 190
 
@@ -46,8 +50,24 @@ export class Level1Stage extends Stage {
     this.fieldContainer.name = "fieldContainer"
     this.stage.addChild(this.fieldContainer)
     
+    // Balance
+    this.containerBalance = new PIXI.Container()
+    this.containerBalance.name = "containerBalance"
+    this.containerBalance.x = 30
+    this.containerBalance.y = 30
+    this.stage.addChild(this.containerBalance)
+    this.textBalance = new PIXI.Text(`$${this.balance}`, {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xFFFFFF,
+      align: "center",
+    });
+    this.textBalance.anchor.set(0)
+    this.containerBalance.addChild(this.textBalance)
+
+    // Controls
     this.containerControls = new PIXI.Container()
-    this.containerControls.name = "containerControls"
+    this.containerControls.name = "containerBalance"
     this.containerControls.x = 45
     this.containerControls.y = 45
     this.stage.addChild(this.containerControls)
@@ -211,6 +231,8 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.GAME_OVER, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
+      this.containerControls.visible = false
+      this.containerBalance.visible = false
       uiRanged.stop()
       uiDefender.stop()
       uiMelee.stop()
@@ -219,6 +241,8 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
+      this.containerControls.visible = false
+      this.containerBalance.visible = false
       uiRanged.stop()
       uiDefender.stop()
       uiMelee.stop()
@@ -227,6 +251,8 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
       this.isPaused = false
       this.componentController.play()
+      this.containerControls.visible = true
+      this.containerBalance.visible = false
       uiRanged.play()
       uiDefender.play()
       uiMelee.play()
@@ -239,7 +265,8 @@ export class Level1Stage extends Stage {
     switch (unitType) {
       case 'Producer': {
         const onEarn = (money: number) => {
-          console.log("Earn", money)
+          this.balance += money
+          this.textBalance.text = `$${this.balance}`
         }
         this.componentController.add(new Producer({ x, y }, this.fieldContainer, onEarn))
         break
@@ -349,6 +376,8 @@ export class Level1Stage extends Stage {
   }
 
   relayout() {
+    this.containerControls.x = (this.app.screen.width / 2) - 192 / 2
+    this.containerControls.y = (this.app.screen.height) - 60
     const factorX = (this.app.screen.width / this.sceneWidth)
     const factorY = (this.app.screen.height / this.sceneHeight)
     const factor = Math.min(factorX, factorY)
@@ -378,6 +407,7 @@ export class Level1Stage extends Stage {
     this.eventController.unsubscribe(this.stageName)
     this.fieldContainer.destroy()
     this.containerControls.destroy()
+    this.containerBalance.destroy()
     super.unmount()
   }
 }
