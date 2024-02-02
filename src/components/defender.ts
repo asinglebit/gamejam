@@ -1,37 +1,30 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
 import { Timer } from "../core/timer"
-import { createSpriteRangedIdle, RANGED_ANIMATIONS } from "../utils/sprites"
-import { ANIMATION_SPEED } from "../constants"
+import { createDefenderSprite } from "../utils/sprites"
 import { CollisionRegion } from "../core/collision_region"
 
-type UnitRangedAnimation = "attack" | "idle"
 
-export class UnitRanged extends Component {
+export class Defender extends Component {
   private sprite: PIXI.AnimatedSprite
-  private onFireProjectile: VoidFunction = null
 
   // Sprite specifics
   private timer: Timer
-  private health: number = 5
-  private currentAnimation: UnitRangedAnimation = "idle"
+  private health: number = 50
+  // private currentAnimation: UnitRangedAnimation = "idle"
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  private canShoot = true
-
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onFireProjectile?: VoidFunction) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container) {
     // Super constructor
     super("UnitRanged")
 
-    // Store arguments
-    this.onFireProjectile = onFireProjectile
 
     // Initialize component
-    this.sprite = createSpriteRangedIdle()
-    this.currentAnimation = "idle"
+    this.sprite = createDefenderSprite()
+    // this.currentAnimation = "idle"
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
@@ -40,10 +33,7 @@ export class UnitRanged extends Component {
 
     this.timer = new Timer()
 
-    this.timer.repeat("shoot", 60, () => {
-      this.canShoot = true
-      this.changeAnimation("attack", false)
-    })
+ 
 
     /// #if DEBUG
     const collider = new PIXI.Graphics()
@@ -74,31 +64,17 @@ export class UnitRanged extends Component {
     /// #endif
   }
 
-  isCanSpawnProjectile() {
-    return this.currentAnimation === "attack" && this.sprite.currentFrame === 4 && this.canShoot
-  }
-
-  isAttackAnimationFinished() {
-    return this.currentAnimation === "attack" && this.sprite.playing === false
-  }
-
   update(delta: number) {
-    this.timer.tick(delta)
+    // this.timer.tick(delta)
 
-    if (this.isCanSpawnProjectile()) {
-      this.onFireProjectile()
-      this.canShoot = false
-    }
-
-    this.isAttackAnimationFinished() && this.changeAnimation("idle", true)
   }
 
-  changeAnimation(animationName: UnitRangedAnimation, looped?: boolean) {
-    this.currentAnimation = animationName
-    this.sprite.textures = RANGED_ANIMATIONS[animationName]
-    this.sprite.loop = looped
-    this.sprite.gotoAndPlay(0)
-  }
+  // changeAnimation(animationName: UnitRangedAnimation, looped?: boolean) {
+  //   this.currentAnimation = animationName
+  //   this.sprite.textures = RANGED_ANIMATIONS[animationName]
+  //   this.sprite.loop = looped
+  //   this.sprite.gotoAndPlay(0)
+  // }
 
   pause() {
     this.sprite.stop()

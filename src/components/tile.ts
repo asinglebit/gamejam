@@ -26,6 +26,8 @@ export class Tile extends Component {
     this.sprite.interactive = true
     container.addChild(this.sprite)
 
+    
+
     // Setup interactive callbacks
     if (onPointerDown) {
       this.sprite.eventMode = "dynamic"

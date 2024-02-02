@@ -10,7 +10,7 @@ let spriteSheetUI
 // Load spritesheet
 
 export const loadSprites = async () => {
-  spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
+  spriteSheet = await PIXI.Assets.load("/resources/main.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
   RANGED_ANIMATIONS = {
     attack: [
@@ -73,6 +73,7 @@ export const createSpriteTile = (tileNumber) => {
   const variation = tileNumber ?? Math.floor(Math.random() * 4) + 1
   const sprite = new PIXI.Sprite(spriteSheet.textures[`grass_tile_${variation}.png`])
   sprite.anchor.set(0.5)
+  sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   return sprite
 }
 
@@ -91,6 +92,23 @@ export const createSpriteProjectile = () => {
     spriteSheet.textures["ice_projectile_11.png"],
     spriteSheet.textures["ice_projectile_12.png"],
   ])
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.play()
+  return sprite
+}
+
+export const createDefenderSprite = () => {
+  const sprite = new PIXI.AnimatedSprite([
+    spriteSheet.textures["defender_1.png"],
+    spriteSheet.textures["defender_2.png"],
+    spriteSheet.textures["defender_3.png"],
+    spriteSheet.textures["defender_4.png"],
+    spriteSheet.textures["defender_5.png"],
+    spriteSheet.textures["defender_6.png"],
+    spriteSheet.textures["defender_7.png"],
+    spriteSheet.textures["defender_8.png"],
+  ])
+  sprite.anchor.set(0.5)
   sprite.animationSpeed = ANIMATION_SPEED
   sprite.play()
   return sprite
