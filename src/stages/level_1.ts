@@ -37,7 +37,7 @@ export class Level1Stage extends Stage {
   private placingUnitType: UnitType
   private occupiedTiles: string[] = []
 
-  private balance: number = 0
+  private balance: number = 100
 
   private timer = 190
 
@@ -110,6 +110,16 @@ export class Level1Stage extends Stage {
     uiProducer.scale.y = 0.7
     uiProducer.play()
     this.containerControls.addChild(uiProducer)
+    const priceProducer = new PIXI.Text(`$10`, {
+      fontFamily: "Arial",
+      fontSize: 18,
+      fill: 0xFFFFFF,
+      align: "center",
+      strokeThickness: 4
+    });
+    priceProducer.anchor.set(0.5)
+    priceProducer.y += 35
+    this.containerControls.addChild(priceProducer)
     uiTileProducer.x = 0
     uiTileProducer.interactive = true
     uiTileProducer.on('pointerdown', () => {
@@ -133,6 +143,17 @@ export class Level1Stage extends Stage {
     uiRanged.x = 64
     uiRanged.play()
     this.containerControls.addChild(uiRanged)
+    const priceRanged = new PIXI.Text(`$40`, {
+      fontFamily: "Arial",
+      fontSize: 18,
+      fill: 0xFFFFFF,
+      align: "center",
+      strokeThickness: 4
+    });
+    priceRanged.anchor.set(0.5)
+    priceRanged.x = 64
+    priceRanged.y += 35
+    this.containerControls.addChild(priceRanged)
     uiTileRanged.x = 64
     uiTileRanged.interactive = true
     uiTileRanged.on('pointerdown', () => {
@@ -158,6 +179,17 @@ export class Level1Stage extends Stage {
     uiMelee.x = 128
     uiMelee.play()
     this.containerControls.addChild(uiMelee)
+    const priceMelee = new PIXI.Text(`$100`, {
+      fontFamily: "Arial",
+      fontSize: 18,
+      fill: 0xFFFFFF,
+      align: "center",
+      strokeThickness: 4
+    });
+    priceMelee.anchor.set(0.5)
+    priceMelee.x = 128
+    priceMelee.y += 35
+    this.containerControls.addChild(priceMelee)
     uiTileMelee.x = 128
     uiTileMelee.interactive = true
     uiTileMelee.on('pointerdown', () => {
@@ -181,6 +213,17 @@ export class Level1Stage extends Stage {
     uiDefender.x = 192
     uiDefender.play()
     this.containerControls.addChild(uiDefender)
+    const priceDefender = new PIXI.Text(`$300`, {
+      fontFamily: "Arial",
+      fontSize: 18,
+      fill: 0xFFFFFF,
+      align: "center",
+      strokeThickness: 4
+    });
+    priceDefender.anchor.set(0.5)
+    priceDefender.x = 192
+    priceDefender.y += 35
+    this.containerControls.addChild(priceDefender)
     uiTileDefender.x = 192
     uiTileDefender.interactive = true
     uiTileDefender.on('pointerdown', () => {
@@ -228,16 +271,6 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(uiTemporary)
     
     // Events
-    this.eventController.subscribe(EVENTS.GAME_OVER, this.stageName, () => {
-      this.isPaused = true
-      this.componentController.pause()
-      this.containerControls.visible = false
-      this.containerBalance.visible = false
-      uiRanged.stop()
-      uiDefender.stop()
-      uiMelee.stop()
-      uiProducer.stop()
-    })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
@@ -264,29 +297,41 @@ export class Level1Stage extends Stage {
   addUnit(x: number, y: number, unitType: UnitType) {
     switch (unitType) {
       case 'Producer': {
+        if (this.balance < 10) return
         const onEarn = (money: number) => {
           this.balance += money
           this.textBalance.text = `$${this.balance}`
         }
         this.componentController.add(new Producer({ x, y }, this.fieldContainer, onEarn))
+        this.balance -= 10
+        this.textBalance.text = `$${this.balance}`
         break
       }
       case 'Melee': {
+        if (this.balance < 100) return
         const onSwing = () => {
           this.componentController.add(new Swing({ x, y }, this.fieldContainer, 5))
         }
         this.componentController.add(new Melee({ x, y }, this.fieldContainer, onSwing))
+        this.balance -= 100
+        this.textBalance.text = `$${this.balance}`
         break
       }
       case 'Range': {
+        if (this.balance < 40) return
         const onFireProjectile = () => {
           this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
         }
         this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
+        this.balance -= 40
+        this.textBalance.text = `$${this.balance}`
         break
       }
       case 'Defender': {
+        if (this.balance < 300) return
         this.componentController.add(new Defender({ x, y }, this.fieldContainer))
+        this.balance -= 300
+        this.textBalance.text = `$${this.balance}`
         break
       }
     }

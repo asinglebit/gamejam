@@ -35,14 +35,14 @@ export class PauseOverlay extends Component {
     // Game result container
     const text_result = new PIXI.Text(`Game Over`, {
       fontFamily: "Arial",
-      fontSize: 42,
+      fontSize: 64,
       fill: 0xFF0000,
       align: "center",
       strokeThickness: 2
     });
     text_result.anchor.set(0.5)
     text_result.x = app.screen.width / 2
-    text_result.y = app.screen.height / 2 - 60
+    text_result.y = app.screen.height / 2
     text_result.visible = false
     this.container.addChild(text_result)
 
@@ -91,10 +91,6 @@ export class PauseOverlay extends Component {
     // Events
     this.eventController.subscribe(EVENTS.GAME_OVER, this.UID, () => {
       text_result.visible = true
-      pause_button.hide()
-      play_button.hide()
-      restart_button.show()
-      menu_button.show()
     })
     this.eventController.subscribe(EVENTS.PAUSE, this.UID, () => {
       text_result.visible = false
@@ -104,7 +100,7 @@ export class PauseOverlay extends Component {
       menu_button.show()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.UID, () => {
-      text_result.visible = false
+      text_result.visible = true
       pause_button.show()
       play_button.hide()
       restart_button.hide()
