@@ -4,6 +4,7 @@ import { ANIMATION_SPEED } from "../constants"
 import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
 
 export let spriteSheet: PIXI.Spritesheet
+export let spriteSheetGrass: PIXI.Spritesheet
 export let spriteSheetRanged: PIXI.Spritesheet
 export let spriteSheetUndead: PIXI.Spritesheet
 export let spriteSheetUI: PIXI.Spritesheet
@@ -13,6 +14,7 @@ export const loadSprites = async () => {
   //PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST
   //PIXI.BaseTexture.defaultOptions.mipmap = PIXI.MIPMAP_MODES.OFF
   spriteSheet = await PIXI.Assets.load("/resources/main.json")
+  spriteSheetGrass = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetRanged = await PIXI.Assets.load("/resources/characters/ranged.json")
   spriteSheetUndead = await PIXI.Assets.load("/resources/characters/undead.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
@@ -178,7 +180,7 @@ export const createSpriteProjectile = () => {
 
 export const createSpriteTile = (tileNumber?: number) => {
   const variation = tileNumber ?? Math.floor(Math.random() * 4) + 1
-  const sprite = new PIXI.Sprite(spriteSheet.textures[`grass_tile_${variation}.png`])
+  const sprite = new PIXI.Sprite(spriteSheetGrass.textures[`grass_tile_${variation}.png`])
   sprite.anchor.set(0.5)
   return sprite
 }

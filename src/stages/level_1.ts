@@ -60,7 +60,7 @@ export class Level1Stage extends Stage {
     uiTileRanged.scale.x = 1.2
     uiTileRanged.scale.y = 1.2
     this.containerControls.addChild(uiTileRanged)
-    const uiRanged = createSpriteRangedIdle()
+    const uiRanged = createSpriteRanged()
     uiRanged.name = "uiRanged"
     uiRanged.scale.x = 1
     uiRanged.scale.y = 1
@@ -70,7 +70,7 @@ export class Level1Stage extends Stage {
     uiTileRanged.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Range'
-        const rangeTemp = createSpriteRangedIdle()
+        const rangeTemp = createSpriteRanged()
         rangeTemp.play()
         uiTemporary.addChild(rangeTemp)
       }

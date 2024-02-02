@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../core/component"
-import { Timer } from "../core/timer"
+import { Sequencer } from "../core/sequencer"
 import { createDefenderSprite } from "../utils/sprites"
 import { CollisionRegion } from "../core/collision_region"
 
@@ -9,7 +9,7 @@ export class Defender extends Component {
   private sprite: PIXI.AnimatedSprite
 
   // Sprite specifics
-  private timer: Timer
+  private sequencer: Sequencer
   private health: number = 50
   // private currentAnimation: UnitRangedAnimation = "idle"
 
@@ -21,7 +21,6 @@ export class Defender extends Component {
     // Super constructor
     super("UnitRanged")
 
-
     // Initialize component
     this.sprite = createDefenderSprite()
     // this.currentAnimation = "idle"
@@ -31,9 +30,8 @@ export class Defender extends Component {
     this.sprite.gotoAndPlay(0)
     container.addChild(this.sprite)
 
-    this.timer = new Timer()
-
- 
+    // Initialize sequencer
+    this.sequencer = new Sequencer()
 
     /// #if DEBUG
     const collider = new PIXI.Graphics()
@@ -65,8 +63,7 @@ export class Defender extends Component {
   }
 
   update(delta: number) {
-    // this.timer.tick(delta)
-
+    this.sequencer.tick(delta)
   }
 
   // changeAnimation(animationName: UnitRangedAnimation, looped?: boolean) {

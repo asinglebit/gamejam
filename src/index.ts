@@ -6,6 +6,7 @@ import { loadSprites } from "./utils/sprites"
 
 // Main entry point
 const startApp = () => {
+  
   // Initialize pixi
   const app = new PIXI.Application({
     background: "#111111",
@@ -26,14 +27,11 @@ const startApp = () => {
   const stageController = new StageController(app)
   stageController.load(STAGES.LEVEL_1)
 
-  // console.time("tick")
   // Game loop
   app.ticker.add((delta) => {
-    // console.timeEnd("tick")
 
     // Stage controller handles updates for the selected context
     stageController.update(delta)
-    // console.time("tick")
   })
 }
 
