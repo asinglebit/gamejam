@@ -16,6 +16,8 @@ export class PauseOverlay extends Component {
   private eventController: EventController
   private stage: PIXI.Container
 
+  private isGameOver = false
+
   constructor(app: PIXI.Application, stage: PIXI.Container, eventController: EventController) {
 
     // Super constructor
@@ -91,6 +93,7 @@ export class PauseOverlay extends Component {
     // Events
     this.eventController.subscribe(EVENTS.GAME_OVER, this.UID, () => {
       text_result.visible = true
+      this.isGameOver = true
     })
     this.eventController.subscribe(EVENTS.PAUSE, this.UID, () => {
       text_result.visible = false
@@ -100,7 +103,7 @@ export class PauseOverlay extends Component {
       menu_button.show()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.UID, () => {
-      text_result.visible = true
+      text_result.visible = this.isGameOver
       pause_button.show()
       play_button.hide()
       restart_button.hide()

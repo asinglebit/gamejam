@@ -271,6 +271,9 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(uiTemporary)
     
     // Events
+    this.eventController.subscribe(EVENTS.GAME_OVER, this.stageName, () => {
+      this.containerControls.visible = false
+    })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
@@ -437,9 +440,7 @@ export class Level1Stage extends Stage {
     if (!isPaused) {
       this.componentController.update(dt)
       this.timer += dt
-
       this.checkForHits()
-
       if (this.timer > 200 && this.timer < 204) {
         this.spawnEnemy()
         this.timer = 0
