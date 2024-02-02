@@ -1,26 +1,22 @@
 import * as PIXI from "pixi.js"
-import { Component } from "../core/component"
-import { Timer } from "../core/timer"
-import { createSpriteRangedIdle, RANGED_ANIMATIONS } from "../utils/sprites"
-import { ANIMATION_SPEED } from "../constants"
-import { CollisionRegion } from "../core/collision_region"
 
-type UnitRangedAnimation = "attack" | "idle"
+import { Component } from "../core/component"
+import { Sequencer } from "../core/sequencer"
+import { CollisionRegion } from "../core/collision_region"
+import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
+import { createSpriteRanged } from "../utils/sprites"
 
 export class UnitRanged extends Component {
-  private sprite: PIXI.AnimatedSprite
+  private sprite: TimedAnimatedSprite
   private onFireProjectile: VoidFunction = null
 
   // Sprite specifics
-  private timer: Timer
-  private health: number = 5
-  private currentAnimation: UnitRangedAnimation = "idle"
+  private sequencer: Sequencer
+  private health: number = 1
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
-
-  private canShoot = true
 
   constructor({ x, y }: Coordinates, container: PIXI.Container, onFireProjectile?: VoidFunction) {
     // Super constructor
@@ -30,25 +26,76 @@ export class UnitRanged extends Component {
     this.onFireProjectile = onFireProjectile
 
     // Initialize component
-    this.sprite = createSpriteRangedIdle()
-    this.currentAnimation = "idle"
+    this.sprite = createSpriteRanged()
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.gotoAndPlay(0)
+    this.sprite.scale.x = 2
+    this.sprite.scale.y = 2
+    this.sprite.loop = true
+    this.sprite.play()
     container.addChild(this.sprite)
 
-    this.timer = new Timer()
+    // Initialize sequencer
+    this.sequencer = new Sequencer()
 
-    this.timer.repeat("shoot", 120, () => {
-      this.canShoot = true
-      this.changeAnimation("attack", false)
-    })
+    this.sequencer.repeatSequence("shoot", [{
+      duration: 100,
+      callback: () => {
+        this.sprite.switch("attack")
+        this.sprite.play()
+      }
+    }, {
+      duration: 4,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.onFireProjectile()
+      }
+    }, {
+      duration: 10,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.sprite.switch("idle")
+        this.sprite.play()
+      }
+    }])
+
+    this.sequencer.repeatSequence("hurt", [{
+      duration: 0,
+      callback: () => {
+        this.sprite.switch("hurt")
+        this.sprite.play()
+      }
+    }, {
+      duration: 8,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.sequencer.pause("hurt")
+        this.sequencer.unpause("shoot")
+        this.sequencer.reset("shoot")
+        this.sprite.switch("idle")
+        this.sprite.play()
+      }
+    }], true)
+
+    this.sequencer.onceSequence("death", [{
+      duration: 0,
+      callback: () => {
+        this.sprite.switch("death")
+        this.sprite.play()
+        this.sprite.loop = false
+        // More fun this way
+        // this.shouldBeUnmounted = true
+        /// #if DEBUG
+        collider.visible = false
+        this.debug_health.visible = false
+        /// #endif
+      }
+    }], true)
 
     /// #if DEBUG
     const collider = new PIXI.Graphics()
     collider.lineStyle(2, 0xff0000)
-    collider.beginFill(0xff0000, 0.5)
     collider.drawCircle(0, 0, this.getCollisionRegion().radius)
     collider.endFill()
     this.sprite.addChild(collider)
@@ -57,47 +104,38 @@ export class UnitRanged extends Component {
       fontSize: 18,
       fill: 0xffffff,
       align: "center",
-      strokeThickness: 5,
+      strokeThickness: 2,
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
+    this.debug_health.scale.x = 0.5
+    this.debug_health.scale.y = 0.5
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
 
-  onGetHit(damage: number) {
+  hit(damage: number) {
     this.health -= damage
-    if (this.health <= 0) this.shouldBeUnmounted = true
+    if (this.health <= 0) {
+      if (this.sequencer.isPaused("death")) {
+        this.sequencer.pause("shoot")
+        this.sequencer.pause("hurt")
+        this.sequencer.unpause("death")
+      }
+    } else {
+      if (this.sequencer.isPaused("hurt")) {
+        this.sequencer.pause("shoot")
+        this.sequencer.unpause("hurt")
+      }
+    }
 
     /// #if DEBUG
     this.debug_health.text = `HP:${this.health}`
     /// #endif
   }
 
-  isCanSpawnProjectile() {
-    return this.currentAnimation === "attack" && this.sprite.currentFrame === 4 && this.canShoot
-  }
-
-  isAttackAnimationFinished() {
-    return this.currentAnimation === "attack" && this.sprite.playing === false
-  }
-
   update(delta: number) {
-    this.timer.tick(delta)
-
-    if (this.isCanSpawnProjectile()) {
-      this.onFireProjectile()
-      this.canShoot = false
-    }
-
-    this.isAttackAnimationFinished() && this.changeAnimation("idle", true)
-  }
-
-  changeAnimation(animationName: UnitRangedAnimation, looped?: boolean) {
-    this.currentAnimation = animationName
-    this.sprite.textures = RANGED_ANIMATIONS[animationName]
-    this.sprite.loop = looped
-    this.sprite.gotoAndPlay(0)
+    this.sequencer.tick(delta)
   }
 
   pause() {
@@ -114,12 +152,12 @@ export class UnitRanged extends Component {
   }
 
   getCollisionRegion(): CollisionRegion {
-    return {
+    return this.health <= 0 ? null : {
       center: {
         x: this.sprite.x,
         y: this.sprite.y,
       },
-      radius: 20,
+      radius: 10,
     }
   }
 }

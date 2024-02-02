@@ -10,7 +10,7 @@ export interface IComponent  {
     play?: VoidFunction
     hide?: VoidFunction
     show?: VoidFunction
-    getCollisionRegion: () => CollisionRegion | null
+    getCollisionRegion: () => CollisionRegion
     isIntersecting: (component: IComponent) => boolean
 }
   
@@ -26,7 +26,7 @@ export class Component implements IComponent {
   
     unmount() {}
 
-    getCollisionRegion(): CollisionRegion | null {
+    getCollisionRegion(): CollisionRegion {
         return null
     }
 

@@ -11,9 +11,9 @@ const startApp = () => {
     background: "#111111",
     // @ts-ignore TODO fix typings
     autoResize: true,
+    antialias: false,
     roundPixels: true,
     autoDensity: true,
-    antialias: false,
     resolution: window.devicePixelRatio,
   })
 

@@ -54,7 +54,7 @@ export class Projectile extends Component {
     return x + this.speed * dt
   }
 
-  onHit() {
+  attack() {
     this.shouldBeUnmounted = true
   }
 

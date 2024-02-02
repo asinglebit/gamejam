@@ -7,12 +7,11 @@ import { CELL_HALF_SIZE, CELL_SIZE } from "../constants"
 import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
-import { IComponent } from "../core/component"
 
-import { createSpriteUITile, createSpriteRangedIdle, createSpriteTile } from "../utils/sprites"
+import { createSpriteUITile, createSpriteRanged } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/projectile"
-import { ENEMY_ACTIVITY, Enemy } from "../components/enemy"
+import { Enemy } from "../components/enemy"
 import { EnemyAttack } from "../components/enemy_attack"
 
 export class Level1Stage extends Stage {
@@ -49,13 +48,11 @@ export class Level1Stage extends Stage {
     // Controls
     const uiTile = createSpriteUITile()
     uiTile.name = "uiTile"
-    uiTile.scale.x = 1
-    uiTile.scale.y = 1
     this.containerControls.addChild(uiTile)
-    const uiRanged = createSpriteRangedIdle()
+    const uiRanged = createSpriteRanged()
     uiRanged.name = "uiRanged"
-    uiRanged.scale.x = 0.4
-    uiRanged.scale.y = 0.4
+    uiRanged.scale.x = 1
+    uiRanged.scale.y = 1
     uiRanged.play()
     uiTile.addChild(uiRanged)
     uiTile.interactive = true
@@ -69,8 +66,10 @@ export class Level1Stage extends Stage {
     this.relayout()
 
     // Temporary tiles
-    const uiTemporary = createSpriteRangedIdle()
+    const uiTemporary = createSpriteRanged()
     uiTemporary.play()
+    uiTemporary.scale.x = 2
+    uiTemporary.scale.y = 2
     uiTemporary.alpha = 0.4
     uiTemporary.visible = false;
 
@@ -181,8 +180,8 @@ export class Level1Stage extends Stage {
         const projectile = projectiles[j]
         if (projectile.shouldBeUnmounted) continue
         if (projectile.isIntersecting(enemy)) {
-          enemy.onGetHit(projectile.getDamage())
-          projectile.onHit()
+          enemy.hit(projectile.getDamage())
+          projectile.attack()
         }
       }
 
@@ -191,7 +190,7 @@ export class Level1Stage extends Stage {
         const rangedUnit = rangedUnits[j]
         if (rangedUnit.shouldBeUnmounted) continue
         if (rangedUnit.isIntersecting(enemy)) {
-          enemy.activity = ENEMY_ACTIVITY.ATTACK
+          enemy.attack()
         }
       }
     }
@@ -205,7 +204,7 @@ export class Level1Stage extends Stage {
         if (enemyAttack.shouldBeUnmounted) continue
         if (enemyAttack.isIntersecting(rangedUnit)) {
           enemyAttack.shouldBeUnmounted = true
-          rangedUnit.onGetHit(enemyAttack.getDamage())
+          rangedUnit.hit(enemyAttack.getDamage())
         }
       }
     }
@@ -229,7 +228,7 @@ export class Level1Stage extends Stage {
 
       this.checkForHits()
 
-      if (this.timer > 200) {
+      if (this.timer > 200 && this.timer < 204) {
         this.spawnEnemy()
         this.timer = 0
       }
