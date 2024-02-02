@@ -6,6 +6,7 @@ import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
 export let spriteSheet: PIXI.Spritesheet
 export let spriteSheetGrass: PIXI.Spritesheet
 export let spriteSheetRanged: PIXI.Spritesheet
+export let spriteSheetMelee: PIXI.Spritesheet
 export let spriteSheetUndead: PIXI.Spritesheet
 export let spriteSheetUI: PIXI.Spritesheet
 
@@ -15,6 +16,7 @@ export const loadSprites = async () => {
   spriteSheet = await PIXI.Assets.load("/resources/main.json")
   spriteSheetGrass = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetRanged = await PIXI.Assets.load("/resources/characters/ranged.json")
+  spriteSheetMelee = await PIXI.Assets.load("/resources/characters/warrior.json")
   spriteSheetUndead = await PIXI.Assets.load("/resources/characters/undead.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
 }
@@ -73,6 +75,95 @@ export const createSpriteRanged = () => {
   sprite.animationSpeed = ANIMATION_SPEED
   sprite.anchor.x = 0.42
   sprite.anchor.y = 0.59
+  return sprite
+}
+
+export const createSpriteMelee = () => {
+  const sprite = new TimedAnimatedSprite({
+    attack1: [
+      spriteSheetMelee.textures["warrior-attack-1-1.png"],
+      spriteSheetMelee.textures["warrior-attack-1-2.png"],
+      spriteSheetMelee.textures["warrior-attack-1-3.png"],
+      spriteSheetMelee.textures["warrior-attack-1-4.png"],
+      spriteSheetMelee.textures["warrior-attack-1-5.png"],
+      spriteSheetMelee.textures["warrior-attack-1-6.png"],
+      spriteSheetMelee.textures["warrior-attack-1-7.png"],
+      spriteSheetMelee.textures["warrior-attack-1-8.png"],
+      spriteSheetMelee.textures["warrior-attack-1-9.png"],
+      spriteSheetMelee.textures["warrior-attack-1-10.png"],
+      spriteSheetMelee.textures["warrior-attack-1-11.png"],
+      spriteSheetMelee.textures["warrior-attack-1-12.png"],
+      spriteSheetMelee.textures["warrior-attack-1-13.png"],
+      spriteSheetMelee.textures["warrior-attack-1-14.png"],
+      spriteSheetMelee.textures["warrior-attack-1-15.png"],
+      spriteSheetMelee.textures["warrior-attack-1-16.png"],
+    ],
+    attack2: [
+      spriteSheetMelee.textures["warrior-attack-2-1.png"],
+      spriteSheetMelee.textures["warrior-attack-2-2.png"],
+      spriteSheetMelee.textures["warrior-attack-2-3.png"],
+      spriteSheetMelee.textures["warrior-attack-2-4.png"],
+      spriteSheetMelee.textures["warrior-attack-2-5.png"],
+      spriteSheetMelee.textures["warrior-attack-2-6.png"],
+      spriteSheetMelee.textures["warrior-attack-2-7.png"],
+      spriteSheetMelee.textures["warrior-attack-2-8.png"],
+      spriteSheetMelee.textures["warrior-attack-2-9.png"],
+      spriteSheetMelee.textures["warrior-attack-2-10.png"],
+      spriteSheetMelee.textures["warrior-attack-2-11.png"],
+    ],
+    death: [
+      spriteSheetMelee.textures["warrior-death-1.png"],
+      spriteSheetMelee.textures["warrior-death-2.png"],
+      spriteSheetMelee.textures["warrior-death-3.png"],
+      spriteSheetMelee.textures["warrior-death-4.png"],
+      spriteSheetMelee.textures["warrior-death-5.png"],
+      spriteSheetMelee.textures["warrior-death-6.png"],
+      spriteSheetMelee.textures["warrior-death-7.png"],
+      spriteSheetMelee.textures["warrior-death-8.png"],
+      spriteSheetMelee.textures["warrior-death-9.png"],
+      spriteSheetMelee.textures["warrior-death-10.png"],
+      spriteSheetMelee.textures["warrior-death-11.png"],
+      spriteSheetMelee.textures["warrior-death-12.png"],
+      spriteSheetMelee.textures["warrior-death-13.png"],
+      spriteSheetMelee.textures["warrior-death-14.png"],
+      spriteSheetMelee.textures["warrior-death-15.png"],
+      spriteSheetMelee.textures["warrior-death-16.png"],
+      spriteSheetMelee.textures["warrior-death-17.png"],
+      spriteSheetMelee.textures["warrior-death-18.png"],
+      spriteSheetMelee.textures["warrior-death-19.png"],
+    ],
+    hurt: [
+      spriteSheetMelee.textures["warrior-hurt-1.png"],
+      spriteSheetMelee.textures["warrior-hurt-2.png"],
+      spriteSheetMelee.textures["warrior-hurt-3.png"],
+      spriteSheetMelee.textures["warrior-hurt-4.png"],
+      spriteSheetMelee.textures["warrior-hurt-5.png"],
+      spriteSheetMelee.textures["warrior-hurt-6.png"],
+      spriteSheetMelee.textures["warrior-hurt-7.png"],
+      spriteSheetMelee.textures["warrior-hurt-8.png"],
+    ],
+    idle: [
+      spriteSheetMelee.textures["warrior-idle-1.png"],
+      spriteSheetMelee.textures["warrior-idle-2.png"],
+      spriteSheetMelee.textures["warrior-idle-3.png"],
+      spriteSheetMelee.textures["warrior-idle-4.png"],
+      spriteSheetMelee.textures["warrior-idle-5.png"],
+      spriteSheetMelee.textures["warrior-idle-6.png"],
+      spriteSheetMelee.textures["warrior-idle-7.png"],
+      spriteSheetMelee.textures["warrior-idle-8.png"],
+      spriteSheetMelee.textures["warrior-idle-9.png"],
+      spriteSheetMelee.textures["warrior-idle-10.png"],
+      spriteSheetMelee.textures["warrior-idle-11.png"],
+      spriteSheetMelee.textures["warrior-idle-12.png"],
+      spriteSheetMelee.textures["warrior-idle-13.png"],
+      spriteSheetMelee.textures["warrior-idle-14.png"],
+      spriteSheetMelee.textures["warrior-idle-15.png"],
+      spriteSheetMelee.textures["warrior-idle-16.png"],
+    ],
+  }, "idle")
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.anchor.x = 0.47
+  sprite.anchor.y = 0.62
   return sprite
 }
 

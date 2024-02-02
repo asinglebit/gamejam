@@ -8,14 +8,17 @@ import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
-import { createSpriteUITile, createSpriteRanged, createDefenderSprite } from "../utils/sprites"
+import { createSpriteUITile, createSpriteRanged, createDefenderSprite, createSpriteMelee } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/projectile"
 import { Enemy } from "../components/enemy"
 import { EnemyAttack } from "../components/enemy_attack"
 import { Defender } from "../components/defender"
+import { Melee } from "../components/melee"
+import { IComponent } from "../core/component"
+import { Swing } from "../components/swing"
 
-type UnitType = 'Range' | 'Defender'
+type UnitType = 'Range' | 'Defender' | 'Melee'
 
 export class Level1Stage extends Stage {
 
@@ -59,10 +62,15 @@ export class Level1Stage extends Stage {
     // TODO: Sprites need to be fixed
     rangeTemp.scale.x = 2
     rangeTemp.scale.y = 2
+    const meleeTemp = createSpriteMelee()
+    meleeTemp.stop()
+    // TODO: Sprites need to be fixed
+    meleeTemp.scale.x = 2
+    meleeTemp.scale.y = 2
     const defenderTemp = createDefenderSprite()
     defenderTemp.stop()
 
-    // Controls
+    // Ranged
     const uiTileRanged = createSpriteUITile()
     uiTileRanged.name = "uiTile"
     uiTileRanged.scale.x = 1.2
@@ -83,7 +91,31 @@ export class Level1Stage extends Stage {
       }
     })
 
-    // Controls
+    // Melee
+    const uiTileMelee = createSpriteUITile()
+    uiTileMelee.name = "uiTile"
+    uiTileMelee.scale.x = 1.2
+    uiTileMelee.scale.y = 1.2
+    this.containerControls.addChild(uiTileMelee)
+    const uiMelee = createSpriteMelee()
+    uiMelee.name = "uiMelee"
+    uiMelee.x = -1
+    uiMelee.y = 5
+    uiMelee.scale.x = 0.7
+    uiMelee.scale.y = 0.7
+    uiMelee.play()
+    uiTileMelee.addChild(uiMelee)
+    uiTileMelee.x = 64
+    uiTileMelee.interactive = true
+    uiTileMelee.on('pointerdown', () => {
+      if (!this.isPaused) {
+        this.placingUnitType = 'Melee'
+        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
+        uiTemporary.addChild(meleeTemp)
+      }
+    })
+
+    // Defender
     const uiTileDefender = createSpriteUITile()
     uiTileDefender.name = "uiTile"
     uiTileDefender.scale.x = 1.2
@@ -119,7 +151,6 @@ export class Level1Stage extends Stage {
         // Interactive callbacks
         const onPointerDown = (uid: string) => {
           if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
-            console.log(this.placingUnitType)
             this.addUnit(x, y, this.placingUnitType)
             this.placingUnitType = null
             uiTemporary.visible = false
@@ -165,17 +196,25 @@ export class Level1Stage extends Stage {
   }
 
   addUnit(x: number, y: number, unitType: UnitType) {
-    console.log(unitType)
-
-    if (unitType === 'Range') {
-      const onFireProjectile = () => {
-        this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
+    switch (unitType) {
+      case 'Melee': {
+        const onSwing = () => {
+          this.componentController.add(new Swing({ x, y }, this.fieldContainer, 5))
+        }
+        this.componentController.add(new Melee({ x, y }, this.fieldContainer, onSwing))
+        break
       }
-      this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
-    }
-
-    if (unitType === 'Defender') {
-      this.componentController.add(new Defender({ x, y }, this.fieldContainer))
+      case 'Range': {
+        const onFireProjectile = () => {
+          this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
+        }
+        this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
+        break
+      }
+      case 'Defender': {
+        this.componentController.add(new Defender({ x, y }, this.fieldContainer))
+        break
+      }
     }
    }
 
@@ -213,43 +252,49 @@ export class Level1Stage extends Stage {
 
   checkForHits() {
     const rangedUnits: UnitRanged[] = this.componentController.get("UnitRanged") as UnitRanged[]
+    const melee: Melee[] = this.componentController.get("Melee") as Melee[]
     const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
+    const swings: Swing[] = this.componentController.get("Swing") as Swing[]
     const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
     const enemyAttacks: EnemyAttack[] = this.componentController.get("EnemyAttack") as EnemyAttack[]
+
+    const playerUnits = [...rangedUnits, ...melee] as IComponent[]
+    const playerDamagingZones = [...projectiles, ...swings] as IComponent[]
    
     for (let i = 0; i < enemies.length; ++i) {
       const enemy = enemies[i]
       if (enemy.shouldBeUnmounted) continue
       // Check projectile hits
-      for (let j = 0; j < projectiles.length; ++j) {
-        const projectile = projectiles[j]
-        if (projectile.shouldBeUnmounted) continue
-        if (projectile.isIntersecting(enemy)) {
-          enemy.hit(projectile.getDamage())
-          projectile.attack()
+      for (let j = 0; j < playerDamagingZones.length; ++j) {
+        const playerDamagingZone = playerDamagingZones[j]
+        if (playerDamagingZone.shouldBeUnmounted) continue
+        if (playerDamagingZone.isIntersecting(enemy)) {
+          enemy.hit(playerDamagingZone.getDamage())
+          playerDamagingZone.attack()
         }
       }
 
       // Check ranged unit hits
-      for (let j = 0; j < rangedUnits.length; ++j) {
-        const rangedUnit = rangedUnits[j]
-        if (rangedUnit.shouldBeUnmounted) continue
-        if (rangedUnit.isIntersecting(enemy)) {
+      for (let j = 0; j < playerUnits.length; ++j) {
+        const playerUnit: IComponent = playerUnits[j]
+        if (playerUnit.shouldBeUnmounted) continue
+        if (playerUnit.isIntersecting(enemy)) {
           enemy.attack()
+          playerUnit.attack()
         }
       }
     }
 
-    for (let i = 0; i < rangedUnits.length; ++i) {
-      const rangedUnit = rangedUnits[i]
-      if (rangedUnit.shouldBeUnmounted) continue
+    for (let i = 0; i < playerUnits.length; ++i) {
+      const playerUnit = playerUnits[i]
+      if (playerUnit.shouldBeUnmounted) continue
       // Check projectile hits
       for (let j = 0; j < enemyAttacks.length; ++j) {
         const enemyAttack = enemyAttacks[j]
         if (enemyAttack.shouldBeUnmounted) continue
-        if (enemyAttack.isIntersecting(rangedUnit)) {
+        if (enemyAttack.isIntersecting(playerUnit)) {
           enemyAttack.shouldBeUnmounted = true
-          rangedUnit.hit(enemyAttack.getDamage())
+          playerUnit.hit(enemyAttack.getDamage())
         }
       }
     }

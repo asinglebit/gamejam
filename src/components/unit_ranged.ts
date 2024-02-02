@@ -12,7 +12,7 @@ export class UnitRanged extends Component {
 
   // Sprite specifics
   private sequencer: Sequencer
-  private health: number = 1
+  private health: number = 4
 
   /// #if DEBUG
   private debug_health: PIXI.Text
