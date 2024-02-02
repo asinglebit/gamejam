@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 
-import { Component } from "../core/component"
+import { Component } from "../../core/component"
 
 type TextProps = {
   text: string

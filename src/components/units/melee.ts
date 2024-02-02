@@ -1,46 +1,39 @@
 import * as PIXI from "pixi.js"
-import { Sequencer } from "../core/sequencer"
-import { Component } from "../core/component"
-import { CollisionRegion } from "../core/collision_region"
-import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
-import { createSpriteUndead } from "../utils/sprites"
 
-export class Enemy extends Component {
-  public sprite: TimedAnimatedSprite
-  private speed: number = 2
-  private health: number = 15
+import { Component } from "../../core/component"
+import { Sequencer } from "../../core/sequencer"
+import { CollisionRegion } from "../../core/collision_region"
+import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
+import { createSpriteMelee } from "../../utils/sprites"
+
+export class Melee extends Component {
+  private sprite: TimedAnimatedSprite
+  private onSwing: VoidFunction = null
+
+  // Sprite specifics
   private sequencer: Sequencer
-  private damage: number = 2
-  private attackSpeed: number = 36
-  private onReachEnd: VoidFunction
-  private onAttack: (coordinates: Coordinates, damage: number) => void
+  private health: number = 20
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor(
-    { x, y }: Coordinates,
-    container: PIXI.Container,
-    onAttack: (coordinates: Coordinates, damage: number) => void,
-    onReachEnd: VoidFunction
-  ) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onSwing?: VoidFunction) {
     // Super constructor
-    super("Enemy")
+    super("Melee")
 
     // Store arguments
-    this.onReachEnd = onReachEnd
-    this.onAttack = onAttack
+    this.onSwing = onSwing
 
     // Initialize component
-    this.sprite = createSpriteUndead()
+    this.sprite = createSpriteMelee()
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.zIndex = 1
-    this.sprite.scale.x = -2
+    this.sprite.scale.x = 2
     this.sprite.scale.y = 2
-    this.sprite.gotoAndPlay(0)
+    this.sprite.loop = true
+    this.sprite.play()
     container.addChild(this.sprite)
 
     // Filters
@@ -52,67 +45,78 @@ export class Enemy extends Component {
       0, 0, 0, 1, 0
     ];
 
-    // Initialize timer
+    // Initialize sequencer
     this.sequencer = new Sequencer()
 
-    this.sequencer.repeat("walk", {
-      duration: 0,
-      callback: (delta) => {
-        this.sprite.x -= this.speed * delta
-        if (this.sprite.x <= 0) {
-          this.onReachEnd()
-        }
+    this.sequencer.repeatSequence("attack1", [{
+      duration: 10,
+      callback: () => {
+        this.sprite.switch("attack1")
+        this.sprite.play()
       }
-    })
+    }, {
+      duration: 4,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.onSwing()
+      }
+    }, {
+      duration: 10,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.sprite.switch("idle")
+        this.sprite.play()
+        this.sequencer.pause("attack1")
+      }
+    }], true)
 
-    this.sequencer.repeatSequence("attack", [{
-      duration: 0,
+    this.sequencer.repeatSequence("attack2", [{
+      duration: 10,
       callback: () => {
-        this.sprite.switch("attack")
+        this.sprite.switch("attack2")
         this.sprite.play()
       }
     }, {
-      duration: 7,
+      duration: 4,
       ticker: this.sprite.getTicker(),
       callback: () => {
-        this.onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
+        this.onSwing()
       }
     }, {
-      duration: 11,
+      duration: 10,
       ticker: this.sprite.getTicker(),
       callback: () => {
-        this.sequencer.pause("attack")
-        this.sequencer.unpause("walk")
-        this.sprite.switch("walk")
+        this.sprite.switch("idle")
         this.sprite.play()
+        this.sequencer.pause("attack2")
       }
     }], true)
 
     this.sequencer.repeatSequence("hurt_and_stun", [{
       duration: 0,
       callback: () => {
-        this.sequencer.pause("walk")
+        this.sequencer.pause("attack1")
+        this.sequencer.pause("attack2")
         this.sprite.switch("hurt")
         this.sprite.play()
       }
-    }, {
-      duration: 9,
+    },{
+      duration: 7,
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.sequencer.pause("hurt_and_stun")
-        this.sequencer.unpause("walk")
-        this.sprite.switch("walk")
+        this.sprite.switch("idle")
         this.sprite.play()
       }
     }], true)
-    
+
     this.sequencer.repeatSequence("hurt", [{
       duration: 0,
       callback: () => {
         this.sprite.filters = [lightFilter]
       }
     },{
-      duration: 3,
+      duration: 10,
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.sprite.filters = []
@@ -133,15 +137,21 @@ export class Enemy extends Component {
         this.debug_health.visible = false
         /// #endif
       }
+    }, {
+      duration: 18,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.shouldBeUnmounted = true
+      }
     }], true)
 
     /// #if DEBUG
     const collider = new PIXI.Graphics()
     collider.lineStyle(2, 0xff0000)
-    collider.drawCircle(0, 0, this.getCollisionRegion().radius)
+    collider.drawCircle(2, -5, this.getCollisionRegion().radius)
     collider.endFill()
     this.sprite.addChild(collider)
-    this.debug_health = new PIXI.Text(`HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`, {
+    this.debug_health = new PIXI.Text(`HP:${this.health}`, {
       fontFamily: "Arial",
       fontSize: 18,
       fill: 0xffffff,
@@ -149,26 +159,29 @@ export class Enemy extends Component {
       strokeThickness: 2,
     })
     this.debug_health.anchor.set(0.5)
-    this.debug_health.y -= 50
-    this.debug_health.scale.x = -0.5
+    this.debug_health.y -= 40
+    this.debug_health.scale.x = 0.5
     this.debug_health.scale.y = 0.5
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
   
   attack() {
-    this.sequencer.pause("walk")
-    this.sequencer.unpause("attack")
+    if (this.sequencer.isPaused("attack1") && this.sequencer.isPaused("attack2")) {
+      this.sequencer.unpause(Math.random() < 0.5 ? "attack1" : "attack2")
+    }
   }
 
   hit(damage: number) {
     this.health -= damage
     if (this.health <= 0) {
-      this.sequencer.pause("attack")
-      this.sequencer.pause("hurt")
-      this.sequencer.pause("hurt_and_stun")
-      this.sequencer.pause("walk")
-      this.sequencer.unpause("death")
+      if (this.sequencer.isPaused("death")) {
+        this.sequencer.pause("attack1")
+        this.sequencer.pause("attack2")
+        this.sequencer.pause("hurt")
+        this.sequencer.pause("hurt_and_stun")
+        this.sequencer.unpause("death")
+      }
     } else {
       if (this.sequencer.isPaused("hurt") && this.sequencer.isPaused("hurt_and_stun")) {
         this.sequencer.unpause(Math.random() < 0.5 ? "hurt" : "hurt_and_stun")
@@ -176,7 +189,7 @@ export class Enemy extends Component {
     }
 
     /// #if DEBUG
-    this.debug_health.text = `HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`
+    this.debug_health.text = `HP:${this.health}`
     /// #endif
   }
 
@@ -200,10 +213,10 @@ export class Enemy extends Component {
   getCollisionRegion(): CollisionRegion {
     return this.health <= 0 ? null : {
       center: {
-        x: this.sprite.x,
-        y: this.sprite.y,
+        x: this.sprite.x + 2,
+        y: this.sprite.y - 5,
       },
-      radius: 20,
+      radius: 15,
     }
   }
 }

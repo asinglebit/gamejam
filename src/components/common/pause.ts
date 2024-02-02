@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js"
 
-import { EVENTS } from "../enums/events"
-import { STAGES } from "../enums/stages"
+import { EVENTS } from "../../enums/events"
+import { STAGES } from "../../enums/stages"
 
-import { Component } from "../core/component"
-import { EventController } from "../core/event_controller"
+import { Component } from "../../core/component"
+import { EventController } from "../../core/event_controller"
 
-import { Text } from "."
+import { Text } from ".."
 
 export class PauseOverlay extends Component {
   

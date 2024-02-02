@@ -1,116 +1,91 @@
 import * as PIXI from "pixi.js"
 
-import { Component } from "../core/component"
-import { Sequencer } from "../core/sequencer"
-import { CollisionRegion } from "../core/collision_region"
-import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
-import { createSpriteProducer, createSpriteAnvil } from "../utils/sprites"
+import { Component } from "../../core/component"
+import { Sequencer } from "../../core/sequencer"
+import { CollisionRegion } from "../../core/collision_region"
+import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
+import { createSpriteRanged } from "../../utils/sprites"
 
-export class Producer extends Component {
-  private componentContainer: PIXI.Container
+export class UnitRanged extends Component {
   private sprite: TimedAnimatedSprite
-  private anvil: PIXI.AnimatedSprite
+  private onFireProjectile: VoidFunction = null
 
   // Sprite specifics
   private sequencer: Sequencer
-  private health: number = 2
-  private profitability: number = 10
-  private onEarn: (money: number) => void
+  private health: number = 4
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onEarn: (money: number) => void) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onFireProjectile?: VoidFunction) {
     // Super constructor
-    super("Producer")
+    super("UnitRanged")
 
     // Store arguments
-    this.onEarn = onEarn
+    this.onFireProjectile = onFireProjectile
 
     // Initialize component
-    this.componentContainer = new PIXI.Container()
-    this.componentContainer.x = x
-    this.componentContainer.y = y
-    this.componentContainer.scale.x = 2
-    this.componentContainer.scale.y = 2
-    container.addChild(this.componentContainer)
-    this.anvil = createSpriteAnvil()
-    this.anvil.y += 15
-    this.anvil.stop()
-    this.anvil.loop = false
-    this.componentContainer.addChild(this.anvil)
-    this.sprite = createSpriteProducer()
+    this.sprite = createSpriteRanged()
     this.sprite.name = this.UID
+    this.sprite.x = x
+    this.sprite.y = y
+    this.sprite.scale.x = 2
+    this.sprite.scale.y = 2
     this.sprite.loop = true
     this.sprite.play()
-    this.componentContainer.addChild(this.sprite)
-
-    // Filters
-    const lightFilter = new PIXI.ColorMatrixFilter()
-    lightFilter.matrix = [ 
-      1, 0, 0, 0, 0.15, 
-      0, 1, 0, 0, 0.15, 
-      0, 0, 1, 0, 0.15, 
-      0, 0, 0, 1, 0
-    ];
+    container.addChild(this.sprite)
 
     // Initialize sequencer
     this.sequencer = new Sequencer()
 
-    this.sequencer.repeatSequence("anvil", [{
-      duration: 0,
+    this.sequencer.repeatSequence("shoot", [{
+      duration: 100,
       callback: () => {
-        this.anvil.gotoAndPlay(0)
+        this.sprite.switch("attack")
+        this.sprite.play()
       }
     }, {
-      duration: 100,
-      callback: () => {}
-    }])
-
-    this.sequencer.repeatSequence("produce", [{
-      duration: 0,
+      duration: 4,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.onFireProjectile()
+      }
+    }, {
+      duration: 10,
+      ticker: this.sprite.getTicker(),
       callback: () => {
         this.sprite.switch("idle")
-        this.sprite.gotoAndPlay(0)
-      }
-    }, {
-      duration: 50,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.sprite.switch("produce")
-        this.sprite.gotoAndPlay(0)
-      }
-    }, {
-      duration: 23,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.onEarn(this.profitability)
+        this.sprite.play()
       }
     }])
 
     this.sequencer.repeatSequence("hurt", [{
       duration: 0,
       callback: () => {
-        this.sprite.filters = [lightFilter]
+        this.sprite.switch("hurt")
+        this.sprite.play()
       }
-    },{
-      duration: 10,
+    }, {
+      duration: 8,
       ticker: this.sprite.getTicker(),
       callback: () => {
-        this.sprite.filters = []
         this.sequencer.pause("hurt")
-        this.sequencer.unpause("produce")
+        this.sequencer.unpause("shoot")
+        this.sequencer.reset("shoot")
+        this.sprite.switch("idle")
+        this.sprite.play()
       }
     }], true)
 
     this.sequencer.onceSequence("death", [{
       duration: 0,
       callback: () => {
+        this.sprite.switch("death")
+        this.sprite.play()
+        this.sprite.loop = false
         // More fun this way
         // this.shouldBeUnmounted = true
-        this.sprite.visible = false
-
         /// #if DEBUG
         collider.visible = false
         this.debug_health.visible = false
@@ -121,7 +96,7 @@ export class Producer extends Component {
     /// #if DEBUG
     const collider = new PIXI.Graphics()
     collider.lineStyle(2, 0xff0000)
-    collider.drawCircle(2, -5, this.getCollisionRegion().radius)
+    collider.drawCircle(0, 0, this.getCollisionRegion().radius)
     collider.endFill()
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
@@ -143,12 +118,13 @@ export class Producer extends Component {
     this.health -= damage
     if (this.health <= 0) {
       if (this.sequencer.isPaused("death")) {
-        this.sequencer.pause("produce")
+        this.sequencer.pause("shoot")
         this.sequencer.pause("hurt")
         this.sequencer.unpause("death")
       }
     } else {
       if (this.sequencer.isPaused("hurt")) {
+        this.sequencer.pause("shoot")
         this.sequencer.unpause("hurt")
       }
     }
@@ -173,17 +149,15 @@ export class Producer extends Component {
   unmount() {
     super.unmount()
     this.sprite.destroy()
-    this.anvil.destroy()
-    this.componentContainer.destroy()
   }
 
   getCollisionRegion(): CollisionRegion {
     return this.health <= 0 ? null : {
       center: {
-        x: this.componentContainer.x + 2,
-        y: this.componentContainer.y - 5,
+        x: this.sprite.x,
+        y: this.sprite.y,
       },
-      radius: 20,
+      radius: 10,
     }
   }
 }

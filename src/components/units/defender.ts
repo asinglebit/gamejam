@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
-import { Component } from "../core/component"
-import { Sequencer } from "../core/sequencer"
-import { createDefenderSprite } from "../utils/sprites"
-import { CollisionRegion } from "../core/collision_region"
+import { Component } from "../../core/component"
+import { Sequencer } from "../../core/sequencer"
+import { createDefenderSprite } from "../../utils/sprites"
+import { CollisionRegion } from "../../core/collision_region"
 
 
 export class Defender extends Component {

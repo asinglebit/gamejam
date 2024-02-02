@@ -1,44 +1,43 @@
 import * as PIXI from "pixi.js"
-import { Component } from "../core/component"
-import { CollisionRegion } from "../core/collision_region"
+import { Component } from "../../core/component"
+import { createSpriteProjectile } from "../../utils/sprites"
+import { CollisionRegion } from "../../core/collision_region"
 
-export class EnemyAttack extends Component {
+export class Swing extends Component {
 
-  private x: number
-  private y: number
-  private damage: number
+  public sprite: PIXI.AnimatedSprite
+  private damage: number = 5
 
   /// #if DEBUG
-  public debug_container: PIXI.Container
-  private debug_damage: PIXI.Text
+      private debug_damage: PIXI.Text
   /// #endif
 
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    damage: number
+    damage = 5
   ) {
 
     // Super constructor
-    super("EnemyAttack")
+    super("Swing")
 
     // Store arguments
     this.damage = damage
-    this.x = x
-    this.y = y
+
+    // Initialize component
+    this.sprite = createSpriteProjectile()
+    this.sprite.name = this.UID
+    this.sprite.x = x
+    this.sprite.y = y
+    container.addChild(this.sprite)
 
     /// #if DEBUG
-    this.debug_container = new PIXI.Container()
-    this.debug_container.name = this.UID
-    this.debug_container.x = x
-    this.debug_container.y = y
-    container.addChild(this.debug_container)
     const collider = new PIXI.Graphics();
     collider.lineStyle(2, 0xFF0000); 
     collider.beginFill(0xFF0000, 0.5);
     collider.drawCircle(0, 0, this.getCollisionRegion().radius);
     collider.endFill();
-    this.debug_container.addChild(collider)
+    this.sprite.addChild(collider)
     this.debug_damage = new PIXI.Text(this.damage, {
       fontFamily: "Arial",
       fontSize: 18,
@@ -46,8 +45,12 @@ export class EnemyAttack extends Component {
       align: "center",
     });
     this.debug_damage.anchor.set(0.5)
-    this.debug_container.addChild(this.debug_damage)
+    this.sprite.addChild(this.debug_damage)
     /// #endif
+  }
+
+  attack() {
+    this.shouldBeUnmounted = true
   }
 
   getDamage() {
@@ -58,19 +61,24 @@ export class EnemyAttack extends Component {
     this.shouldBeUnmounted = true
   }
 
+  pause() {
+    this.sprite.stop()
+  }
+
+  play() {
+    this.sprite.play()
+  }
+
   unmount() {
     super.unmount()
-
-    /// #if DEBUG
-    this.debug_container.destroy()
-    /// #endif
+    this.sprite.destroy()
   }
 
   getCollisionRegion(): CollisionRegion {
     return {
       center: {
-        x: this.x,
-        y: this.y
+        x: this.sprite.x,
+        y: this.sprite.y
       },
       radius: 30
     }

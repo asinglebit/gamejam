@@ -10,14 +10,14 @@ import { EventController } from "../core/event_controller"
 
 import { createSpriteUITile, createSpriteRanged, createDefenderSprite, createSpriteMelee, createSpriteProducer } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
-import { Projectile } from "../components/projectile"
-import { Enemy } from "../components/enemy"
-import { EnemyAttack } from "../components/enemy_attack"
-import { Defender } from "../components/defender"
-import { Melee } from "../components/melee"
+import { Projectile } from "../components/attacks/projectile"
+import { Enemy } from "../components/enemies/enemy"
+import { EnemyAttack } from "../components/attacks/enemy_attack"
+import { Defender } from "../components/units/defender"
+import { Melee } from "../components/units/melee"
 import { IComponent } from "../core/component"
-import { Swing } from "../components/swing"
-import { Producer } from "../components/producer"
+import { Swing } from "../components/attacks/swing"
+import { Producer } from "../components/units/producer"
 
 type UnitType = 'Range' | 'Defender' | 'Melee' | 'Producer'
 
@@ -121,7 +121,7 @@ export class Level1Stage extends Stage {
     priceProducer.y += 35
     this.containerControls.addChild(priceProducer)
     uiTileProducer.x = 0
-    uiTileProducer.interactive = true
+    uiTileProducer.eventMode = "dynamic"
     uiTileProducer.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Producer'
@@ -155,7 +155,7 @@ export class Level1Stage extends Stage {
     priceRanged.y += 35
     this.containerControls.addChild(priceRanged)
     uiTileRanged.x = 64
-    uiTileRanged.interactive = true
+    uiTileRanged.eventMode = "dynamic"
     uiTileRanged.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Range'
@@ -191,7 +191,7 @@ export class Level1Stage extends Stage {
     priceMelee.y += 35
     this.containerControls.addChild(priceMelee)
     uiTileMelee.x = 128
-    uiTileMelee.interactive = true
+    uiTileMelee.eventMode = "dynamic"
     uiTileMelee.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Melee'
@@ -225,7 +225,7 @@ export class Level1Stage extends Stage {
     priceDefender.y += 35
     this.containerControls.addChild(priceDefender)
     uiTileDefender.x = 192
-    uiTileDefender.interactive = true
+    uiTileDefender.eventMode = "dynamic"
     uiTileDefender.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Defender'

@@ -1,40 +1,50 @@
 import * as PIXI from "pixi.js"
 
-import { Component } from "../core/component"
-import { Sequencer } from "../core/sequencer"
-import { CollisionRegion } from "../core/collision_region"
-import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
-import { createSpriteMelee } from "../utils/sprites"
+import { Component } from "../../core/component"
+import { Sequencer } from "../../core/sequencer"
+import { CollisionRegion } from "../../core/collision_region"
+import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
+import { createSpriteProducer, createSpriteAnvil } from "../../utils/sprites"
 
-export class Melee extends Component {
+export class Producer extends Component {
+  private componentContainer: PIXI.Container
   private sprite: TimedAnimatedSprite
-  private onSwing: VoidFunction = null
+  private anvil: PIXI.AnimatedSprite
 
   // Sprite specifics
   private sequencer: Sequencer
-  private health: number = 20
+  private health: number = 2
+  private profitability: number = 10
+  private onEarn: (money: number) => void
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onSwing?: VoidFunction) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onEarn: (money: number) => void) {
     // Super constructor
-    super("Melee")
+    super("Producer")
 
     // Store arguments
-    this.onSwing = onSwing
+    this.onEarn = onEarn
 
     // Initialize component
-    this.sprite = createSpriteMelee()
+    this.componentContainer = new PIXI.Container()
+    this.componentContainer.x = x
+    this.componentContainer.y = y
+    this.componentContainer.scale.x = 2
+    this.componentContainer.scale.y = 2
+    container.addChild(this.componentContainer)
+    this.anvil = createSpriteAnvil()
+    this.anvil.y += 15
+    this.anvil.stop()
+    this.anvil.loop = false
+    this.componentContainer.addChild(this.anvil)
+    this.sprite = createSpriteProducer()
     this.sprite.name = this.UID
-    this.sprite.x = x
-    this.sprite.y = y
-    this.sprite.scale.x = 2
-    this.sprite.scale.y = 2
     this.sprite.loop = true
     this.sprite.play()
-    container.addChild(this.sprite)
+    this.componentContainer.addChild(this.sprite)
 
     // Filters
     const lightFilter = new PIXI.ColorMatrixFilter()
@@ -48,67 +58,36 @@ export class Melee extends Component {
     // Initialize sequencer
     this.sequencer = new Sequencer()
 
-    this.sequencer.repeatSequence("attack1", [{
-      duration: 10,
-      callback: () => {
-        this.sprite.switch("attack1")
-        this.sprite.play()
-      }
-    }, {
-      duration: 4,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.onSwing()
-      }
-    }, {
-      duration: 10,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.sprite.switch("idle")
-        this.sprite.play()
-        this.sequencer.pause("attack1")
-      }
-    }], true)
-
-    this.sequencer.repeatSequence("attack2", [{
-      duration: 10,
-      callback: () => {
-        this.sprite.switch("attack2")
-        this.sprite.play()
-      }
-    }, {
-      duration: 4,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.onSwing()
-      }
-    }, {
-      duration: 10,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.sprite.switch("idle")
-        this.sprite.play()
-        this.sequencer.pause("attack2")
-      }
-    }], true)
-
-    this.sequencer.repeatSequence("hurt_and_stun", [{
+    this.sequencer.repeatSequence("anvil", [{
       duration: 0,
       callback: () => {
-        this.sequencer.pause("attack1")
-        this.sequencer.pause("attack2")
-        this.sprite.switch("hurt")
-        this.sprite.play()
+        this.anvil.gotoAndPlay(0)
       }
-    },{
-      duration: 7,
+    }, {
+      duration: 100,
+      callback: () => {}
+    }])
+
+    this.sequencer.repeatSequence("produce", [{
+      duration: 0,
+      callback: () => {
+        this.sprite.switch("idle")
+        this.sprite.gotoAndPlay(0)
+      }
+    }, {
+      duration: 50,
       ticker: this.sprite.getTicker(),
       callback: () => {
-        this.sequencer.pause("hurt_and_stun")
-        this.sprite.switch("idle")
-        this.sprite.play()
+        this.sprite.switch("produce")
+        this.sprite.gotoAndPlay(0)
       }
-    }], true)
+    }, {
+      duration: 23,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        this.onEarn(this.profitability)
+      }
+    }])
 
     this.sequencer.repeatSequence("hurt", [{
       duration: 0,
@@ -121,27 +100,21 @@ export class Melee extends Component {
       callback: () => {
         this.sprite.filters = []
         this.sequencer.pause("hurt")
+        this.sequencer.unpause("produce")
       }
     }], true)
 
     this.sequencer.onceSequence("death", [{
       duration: 0,
       callback: () => {
-        this.sprite.switch("death")
-        this.sprite.play()
-        this.sprite.loop = false
         // More fun this way
         // this.shouldBeUnmounted = true
+        this.sprite.visible = false
+
         /// #if DEBUG
         collider.visible = false
         this.debug_health.visible = false
         /// #endif
-      }
-    }, {
-      duration: 18,
-      ticker: this.sprite.getTicker(),
-      callback: () => {
-        this.shouldBeUnmounted = true
       }
     }], true)
 
@@ -165,26 +138,18 @@ export class Melee extends Component {
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
-  
-  attack() {
-    if (this.sequencer.isPaused("attack1") && this.sequencer.isPaused("attack2")) {
-      this.sequencer.unpause(Math.random() < 0.5 ? "attack1" : "attack2")
-    }
-  }
 
   hit(damage: number) {
     this.health -= damage
     if (this.health <= 0) {
       if (this.sequencer.isPaused("death")) {
-        this.sequencer.pause("attack1")
-        this.sequencer.pause("attack2")
+        this.sequencer.pause("produce")
         this.sequencer.pause("hurt")
-        this.sequencer.pause("hurt_and_stun")
         this.sequencer.unpause("death")
       }
     } else {
-      if (this.sequencer.isPaused("hurt") && this.sequencer.isPaused("hurt_and_stun")) {
-        this.sequencer.unpause(Math.random() < 0.5 ? "hurt" : "hurt_and_stun")
+      if (this.sequencer.isPaused("hurt")) {
+        this.sequencer.unpause("hurt")
       }
     }
 
@@ -208,15 +173,17 @@ export class Melee extends Component {
   unmount() {
     super.unmount()
     this.sprite.destroy()
+    this.anvil.destroy()
+    this.componentContainer.destroy()
   }
 
   getCollisionRegion(): CollisionRegion {
     return this.health <= 0 ? null : {
       center: {
-        x: this.sprite.x + 2,
-        y: this.sprite.y - 5,
+        x: this.componentContainer.x + 2,
+        y: this.componentContainer.y - 5,
       },
-      radius: 15,
+      radius: 20,
     }
   }
 }

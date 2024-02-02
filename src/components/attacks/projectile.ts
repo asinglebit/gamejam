@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js"
-import { Component, IComponent } from "../core/component"
-import { createSpriteProjectile } from "../utils/sprites"
-import { CollisionRegion } from "../core/collision_region"
+import { Component, IComponent } from "../../core/component"
+import { createSpriteProjectile } from "../../utils/sprites"
+import { CollisionRegion } from "../../core/collision_region"
 
 export class Projectile extends Component {
 

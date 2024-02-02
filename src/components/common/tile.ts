@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
 
-import { Component } from "../core/component"
+import { Component } from "../../core/component"
 
-import { createSpriteTile } from "../utils/sprites"
+import { createSpriteTile } from "../../utils/sprites"
 
 export class Tile extends Component {
 
@@ -23,7 +23,7 @@ export class Tile extends Component {
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.interactive = true
+    this.sprite.eventMode = "dynamic"
     container.addChild(this.sprite)
 
     // Setup interactive callbacks
