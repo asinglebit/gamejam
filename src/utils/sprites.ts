@@ -12,7 +12,7 @@ export let spriteSheetUI: PIXI.Spritesheet
 export const loadSprites = async () => {
   //PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST
   //PIXI.BaseTexture.defaultOptions.mipmap = PIXI.MIPMAP_MODES.OFF
-  spriteSheet = await PIXI.Assets.load("/resources/grass/grass.json")
+  spriteSheet = await PIXI.Assets.load("/resources/main.json")
   spriteSheetRanged = await PIXI.Assets.load("/resources/characters/ranged.json")
   spriteSheetUndead = await PIXI.Assets.load("/resources/characters/undead.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
@@ -136,6 +136,23 @@ export const createSpriteUndead = () => {
   sprite.anchor.x = 0.48
   sprite.anchor.y = 0.44
   sprite.animationSpeed = ANIMATION_SPEED
+  return sprite
+}
+
+export const createDefenderSprite = () => {
+  const sprite = new PIXI.AnimatedSprite([
+    spriteSheet.textures["defender_1.png"],
+    spriteSheet.textures["defender_2.png"],
+    spriteSheet.textures["defender_3.png"],
+    spriteSheet.textures["defender_4.png"],
+    spriteSheet.textures["defender_5.png"],
+    spriteSheet.textures["defender_6.png"],
+    spriteSheet.textures["defender_7.png"],
+    spriteSheet.textures["defender_8.png"],
+  ])
+  sprite.anchor.set(0.5)
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.play()
   return sprite
 }
 

@@ -8,11 +8,14 @@ import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
-import { createSpriteUITile, createSpriteRanged } from "../utils/sprites"
+import { createSpriteUITile, createSpriteRanged, createDefenderSprite } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/projectile"
 import { Enemy } from "../components/enemy"
 import { EnemyAttack } from "../components/enemy_attack"
+import { Defender } from "../components/defender"
+
+type UnitType = 'Range' | 'Defender'
 
 export class Level1Stage extends Stage {
 
@@ -25,7 +28,7 @@ export class Level1Stage extends Stage {
   private containerControls: PIXI.Container
 
   private isPaused = false
-  private isPlacing = false
+  private placingUnitType: UnitType
   private occupiedTiles: string[] = []
 
   private timer = 190
@@ -45,33 +48,61 @@ export class Level1Stage extends Stage {
     this.containerControls.y = 45
     this.stage.addChild(this.containerControls)
 
+    // Temporary tiles
+    const uiTemporary = new PIXI.Container()
+    uiTemporary.alpha = 0.4
+    uiTemporary.visible = false;
+
+
     // Controls
-    const uiTile = createSpriteUITile()
-    uiTile.name = "uiTile"
-    this.containerControls.addChild(uiTile)
-    const uiRanged = createSpriteRanged()
+    const uiTileRanged = createSpriteUITile()
+    uiTileRanged.name = "uiTile"
+    uiTileRanged.scale.x = 1.2
+    uiTileRanged.scale.y = 1.2
+    this.containerControls.addChild(uiTileRanged)
+    const uiRanged = createSpriteRangedIdle()
     uiRanged.name = "uiRanged"
     uiRanged.scale.x = 1
     uiRanged.scale.y = 1
     uiRanged.play()
-    uiTile.addChild(uiRanged)
-    uiTile.interactive = true
-    uiTile.on('pointerdown', () => {
+    uiTileRanged.addChild(uiRanged)
+    uiTileRanged.interactive = true
+    uiTileRanged.on('pointerdown', () => {
       if (!this.isPaused) {
-        this.isPlacing = true
+        this.placingUnitType = 'Range'
+        const rangeTemp = createSpriteRangedIdle()
+        rangeTemp.play()
+        uiTemporary.addChild(rangeTemp)
       }
     })
+
+    //  Controls
+     const uiTileDefender = createSpriteUITile()
+     uiTileDefender.name = "uiTile"
+     uiTileDefender.scale.x = 1.2
+     uiTileDefender.scale.y = 1.2
+     this.containerControls.addChild(uiTileDefender)
+     const uiDefender = createDefenderSprite()
+     uiDefender.name = "uiDefender"
+     uiDefender.scale.x = 0.3
+     uiDefender.scale.y = 0.3
+     uiDefender.play()
+     uiTileDefender.addChild(uiDefender)
+     uiTileDefender.x = 128
+     uiTileDefender.interactive = true
+     uiTileDefender.on('pointerdown', () => {
+       if (!this.isPaused) {
+         this.placingUnitType = 'Defender'
+         const defenderTemp = createDefenderSprite()
+        defenderTemp.play()
+        uiTemporary.addChild(defenderTemp)
+       }
+     })
 
     // Reset layout
     this.relayout()
 
-    // Temporary tiles
-    const uiTemporary = createSpriteRanged()
-    uiTemporary.play()
-    uiTemporary.scale.x = 2
-    uiTemporary.scale.y = 2
-    uiTemporary.alpha = 0.4
-    uiTemporary.visible = false;
+
 
     // Background tiles
     for (let row_index = 0; row_index < this.cellRows; ++row_index) {
@@ -83,15 +114,17 @@ export class Level1Stage extends Stage {
 
         // Interactive callbacks
         const onPointerDown = (uid: string) => {
-          if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
-            this.isPlacing = false
+          if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
+            console.log(this.placingUnitType)
+            this.addUnit(x, y, this.placingUnitType)
+            this.placingUnitType = null
             uiTemporary.visible = false
-            this.addUnit(x, y)
+            uiTemporary.removeChildren()
             this.occupyTile(uid)
           }
         }
         const onMouseOver = (uid: string) => {
-          if (!this.isPaused && this.isPlacing && this.isTileFree(uid)) {
+          if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
             uiTemporary.x = x
             uiTemporary.y = y
             uiTemporary.visible = true
@@ -110,29 +143,37 @@ export class Level1Stage extends Stage {
       this.isPaused = true
       this.componentController.pause()
       uiRanged.stop()
-      uiTemporary.stop()
+      // uiTemporary.stop()
     })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
       uiRanged.stop()
-      uiTemporary.stop()
+      // uiTemporary.stop()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
       this.isPaused = false
       this.componentController.play()
       uiRanged.play()
-      uiTemporary.play()
+      // uiTemporary.play()
     })
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
-  addUnit(x: number, y: number) {
-    const onFireProjectile = () => {
-      this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
+  addUnit(x: number, y: number, unitType: UnitType) {
+    console.log(unitType)
+
+    if (unitType === 'Range') {
+      const onFireProjectile = () => {
+        this.componentController.add(new Projectile({ x, y }, this.fieldContainer, 5))
+      }
+      this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
     }
-    this.componentController.add(new UnitRanged({ x, y }, this.fieldContainer, onFireProjectile))
-  }
+
+    if (unitType === 'Defender') {
+      this.componentController.add(new Defender({ x, y }, this.fieldContainer))
+    }
+   }
 
   isTileFree(uid: string): boolean {
     return !this.occupiedTiles.includes(uid)
