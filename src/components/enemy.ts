@@ -203,7 +203,7 @@ export class Enemy extends Component {
         x: this.sprite.x,
         y: this.sprite.y,
       },
-      radius: 15,
+      radius: 20,
     }
   }
 }

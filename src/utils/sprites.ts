@@ -7,6 +7,7 @@ export let spriteSheet: PIXI.Spritesheet
 export let spriteSheetGrass: PIXI.Spritesheet
 export let spriteSheetRanged: PIXI.Spritesheet
 export let spriteSheetMelee: PIXI.Spritesheet
+export let spriteSheetProducer: PIXI.Spritesheet
 export let spriteSheetUndead: PIXI.Spritesheet
 export let spriteSheetUI: PIXI.Spritesheet
 
@@ -17,6 +18,7 @@ export const loadSprites = async () => {
   spriteSheetGrass = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetRanged = await PIXI.Assets.load("/resources/characters/ranged.json")
   spriteSheetMelee = await PIXI.Assets.load("/resources/characters/warrior.json")
+  spriteSheetProducer = await PIXI.Assets.load("/resources/characters/blacksmith.json")
   spriteSheetUndead = await PIXI.Assets.load("/resources/characters/undead.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
 }
@@ -161,6 +163,63 @@ export const createSpriteMelee = () => {
       spriteSheetMelee.textures["warrior-idle-16.png"],
     ],
   }, "idle")
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.anchor.x = 0.47
+  sprite.anchor.y = 0.62
+  return sprite
+}
+
+export const createSpriteProducer = () => {
+  const sprite = new TimedAnimatedSprite({
+    idle: [
+      spriteSheetProducer.textures["blacksmith-idle-1.png"],
+      spriteSheetProducer.textures["blacksmith-idle-2.png"],
+      spriteSheetProducer.textures["blacksmith-idle-3.png"],
+      spriteSheetProducer.textures["blacksmith-idle-4.png"],
+      spriteSheetProducer.textures["blacksmith-idle-5.png"],
+      spriteSheetProducer.textures["blacksmith-idle-6.png"],
+    ],
+    produce: [
+      spriteSheetProducer.textures["blacksmith-transition-5.png"],
+      spriteSheetProducer.textures["blacksmith-transition-4.png"],
+      spriteSheetProducer.textures["blacksmith-transition-3.png"],
+      spriteSheetProducer.textures["blacksmith-transition-2.png"],
+      spriteSheetProducer.textures["blacksmith-transition-1.png"],
+      spriteSheetProducer.textures["blacksmith-produce-1.png"],
+      spriteSheetProducer.textures["blacksmith-produce-2.png"],
+      spriteSheetProducer.textures["blacksmith-produce-3.png"],
+      spriteSheetProducer.textures["blacksmith-produce-4.png"],
+      spriteSheetProducer.textures["blacksmith-produce-5.png"],
+      spriteSheetProducer.textures["blacksmith-produce-6.png"],
+      spriteSheetProducer.textures["blacksmith-produce-7.png"],
+      spriteSheetProducer.textures["blacksmith-produce-8.png"],
+      spriteSheetProducer.textures["blacksmith-produce-9.png"],
+      spriteSheetProducer.textures["blacksmith-produce-10.png"],
+      spriteSheetProducer.textures["blacksmith-produce-11.png"],
+      spriteSheetProducer.textures["blacksmith-produce-12.png"],
+      spriteSheetProducer.textures["blacksmith-produce-13.png"],
+      spriteSheetProducer.textures["blacksmith-transition-1.png"],
+      spriteSheetProducer.textures["blacksmith-transition-2.png"],
+      spriteSheetProducer.textures["blacksmith-transition-3.png"],
+      spriteSheetProducer.textures["blacksmith-transition-4.png"],
+      spriteSheetProducer.textures["blacksmith-transition-5.png"],
+    ],
+  }, "idle")
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.anchor.x = 0.47
+  sprite.anchor.y = 0.62
+  return sprite
+}
+
+export const createSpriteAnvil = () => {
+  const sprite = new PIXI.AnimatedSprite([
+    spriteSheetProducer.textures["blacksmith-anvil-1.png"],
+    spriteSheetProducer.textures["blacksmith-anvil-2.png"],
+    spriteSheetProducer.textures["blacksmith-anvil-3.png"],
+    spriteSheetProducer.textures["blacksmith-anvil-4.png"],
+    spriteSheetProducer.textures["blacksmith-anvil-5.png"],
+    spriteSheetProducer.textures["blacksmith-anvil-6.png"],
+  ])
   sprite.animationSpeed = ANIMATION_SPEED
   sprite.anchor.x = 0.47
   sprite.anchor.y = 0.62

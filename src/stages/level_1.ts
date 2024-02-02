@@ -8,7 +8,7 @@ import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
-import { createSpriteUITile, createSpriteRanged, createDefenderSprite, createSpriteMelee } from "../utils/sprites"
+import { createSpriteUITile, createSpriteRanged, createDefenderSprite, createSpriteMelee, createSpriteProducer } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/projectile"
 import { Enemy } from "../components/enemy"
@@ -17,8 +17,9 @@ import { Defender } from "../components/defender"
 import { Melee } from "../components/melee"
 import { IComponent } from "../core/component"
 import { Swing } from "../components/swing"
+import { Producer } from "../components/producer"
 
-type UnitType = 'Range' | 'Defender' | 'Melee'
+type UnitType = 'Range' | 'Defender' | 'Melee' | 'Producer'
 
 export class Level1Stage extends Stage {
 
@@ -67,8 +68,37 @@ export class Level1Stage extends Stage {
     // TODO: Sprites need to be fixed
     meleeTemp.scale.x = 2
     meleeTemp.scale.y = 2
+    const producerTemp = createSpriteProducer()
+    producerTemp.stop()
+    // TODO: Sprites need to be fixed
+    producerTemp.scale.x = 2
+    producerTemp.scale.y = 2
     const defenderTemp = createDefenderSprite()
     defenderTemp.stop()
+
+    // Producer
+    const uiTileProducer = createSpriteUITile()
+    uiTileProducer.name = "uiTileProducer"
+    uiTileProducer.scale.x = 1.2
+    uiTileProducer.scale.y = 1.2
+    this.containerControls.addChild(uiTileProducer)
+    const uiProducer = createSpriteProducer()
+    uiProducer.name = "uiProducer"
+    uiProducer.x = -1
+    uiProducer.y = 5
+    uiProducer.scale.x = 0.7
+    uiProducer.scale.y = 0.7
+    uiProducer.play()
+    this.containerControls.addChild(uiProducer)
+    uiTileProducer.x = 0
+    uiTileProducer.interactive = true
+    uiTileProducer.on('pointerdown', () => {
+      if (!this.isPaused) {
+        this.placingUnitType = 'Producer'
+        uiTemporary.removeChildren()
+        uiTemporary.addChild(producerTemp)
+      }
+    })
 
     // Ranged
     const uiTileRanged = createSpriteUITile()
@@ -80,8 +110,10 @@ export class Level1Stage extends Stage {
     uiRanged.name = "uiRanged"
     uiRanged.scale.x = 1
     uiRanged.scale.y = 1
+    uiRanged.x = 64
     uiRanged.play()
-    uiTileRanged.addChild(uiRanged)
+    this.containerControls.addChild(uiRanged)
+    uiTileRanged.x = 64
     uiTileRanged.interactive = true
     uiTileRanged.on('pointerdown', () => {
       if (!this.isPaused) {
@@ -103,9 +135,10 @@ export class Level1Stage extends Stage {
     uiMelee.y = 5
     uiMelee.scale.x = 0.7
     uiMelee.scale.y = 0.7
+    uiMelee.x = 128
     uiMelee.play()
-    uiTileMelee.addChild(uiMelee)
-    uiTileMelee.x = 64
+    this.containerControls.addChild(uiMelee)
+    uiTileMelee.x = 128
     uiTileMelee.interactive = true
     uiTileMelee.on('pointerdown', () => {
       if (!this.isPaused) {
@@ -125,9 +158,10 @@ export class Level1Stage extends Stage {
     uiDefender.name = "uiDefender"
     uiDefender.scale.x = 0.3
     uiDefender.scale.y = 0.3
+    uiDefender.x = 192
     uiDefender.play()
-    uiTileDefender.addChild(uiDefender)
-    uiTileDefender.x = 128
+    this.containerControls.addChild(uiDefender)
+    uiTileDefender.x = 192
     uiTileDefender.interactive = true
     uiTileDefender.on('pointerdown', () => {
       if (!this.isPaused) {
@@ -179,24 +213,37 @@ export class Level1Stage extends Stage {
       this.componentController.pause()
       uiRanged.stop()
       uiDefender.stop()
+      uiMelee.stop()
+      uiProducer.stop()
     })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
       uiRanged.stop()
       uiDefender.stop()
+      uiMelee.stop()
+      uiProducer.stop()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
       this.isPaused = false
       this.componentController.play()
       uiRanged.play()
       uiDefender.play()
+      uiMelee.play()
+      uiProducer.play()
     })
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
   addUnit(x: number, y: number, unitType: UnitType) {
     switch (unitType) {
+      case 'Producer': {
+        const onEarn = (money: number) => {
+          console.log("Earn", money)
+        }
+        this.componentController.add(new Producer({ x, y }, this.fieldContainer, onEarn))
+        break
+      }
       case 'Melee': {
         const onSwing = () => {
           this.componentController.add(new Swing({ x, y }, this.fieldContainer, 5))
@@ -253,12 +300,13 @@ export class Level1Stage extends Stage {
   checkForHits() {
     const rangedUnits: UnitRanged[] = this.componentController.get("UnitRanged") as UnitRanged[]
     const melee: Melee[] = this.componentController.get("Melee") as Melee[]
+    const producer: Producer[] = this.componentController.get("Producer") as Producer[]
     const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
     const swings: Swing[] = this.componentController.get("Swing") as Swing[]
     const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
     const enemyAttacks: EnemyAttack[] = this.componentController.get("EnemyAttack") as EnemyAttack[]
 
-    const playerUnits = [...rangedUnits, ...melee] as IComponent[]
+    const playerUnits = [...rangedUnits, ...melee, ...producer] as IComponent[]
     const playerDamagingZones = [...projectiles, ...swings] as IComponent[]
    
     for (let i = 0; i < enemies.length; ++i) {
