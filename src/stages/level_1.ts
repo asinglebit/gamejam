@@ -53,6 +53,14 @@ export class Level1Stage extends Stage {
     uiTemporary.alpha = 0.4
     uiTemporary.visible = false;
 
+    // Temporary units
+    const rangeTemp = createSpriteRanged()
+    rangeTemp.stop()
+    // TODO: Sprites need to be fixed
+    rangeTemp.scale.x = 2
+    rangeTemp.scale.y = 2
+    const defenderTemp = createDefenderSprite()
+    defenderTemp.stop()
 
     // Controls
     const uiTileRanged = createSpriteUITile()
@@ -70,39 +78,35 @@ export class Level1Stage extends Stage {
     uiTileRanged.on('pointerdown', () => {
       if (!this.isPaused) {
         this.placingUnitType = 'Range'
-        const rangeTemp = createSpriteRanged()
-        rangeTemp.play()
+        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
         uiTemporary.addChild(rangeTemp)
       }
     })
 
-    //  Controls
-     const uiTileDefender = createSpriteUITile()
-     uiTileDefender.name = "uiTile"
-     uiTileDefender.scale.x = 1.2
-     uiTileDefender.scale.y = 1.2
-     this.containerControls.addChild(uiTileDefender)
-     const uiDefender = createDefenderSprite()
-     uiDefender.name = "uiDefender"
-     uiDefender.scale.x = 0.3
-     uiDefender.scale.y = 0.3
-     uiDefender.play()
-     uiTileDefender.addChild(uiDefender)
-     uiTileDefender.x = 128
-     uiTileDefender.interactive = true
-     uiTileDefender.on('pointerdown', () => {
-       if (!this.isPaused) {
-         this.placingUnitType = 'Defender'
-         const defenderTemp = createDefenderSprite()
-        defenderTemp.play()
-        uiTemporary.addChild(defenderTemp)
-       }
-     })
+    // Controls
+    const uiTileDefender = createSpriteUITile()
+    uiTileDefender.name = "uiTile"
+    uiTileDefender.scale.x = 1.2
+    uiTileDefender.scale.y = 1.2
+    this.containerControls.addChild(uiTileDefender)
+    const uiDefender = createDefenderSprite()
+    uiDefender.name = "uiDefender"
+    uiDefender.scale.x = 0.3
+    uiDefender.scale.y = 0.3
+    uiDefender.play()
+    uiTileDefender.addChild(uiDefender)
+    uiTileDefender.x = 128
+    uiTileDefender.interactive = true
+    uiTileDefender.on('pointerdown', () => {
+      if (!this.isPaused) {
+        this.placingUnitType = 'Defender'
+        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
+       uiTemporary.addChild(defenderTemp)
+      }
+    })
 
     // Reset layout
     this.relayout()
-
-
 
     // Background tiles
     for (let row_index = 0; row_index < this.cellRows; ++row_index) {
@@ -143,19 +147,19 @@ export class Level1Stage extends Stage {
       this.isPaused = true
       this.componentController.pause()
       uiRanged.stop()
-      // uiTemporary.stop()
+      uiDefender.stop()
     })
     this.eventController.subscribe(EVENTS.PAUSE, this.stageName, () => {
       this.isPaused = true
       this.componentController.pause()
       uiRanged.stop()
-      // uiTemporary.stop()
+      uiDefender.stop()
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
       this.isPaused = false
       this.componentController.play()
       uiRanged.play()
-      // uiTemporary.play()
+      uiDefender.play()
     })
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }

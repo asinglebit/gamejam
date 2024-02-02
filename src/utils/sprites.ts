@@ -11,8 +11,7 @@ export let spriteSheetUI: PIXI.Spritesheet
 
 // Load spritesheet
 export const loadSprites = async () => {
-  //PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST
-  //PIXI.BaseTexture.defaultOptions.mipmap = PIXI.MIPMAP_MODES.OFF
+  PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST
   spriteSheet = await PIXI.Assets.load("/resources/main.json")
   spriteSheetGrass = await PIXI.Assets.load("/resources/grass/grass.json")
   spriteSheetRanged = await PIXI.Assets.load("/resources/characters/ranged.json")
