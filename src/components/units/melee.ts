@@ -6,6 +6,7 @@ import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteMelee } from "../../utils/sprites"
 import { FONT_FAMILY } from "../../constants"
+import { soundScream, soundSlash } from "../../utils/sounds"
 
 export class Melee extends Component {
   private sprite: TimedAnimatedSprite
@@ -62,6 +63,7 @@ export class Melee extends Component {
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.onSwing()
+        soundSlash.play()
       }
     }, {
       duration: 10,
@@ -84,6 +86,7 @@ export class Melee extends Component {
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.onSwing()
+        soundSlash.play()
       }
     }, {
       duration: 10,
@@ -134,6 +137,7 @@ export class Melee extends Component {
         this.sprite.switch("death")
         this.sprite.play()
         this.sprite.loop = false
+        soundScream.play()
         // More fun this way
         // this.shouldBeUnmounted = true
         /// #if DEBUG

@@ -6,6 +6,7 @@ import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteProducer, createSpriteAnvil } from "../../utils/sprites"
 import { FONT_FAMILY } from "../../constants"
+import { soundAnvil, soundScream } from "../../utils/sounds"
 
 export class Producer extends Component {
 
@@ -86,7 +87,13 @@ export class Producer extends Component {
         this.sprite.gotoAndPlay(0)
       }
     }, {
-      duration: 23,
+      duration: 13,
+      ticker: this.sprite.getTicker(),
+      callback: () => {
+        soundAnvil.play()
+      }
+    }, {
+      duration: 10,
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.onEarn(this.profitability)
@@ -115,6 +122,7 @@ export class Producer extends Component {
         // More fun this way
         // this.shouldBeUnmounted = true
         this.sprite.visible = false
+        soundScream.play()
         /// #if DEBUG
         collider.visible = false
         this.debug_health.visible = false

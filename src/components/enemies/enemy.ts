@@ -5,6 +5,7 @@ import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteUndead } from "../../utils/sprites"
 import { FONT_FAMILY } from "../../constants"
+import { soundPunch, soundZombie1, soundZombie2, soundZombie3 } from "../../utils/sounds"
 
 export class Enemy extends Component {
   public sprite: TimedAnimatedSprite
@@ -77,6 +78,7 @@ export class Enemy extends Component {
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.onAttack({ x: this.sprite.x, y: this.sprite.y }, this.damage)
+        soundPunch.play()
       }
     }, {
       duration: 11,
@@ -104,6 +106,7 @@ export class Enemy extends Component {
         this.sequencer.unpause("walk")
         this.sprite.switch("walk")
         this.sprite.play()
+        soundZombie2.play()
       }
     }], true)
     
@@ -118,6 +121,7 @@ export class Enemy extends Component {
       callback: () => {
         this.sprite.filters = []
         this.sequencer.pause("hurt")
+        soundZombie1.play()
       }
     }], true)
 
@@ -127,6 +131,7 @@ export class Enemy extends Component {
         this.sprite.switch("death")
         this.sprite.play()
         this.sprite.loop = false
+        soundZombie3.play()
         // More fun this way
         // this.shouldBeUnmounted = true
         /// #if DEBUG

@@ -23,6 +23,7 @@ import { Sequencer } from "../core/sequencer";
 import { SecondTimer } from "../core/timer";
 import { formatSeconds } from "../utils/time";
 import { TimedAnimatedSprite } from "../core/timed_animated_sprite";
+import { soundGameOver } from "../utils/sounds";
 
 type UnitType = 'Range' | 'Defender' | 'Melee' | 'Producer'
 
@@ -430,8 +431,10 @@ export class Level1Stage extends Stage {
       this.containerControls.visible = false
       this.textBalance.visible = false
       this.textTimeRemaining.visible = false
-      this.isGameOver = true
       this.sequencer.pause("timer")
+      console.log(1)
+      this.isGameOver = true
+      soundGameOver.play()
     })
     this.eventController.subscribe(EVENTS.GAME_WON, this.stageName, () => {
       this.containerControls.visible = false
@@ -610,7 +613,9 @@ export class Level1Stage extends Stage {
       this.componentController.add(new EnemyAttack({ x, y }, this.fieldContainer, damage))
     }
     const onReachEnd = () => {
-      this.eventController.emit(EVENTS.GAME_OVER)
+      if (!this.isGameOver) {
+        this.eventController.emit(EVENTS.GAME_OVER)
+      }
     }
     this.componentController.add(new Enemy({
         x: CELL_SIZE * 13,

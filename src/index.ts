@@ -1,24 +1,13 @@
-//@ts-nocheck
 import * as PIXI from "pixi.js"
 
 import { STAGES } from "./enums/stages"
 import { StageController } from "./core/stage_controller"
 import { loadSprites } from "./utils/sprites"
 import { FONT_FAMILY } from "./constants";
-
-window.WebFont.load({
-  google: {
-    families: [FONT_FAMILY]
-  },
-  active()
-  {
-      console.log("asd")
-  },
-});
+import { soundOst } from "./utils/sounds";
 
 // Main entry point
 const startApp = () => {
-  
   // Initialize pixi
   const app = new PIXI.Application({
     background: "#111111",
@@ -37,8 +26,8 @@ const startApp = () => {
 
   // Initialize stage controller
   const stageController = new StageController(app)
-  stageController.load(STAGES.LEVEL_1)
-
+  stageController.load(STAGES.MENU)
+  soundOst.play()
   // Game loop
   app.ticker.add((delta) => {
 
@@ -50,5 +39,13 @@ const startApp = () => {
 // Wait for the page to load, load all resources and start the game
 document.addEventListener("DOMContentLoaded", async () => {
   await loadSprites()
-  startApp()  
+  // @ts-ignore
+  window.WebFont.load({
+    google: {
+      families: [FONT_FAMILY]
+    },
+    active() {
+      startApp()  
+    },
+  });
 })

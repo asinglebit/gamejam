@@ -1,9 +1,6 @@
 import * as PIXI from "pixi.js"
 
-declare module '*.tmx' {
-  const css: any;
-  export default css;
-}
+declare module '*.mp3'; // '*.wav' if you're using wav format
 
 declare global {
   type Coordinates = {
@@ -14,4 +11,6 @@ declare global {
   interface Window {
     __PIXI_APP__: PIXI.Application
   }
+
+  
 }
