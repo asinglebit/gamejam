@@ -17,7 +17,13 @@ export class StageController {
 
   constructor(app: PIXI.Application) {
     this.app = app
+
     window.addEventListener("resize", () => this.eventController.emit(EVENTS.RESIZE_APP))
+    window.addEventListener('keydown', (event) => {
+      if (event.repeat) return;
+      this.eventController.emit(EVENTS.KEY_PRESS, event.key)
+    })
+
     this.eventController.subscribe(EVENTS.CHANGE_STAGE, "StageController", (stageName: STAGES) => this.load(stageName))
     this.eventController.subscribe(EVENTS.PAUSE, "StageController", () => { this.isPaused = true })
     this.eventController.subscribe(EVENTS.UNPAUSE, "StageController", () => { this.isPaused = false })

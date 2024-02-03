@@ -20,6 +20,9 @@ import { IComponent } from "../core/component"
 import { Swing } from "../components/attacks/swing"
 import { Producer } from "../components/units/producer"
 import { Sequencer } from "../core/sequencer";
+import { SecondTimer } from "../core/timer";
+import { formatSeconds } from "../utils/time";
+import { TimedAnimatedSprite } from "../core/timed_animated_sprite";
 
 type UnitType = 'Range' | 'Defender' | 'Melee' | 'Producer'
 
@@ -36,20 +39,31 @@ export class Level1Stage extends Stage {
   private textBalance: PIXI.Text
   private textTimeRemaining: PIXI.Text
   private tilemap: CompositeTilemap
+  private timer: SecondTimer
+  private uiTileProducer: PIXI.Sprite
+  private uiTileRanged: PIXI.Sprite
+  private uiTileMelee: PIXI.Sprite
+  private uiTileDefender: PIXI.Sprite
+  private uiTemporary: PIXI.Container
+  private rangeTemp: TimedAnimatedSprite
+  private meleeTemp: TimedAnimatedSprite
+  private producerTemp: TimedAnimatedSprite
+  private defenderTemp: TimedAnimatedSprite
 
   private isPaused = false
   private isGameOver = false
   private placingUnitType: UnitType
   private occupiedTiles: string[] = []
 
-  private balance: number = 1000
+  private balance: number = 200
   private timeRemaining: number = 100
   private sequencer: Sequencer
-
+  
   constructor(app: PIXI.Application, eventController: EventController) {
     super(STAGES.LEVEL_1, app, eventController, true)
 
     this.componentController = new ComponentController()
+    this.timer = new SecondTimer()
     
     this.fieldContainer = new PIXI.Container()
     this.fieldContainer.name = "fieldContainer"
@@ -64,7 +78,7 @@ export class Level1Stage extends Stage {
     this.fieldContainer.addChild(this.tilemap)
     
     // Time remaining
-    this.textTimeRemaining = new PIXI.Text(`${this.timeRemaining}`, {
+    this.textTimeRemaining = new PIXI.Text(formatSeconds(this.timeRemaining), {
       fontFamily: FONT_FAMILY,
       fontSize: 64,
       fill: 0xFFFFFF,
@@ -99,42 +113,42 @@ export class Level1Stage extends Stage {
     this.stage.addChild(this.containerControls)
 
     // Temporary tiles
-    const uiTemporary = new PIXI.Container()
-    uiTemporary.alpha = 0.4
-    uiTemporary.visible = false;
+    this.uiTemporary = new PIXI.Container()
+    this.uiTemporary.alpha = 0.4
+    this.uiTemporary.visible = false;
     // Temporary units
-    const rangeTemp = createSpriteRanged()
-    rangeTemp.stop()
+    this.rangeTemp = createSpriteRanged()
+    this.rangeTemp.stop()
     // TODO: Sprites need to be fixed
-    rangeTemp.scale.x = 2
-    rangeTemp.scale.y = 2
-    const meleeTemp = createSpriteMelee()
-    meleeTemp.stop()
+    this.rangeTemp.scale.x = 2
+    this.rangeTemp.scale.y = 2
+    this.meleeTemp = createSpriteMelee()
+    this.meleeTemp.stop()
     // TODO: Sprites need to be fixed
-    meleeTemp.scale.x = 2
-    meleeTemp.scale.y = 2
-    const producerTemp = createSpriteProducer()
-    producerTemp.stop()
+    this.meleeTemp.scale.x = 2
+    this.meleeTemp.scale.y = 2
+    this.producerTemp = createSpriteProducer()
+    this.producerTemp.stop()
     // TODO: Sprites need to be fixed
-    producerTemp.scale.x = 2
-    producerTemp.scale.y = 2
-    const defenderTemp = createDefenderSprite()
-    defenderTemp.stop()
+    this.producerTemp.scale.x = 2
+    this.producerTemp.scale.y = 2
+    this.defenderTemp = createDefenderSprite()
+    this.defenderTemp.stop()
 
     // Producer
-    const uiTileProducer = createSpriteUITile()
-    uiTileProducer.name = "uiTileProducer"
-    uiTileProducer.scale.x = 1.6
-    uiTileProducer.scale.y = 1.6
-    uiTileProducer.on("mouseenter", () => {
-      uiTileProducer.scale.set(1.8)
+    this.uiTileProducer = createSpriteUITile()
+    this.uiTileProducer.name = "uiTileProducer"
+    this.uiTileProducer.scale.x = 1.6
+    this.uiTileProducer.scale.y = 1.6
+    this.uiTileProducer.on("mouseenter", () => {
+      this.uiTileProducer.scale.set(1.8)
       priceProducer.visible = true
     })
-    uiTileProducer.on("mouseleave", () => {
-      uiTileProducer.scale.set(1.6)
+    this.uiTileProducer.on("mouseleave", () => {
+      this.placingUnitType !== 'Producer' && this.uiTileProducer.scale.set(1.6)
       priceProducer.visible = false
     })
-    this.containerControls.addChild(uiTileProducer)
+    this.containerControls.addChild(this.uiTileProducer)
     const uiProducer = createSpriteProducer()
     uiProducer.name = "uiProducer"
     uiProducer.x = -1
@@ -155,31 +169,24 @@ export class Level1Stage extends Stage {
     priceProducer.anchor.set(0.5)
     priceProducer.y += 45
     this.containerControls.addChild(priceProducer)
-    uiTileProducer.x = 0
-    uiTileProducer.eventMode = "dynamic"
-    uiTileProducer.on('pointerdown', () => {
-      if (!this.isPaused) {
-        this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-        this.placingUnitType = 'Producer'
-        uiTemporary.removeChildren()
-        uiTemporary.addChild(producerTemp)
-      }
-    })
+    this.uiTileProducer.x = 0
+    this.uiTileProducer.eventMode = "dynamic"
+    this.uiTileProducer.on('pointerdown', () => this.selectProducer())
 
     // Ranged
-    const uiTileRanged = createSpriteUITile()
-    uiTileRanged.name = "uiTile"
-    uiTileRanged.scale.x = 1.6
-    uiTileRanged.scale.y = 1.6
-    uiTileRanged.on("mouseenter", () => {
-      uiTileRanged.scale.set(1.8)
+    this.uiTileRanged = createSpriteUITile()
+    this.uiTileRanged.name = "uiTile"
+    this.uiTileRanged.scale.x = 1.6
+    this.uiTileRanged.scale.y = 1.6
+    this.uiTileRanged.on("mouseenter", () => {
+      this.uiTileRanged.scale.set(1.8)
       priceRanged.visible = true
     })
-    uiTileRanged.on("mouseleave", () => {
-      uiTileRanged.scale.set(1.6)
+    this.uiTileRanged.on("mouseleave", () => {
+      this.placingUnitType !== 'Range' && this.uiTileRanged.scale.set(1.6)
       priceRanged.visible = false
     })
-    this.containerControls.addChild(uiTileRanged)
+    this.containerControls.addChild(this.uiTileRanged)
     const uiRanged = createSpriteRanged()
     uiRanged.name = "uiRanged"
     uiRanged.scale.x = 1.3
@@ -200,31 +207,24 @@ export class Level1Stage extends Stage {
     priceRanged.x = 80
     priceRanged.y += 45
     this.containerControls.addChild(priceRanged)
-    uiTileRanged.x = 80
-    uiTileRanged.eventMode = "dynamic"
-    uiTileRanged.on('pointerdown', () => {
-      if (!this.isPaused) {
-        this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-        this.placingUnitType = 'Range'
-        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
-        uiTemporary.addChild(rangeTemp)
-      }
-    })
+    this.uiTileRanged.x = 80
+    this.uiTileRanged.eventMode = "dynamic"
+    this.uiTileRanged.on('pointerdown', () => this.selectRanged())
 
     // Melee
-    const uiTileMelee = createSpriteUITile()
-    uiTileMelee.name = "uiTile"
-    uiTileMelee.scale.x = 1.6
-    uiTileMelee.scale.y = 1.6
-    uiTileMelee.on("mouseenter", () => {
-      uiTileMelee.scale.set(1.8)
+    this.uiTileMelee = createSpriteUITile()
+    this.uiTileMelee.name = "uiTile"
+    this.uiTileMelee.scale.x = 1.6
+    this.uiTileMelee.scale.y = 1.6
+    this.uiTileMelee.on("mouseenter", () => {
+      this.uiTileMelee.scale.set(1.8)
       priceMelee.visible = true
     })
-    uiTileMelee.on("mouseleave", () => {
-      uiTileMelee.scale.set(1.6)
+    this.uiTileMelee.on("mouseleave", () => {
+      this.placingUnitType !== 'Melee' && this.uiTileMelee.scale.set(1.6)
       priceMelee.visible = false
     })
-    this.containerControls.addChild(uiTileMelee)
+    this.containerControls.addChild(this.uiTileMelee)
     const uiMelee = createSpriteMelee()
     uiMelee.name = "uiMelee"
     uiMelee.scale.x = 0.9
@@ -246,31 +246,24 @@ export class Level1Stage extends Stage {
     priceMelee.x = 80 * 2
     priceMelee.y += 45
     this.containerControls.addChild(priceMelee)
-    uiTileMelee.x = 80 * 2
-    uiTileMelee.eventMode = "dynamic"
-    uiTileMelee.on('pointerdown', () => {
-      if (!this.isPaused) {
-        this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-        this.placingUnitType = 'Melee'
-        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
-        uiTemporary.addChild(meleeTemp)
-      }
-    })
+    this.uiTileMelee.x = 80 * 2
+    this.uiTileMelee.eventMode = "dynamic"
+    this.uiTileMelee.on('pointerdown', () => this.selectMelee())
 
     // Defender
-    const uiTileDefender = createSpriteUITile()
-    uiTileDefender.name = "uiTile"
-    uiTileDefender.scale.x = 1.6
-    uiTileDefender.scale.y = 1.6
-    uiTileDefender.on("mouseenter", () => {
-      uiTileDefender.scale.set(1.8)
+    this.uiTileDefender = createSpriteUITile()
+    this.uiTileDefender.name = "uiTile"
+    this.uiTileDefender.scale.x = 1.6
+    this.uiTileDefender.scale.y = 1.6
+    this.uiTileDefender.on("mouseenter", () => {
+      this.uiTileDefender.scale.set(1.8)
       priceDefender.visible = true
     })
-    uiTileDefender.on("mouseleave", () => {
-      uiTileDefender.scale.set(1.6)
+    this.uiTileDefender.on("mouseleave", () => {
+      this.placingUnitType !== 'Defender' && this.uiTileDefender.scale.set(1.6)
       priceDefender.visible = false
     })
-    this.containerControls.addChild(uiTileDefender)
+    this.containerControls.addChild(this.uiTileDefender)
     const uiDefender = createDefenderSprite()
     uiDefender.name = "uiDefender"
     uiDefender.scale.x = 0.35
@@ -292,16 +285,9 @@ export class Level1Stage extends Stage {
     priceDefender.x = 80 * 3
     priceDefender.y += 45
     this.containerControls.addChild(priceDefender)
-    uiTileDefender.x = 80 * 3
-    uiTileDefender.eventMode = "dynamic"
-    uiTileDefender.on('pointerdown', () => {
-      if (!this.isPaused) {
-        this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-        this.placingUnitType = 'Defender'
-        if (uiTemporary.children.length) uiTemporary.removeChildAt(0)
-       uiTemporary.addChild(defenderTemp)
-      }
-    })
+    this.uiTileDefender.x = 80 * 3
+    this.uiTileDefender.eventMode = "dynamic"
+    this.uiTileDefender.on('pointerdown', () => this.selectDefender())
 
     // Reset layout
     this.relayout()
@@ -319,16 +305,16 @@ export class Level1Stage extends Stage {
           if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
             this.spawUnit(uid, x, y, this.placingUnitType)
             this.placingUnitType = null
-            uiTemporary.visible = false
-            uiTemporary.removeChildren()
+            this.uiTemporary.visible = false
+            this.uiTemporary.removeChildren()
             this.occupyTile(uid)
           }
         }
         const onMouseOver = (uid: string) => {
           if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
-            uiTemporary.x = x
-            uiTemporary.y = y
-            uiTemporary.visible = true
+            this.uiTemporary.x = x
+            this.uiTemporary.y = y
+            this.uiTemporary.visible = true
           }
         }
 
@@ -383,18 +369,43 @@ export class Level1Stage extends Stage {
         }
       }
     }
-    this.fieldContainer.addChild(uiTemporary)
+    this.fieldContainer.addChild(this.uiTemporary)
 
     // Initialize sequencer
     this.sequencer = new Sequencer()
-    this.sequencer.repeatSequence("wave", [{
-      duration: 200,
-      callback: () => {
-        this.spawnEnemy()
-      }
-    }])
+    this.sequencer.repeatSequence("wave", [
+      ...(
+        Array(9).fill(true).map(() => ({
+            duration: 5,
+            ticker: this.timer.getTicker(),
+            callback: () => {this.spawnEnemy()}
+        }))
+      ),
+      ...(
+        Array(5).fill(true).map(() => ({
+          duration: 1,
+          ticker: this.timer.getTicker(),
+          callback: () => {this.spawnEnemy(); this.spawnEnemy()}
+        }))
+      ),
+      ...(
+        Array(6).fill(true).map(() => ({
+            duration: 5,
+            ticker: this.timer.getTicker(),
+            callback: () => {this.spawnEnemy()}
+        }))
+      ),
+      ...(
+        Array(20).fill(true).map(() => ({
+          duration: 1,
+          ticker: this.timer.getTicker(),
+          callback: () => {this.spawnEnemy(); this.spawnEnemy(); this.spawnEnemy()}
+        }))
+      ),
+    ])
     this.sequencer.repeatSequence("timer", [{
-      duration: 60,
+      duration: 1,
+      ticker: this.timer.getTicker(),
       callback: () => {
         this.timeRemaining--
         if (this.timeRemaining <= 0) {
@@ -406,7 +417,11 @@ export class Level1Stage extends Stage {
             enemy.hit(9999)
           })
         }
-        this.textTimeRemaining.text = this.timeRemaining
+        this.textTimeRemaining.text = formatSeconds(this.timeRemaining)
+        if (this.timeRemaining < 6) {
+          this.textTimeRemaining.style.fill = 0xFF4444
+          this.textTimeRemaining.style.stroke = 0x441100
+        }
       }
     }])
     
@@ -450,7 +465,76 @@ export class Level1Stage extends Stage {
       uiProducer.play()
       trees.forEach(tree => tree.play())
     })
+    this.eventController.subscribe(EVENTS.KEY_PRESS, this.stageName, (key: string) => {
+      switch (key) {
+        case "1": 
+          this.selectProducer()
+          break
+        case "2":
+          this.selectRanged()
+          break
+        case "3":
+          this.selectMelee()
+          break
+        case "4":
+          this.selectDefender()
+          break
+        default: return
+      }
+    })
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
+  }
+
+  selectProducer() {
+    if (!this.isPaused) {
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileProducer.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Producer'
+      this.uiTemporary.removeChildren()
+      this.uiTemporary.addChild(this.producerTemp)
+    }
+  }
+
+  selectMelee() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Melee'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+      this.uiTemporary.addChild(this.meleeTemp)
+    }
+  }
+
+  selectRanged() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Range'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+      this.uiTemporary.addChild(this.rangeTemp)
+    }
+  }
+
+  selectDefender() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Defender'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+     this.uiTemporary.addChild(this.defenderTemp)
+    }
   }
 
   spawUnit(uid: string, x: number, y: number, unitType: UnitType) {
@@ -501,6 +585,10 @@ export class Level1Stage extends Stage {
     }
 
     this.componentController.get("Tile").forEach((tile: Tile )=> tile.hidePlaceholder())
+    this.uiTileProducer.scale.set(1.6)
+    this.uiTileRanged.scale.set(1.6)
+    this.uiTileMelee.scale.set(1.6)
+    this.uiTileDefender.scale.set(1.6)
   }
 
   isTileFree(uid: string): boolean {
