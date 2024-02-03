@@ -12,6 +12,9 @@ export interface IComponent  {
     show?: VoidFunction
     getCollisionRegion: () => CollisionRegion
     isIntersecting: (component: IComponent) => boolean
+    hit: (damage: number) => void
+    attack: VoidFunction
+    getDamage: () => number
 }
   
 export class Component implements IComponent {
@@ -39,4 +42,12 @@ export class Component implements IComponent {
       const distance = Math.sqrt(a * a + b * b)
       return (distance <= selfCR.radius + otherCR.radius)
     } 
+
+    hit(damage: number) {}
+
+    attack() {}
+
+    getDamage() {
+        return 0
+    }
 }

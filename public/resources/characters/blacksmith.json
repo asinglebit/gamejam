@@ -1,0 +1,252 @@
+{"frames": {
+
+"blacksmith-anvil-1.png":
+{
+	"frame": {"x":3,"y":265,"w":53,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-anvil-2.png":
+{
+	"frame": {"x":227,"y":206,"w":53,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-anvil-3.png":
+{
+	"frame": {"x":227,"y":238,"w":53,"h":26},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-anvil-4.png":
+{
+	"frame": {"x":259,"y":238,"w":53,"h":26},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-anvil-5.png":
+{
+	"frame": {"x":62,"y":258,"w":53,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-anvil-6.png":
+{
+	"frame": {"x":121,"y":257,"w":53,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":53,"h":26},
+	"sourceSize": {"w":64,"h":64}
+},
+"blacksmith-idle-1.png":
+{
+	"frame": {"x":115,"y":207,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-2.png":
+{
+	"frame": {"x":59,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-3.png":
+{
+	"frame": {"x":3,"y":112,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-4.png":
+{
+	"frame": {"x":171,"y":156,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-5.png":
+{
+	"frame": {"x":171,"y":206,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-idle-6.png":
+{
+	"frame": {"x":227,"y":156,"w":50,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":44},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-1.png":
+{
+	"frame": {"x":59,"y":54,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-2.png":
+{
+	"frame": {"x":115,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-3.png":
+{
+	"frame": {"x":3,"y":163,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-4.png":
+{
+	"frame": {"x":59,"y":105,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-5.png":
+{
+	"frame": {"x":115,"y":54,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-6.png":
+{
+	"frame": {"x":171,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-7.png":
+{
+	"frame": {"x":3,"y":214,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-8.png":
+{
+	"frame": {"x":115,"y":105,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-9.png":
+{
+	"frame": {"x":171,"y":54,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-10.png":
+{
+	"frame": {"x":227,"y":3,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-11.png":
+{
+	"frame": {"x":59,"y":156,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":24,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-12.png":
+{
+	"frame": {"x":3,"y":58,"w":50,"h":48},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":48},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-produce-13.png":
+{
+	"frame": {"x":3,"y":3,"w":50,"h":49},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":49},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-1.png":
+{
+	"frame": {"x":171,"y":105,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-2.png":
+{
+	"frame": {"x":227,"y":54,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-3.png":
+{
+	"frame": {"x":59,"y":207,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-4.png":
+{
+	"frame": {"x":115,"y":156,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+},
+"blacksmith-transition-5.png":
+{
+	"frame": {"x":227,"y":105,"w":50,"h":45},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":50,"h":45},
+	"sourceSize": {"w":96,"h":96}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "blacksmith.png",
+	"format": "RGBA8888",
+	"size": {"w":294,"h":294},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:628ff0a700bb8bb79dac2cdbc3213fa7:0e26cf533301a6d39c5b7204938e2f2f:b343c5534f7c56ac8f67136ff80b674e$"
+}
+}

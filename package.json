@@ -11,13 +11,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pixi/tilemap": "^4.1.0",
+    "@types/howler": "^2.2.11",
     "effector": "^23.1.0",
+    "howler": "^2.2.4",
     "html-webpack-plugin": "^5.6.0",
     "ifdef-loader": "^2.3.2",
     "nanoid": "^5.0.4",
     "pixi.js": "^7.3.3",
+    "tmx-tiledmap": "^1.2.1",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
+    "url-loader": "^4.1.1",
     "webpack": "^5.90.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
