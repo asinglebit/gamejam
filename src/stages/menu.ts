@@ -8,7 +8,6 @@ import { EventController } from "../core/event_controller"
 import { Stage } from "../core/stage"
 
 import { Text } from "../components"
-import { soundOst } from "../utils/sounds"
 import { FONT_FAMILY } from "../constants"
 
 export class MenuStage extends Stage {

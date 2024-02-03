@@ -56,7 +56,7 @@ export class Level1Stage extends Stage {
   private placingUnitType: UnitType
   private occupiedTiles: string[] = []
 
-  private balance: number = 200
+  private balance: number = 50
   private timeRemaining: number = 100
   private sequencer: Sequencer
   

@@ -26,16 +26,16 @@ export class StageController {
     })
 
     this.eventController.subscribe(EVENTS.CHANGE_STAGE, "StageController", (stageName: STAGES) => {
-      if (this.isPaused) soundOst.fade(0.1, 0.5, 300)
+      if (this.isPaused) soundOst.fade(0.03, 0.2, 300)
       this.load(stageName)
     })
     this.eventController.subscribe(EVENTS.PAUSE, "StageController", () => {
       this.isPaused = true
-      soundOst.fade(0.5, 0.1, 300)
+      soundOst.fade(0.2, 0.03, 300)
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, "StageController", () => {
       this.isPaused = false
-      soundOst.fade(0.1, 0.5, 300)
+      soundOst.fade(0.03, 0.2, 300)
     })
     this.eventController.subscribe(EVENTS.RELOAD_STAGE, "StageController", () => {
       if (this.isPaused) soundOst.fade(0.1, 0.5, 300)

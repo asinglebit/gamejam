@@ -18,12 +18,12 @@ import sfxZombie1 from "../../public/resources/sfx/zombie_1.mp3"
 import sfxZombie2 from "../../public/resources/sfx/zombie_2.mp3"
 import sfxZombie3 from "../../public/resources/sfx/zombie_3.mp3"
 
-export const soundOst = new Howl({ src: [sfxOst], loop: true, volume: 0.5});
-export const soundAnvil = new Howl({ src: [sfxAnvil], volume: 0.5 });
-export const soundScream = new Howl({ src: [sfxScream], volume: 0.5 });
-export const soundGameOver = new Howl({ src: [sfxGameOver], volume: 0.5 });
-export const soundSlash = new Howl({ src: [sfxSlash], volume: 0.5 });
-export const soundPunch = new Howl({ src: [sfxPunch], volume: 0.5 });
-export const soundZombie1 = new Howl({ src: [sfxZombie1], volume: 0.5 });
-export const soundZombie2 = new Howl({ src: [sfxZombie2], volume: 0.5 });
-export const soundZombie3 = new Howl({ src: [sfxZombie3], volume: 0.5 });
+export const soundOst = new Howl({ src: [sfxOst], loop: true, volume: 0.2});
+export const soundAnvil = new Howl({ src: [sfxAnvil], volume: 0.05 });
+export const soundScream = new Howl({ src: [sfxScream], volume: 0.05 });
+export const soundGameOver = new Howl({ src: [sfxGameOver], volume: 0.2 });
+export const soundSlash = new Howl({ src: [sfxSlash], volume: 0.05 });
+export const soundPunch = new Howl({ src: [sfxPunch], volume: 0.05 });
+export const soundZombie1 = new Howl({ src: [sfxZombie1], volume: 0.05 });
+export const soundZombie2 = new Howl({ src: [sfxZombie2], volume: 0.05 });
+export const soundZombie3 = new Howl({ src: [sfxZombie3], volume: 0.05 });
