@@ -305,10 +305,6 @@ export class Level1Stage extends Stage {
         const onPointerDown = (uid: string) => {
           if (!this.isPaused && this.placingUnitType && this.isTileFree(uid)) {
             this.spawUnit(uid, x, y, this.placingUnitType)
-            this.placingUnitType = null
-            this.uiTemporary.visible = false
-            this.uiTemporary.removeChildren()
-            this.occupyTile(uid)
           }
         }
         const onMouseOver = (uid: string) => {
@@ -587,6 +583,10 @@ export class Level1Stage extends Stage {
       }
     }
 
+    this.placingUnitType = null
+    this.uiTemporary.visible = false
+    this.uiTemporary.removeChildren()
+    this.occupyTile(uid)
     this.componentController.get("Tile").forEach((tile: Tile )=> tile.hidePlaceholder())
     this.uiTileProducer.scale.set(1.6)
     this.uiTileRanged.scale.set(1.6)
