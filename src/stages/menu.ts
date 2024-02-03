@@ -54,7 +54,7 @@ export class MenuStage extends Stage {
     // List of levels
     this.componentController.add(
       new Text(
-        { text: "Only level.", color: 0x888888 },
+        { text: "The only level.", color: 0x888888 },
         { x: 0, y: 180 },
         this.menuContainer,
         () => this.eventController.emit(EVENTS.CHANGE_STAGE, STAGES.LEVEL_1)
