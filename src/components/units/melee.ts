@@ -5,25 +5,28 @@ import { Sequencer } from "../../core/sequencer"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteMelee } from "../../utils/sprites"
+import { FONT_FAMILY } from "../../constants"
 
 export class Melee extends Component {
   private sprite: TimedAnimatedSprite
-  private onSwing: VoidFunction = null
+  private onSwing: VoidFunction
+  private onDie: VoidFunction
 
   // Sprite specifics
   private sequencer: Sequencer
-  private health: number = 20
+  private health: number = 15
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onSwing?: VoidFunction) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onSwing?: VoidFunction, onDie?: VoidFunction) {
     // Super constructor
     super("Melee")
 
     // Store arguments
     this.onSwing = onSwing
+    this.onDie = onDie
 
     // Initialize component
     this.sprite = createSpriteMelee()
@@ -127,6 +130,7 @@ export class Melee extends Component {
     this.sequencer.onceSequence("death", [{
       duration: 0,
       callback: () => {
+        this.onDie && this.onDie()
         this.sprite.switch("death")
         this.sprite.play()
         this.sprite.loop = false
@@ -150,13 +154,15 @@ export class Melee extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(2, -5, this.getCollisionRegion().radius)
     collider.endFill()
+    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
-      fontFamily: "Arial",
-      fontSize: 18,
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
       fill: 0xffffff,
       align: "center",
-      strokeThickness: 2,
+      stroke: 0x14402f,
+      strokeThickness: 5
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
@@ -216,7 +222,7 @@ export class Melee extends Component {
         x: this.sprite.x + 2,
         y: this.sprite.y - 5,
       },
-      radius: 15,
+      radius: 30,
     }
   }
 }

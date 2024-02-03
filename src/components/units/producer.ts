@@ -5,8 +5,10 @@ import { Sequencer } from "../../core/sequencer"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteProducer, createSpriteAnvil } from "../../utils/sprites"
+import { FONT_FAMILY } from "../../constants"
 
 export class Producer extends Component {
+
   private componentContainer: PIXI.Container
   private sprite: TimedAnimatedSprite
   private anvil: PIXI.AnimatedSprite
@@ -16,17 +18,19 @@ export class Producer extends Component {
   private health: number = 2
   private profitability: number = 10
   private onEarn: (money: number) => void
+  private onDie: VoidFunction
 
   /// #if DEBUG
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onEarn: (money: number) => void) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onEarn: (money: number) => void, onDie?: VoidFunction) {
     // Super constructor
     super("Producer")
 
     // Store arguments
     this.onEarn = onEarn
+    this.onDie = onDie
 
     // Initialize component
     this.componentContainer = new PIXI.Container()
@@ -107,10 +111,10 @@ export class Producer extends Component {
     this.sequencer.onceSequence("death", [{
       duration: 0,
       callback: () => {
+        this.onDie && this.onDie()
         // More fun this way
         // this.shouldBeUnmounted = true
         this.sprite.visible = false
-
         /// #if DEBUG
         collider.visible = false
         this.debug_health.visible = false
@@ -123,13 +127,15 @@ export class Producer extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(2, -5, this.getCollisionRegion().radius)
     collider.endFill()
+    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
-      fontFamily: "Arial",
-      fontSize: 18,
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
       fill: 0xffffff,
       align: "center",
-      strokeThickness: 2,
+      stroke: 0x14402f,
+      strokeThickness: 5
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
@@ -183,7 +189,7 @@ export class Producer extends Component {
         x: this.componentContainer.x + 2,
         y: this.componentContainer.y - 5,
       },
-      radius: 20,
+      radius: 30,
     }
   }
 }

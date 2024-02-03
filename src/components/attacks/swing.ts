@@ -2,20 +2,18 @@ import * as PIXI from "pixi.js"
 import { Component } from "../../core/component"
 import { createSpriteProjectile } from "../../utils/sprites"
 import { CollisionRegion } from "../../core/collision_region"
+import { FONT_FAMILY } from "../../constants"
 
 export class Swing extends Component {
 
-  public sprite: PIXI.AnimatedSprite
-  private damage: number = 5
-
-  /// #if DEBUG
-      private debug_damage: PIXI.Text
-  /// #endif
+  private x: number
+  private y: number
+  private damage: number = 4
 
   constructor(
     { x, y }: Coordinates,
     container: PIXI.Container,
-    damage = 5
+    damage = 4
   ) {
 
     // Super constructor
@@ -23,30 +21,8 @@ export class Swing extends Component {
 
     // Store arguments
     this.damage = damage
-
-    // Initialize component
-    this.sprite = createSpriteProjectile()
-    this.sprite.name = this.UID
-    this.sprite.x = x
-    this.sprite.y = y
-    container.addChild(this.sprite)
-
-    /// #if DEBUG
-    const collider = new PIXI.Graphics();
-    collider.lineStyle(2, 0xFF0000); 
-    collider.beginFill(0xFF0000, 0.5);
-    collider.drawCircle(0, 0, this.getCollisionRegion().radius);
-    collider.endFill();
-    this.sprite.addChild(collider)
-    this.debug_damage = new PIXI.Text(this.damage, {
-      fontFamily: "Arial",
-      fontSize: 18,
-      fill: 0xFFFFFF,
-      align: "center",
-    });
-    this.debug_damage.anchor.set(0.5)
-    this.sprite.addChild(this.debug_damage)
-    /// #endif
+    this.x = x
+    this.y = y
   }
 
   attack() {
@@ -61,26 +37,17 @@ export class Swing extends Component {
     this.shouldBeUnmounted = true
   }
 
-  pause() {
-    this.sprite.stop()
-  }
-
-  play() {
-    this.sprite.play()
-  }
-
   unmount() {
     super.unmount()
-    this.sprite.destroy()
   }
 
   getCollisionRegion(): CollisionRegion {
     return {
       center: {
-        x: this.sprite.x,
-        y: this.sprite.y
+        x: this.x,
+        y: this.y
       },
-      radius: 30
+      radius: 40
     }
   }
 }

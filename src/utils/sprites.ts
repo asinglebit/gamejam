@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
+import { CompositeTilemap } from '@pixi/tilemap';
 
-import { ANIMATION_SPEED } from "../constants"
+import { ANIMATION_SPEED, CELL_SIZE } from "../constants"
 import { TimedAnimatedSprite } from "../core/timed_animated_sprite"
 
 export let spriteSheet: PIXI.Spritesheet
@@ -9,6 +10,7 @@ export let spriteSheetRanged: PIXI.Spritesheet
 export let spriteSheetMelee: PIXI.Spritesheet
 export let spriteSheetProducer: PIXI.Spritesheet
 export let spriteSheetUndead: PIXI.Spritesheet
+export let spriteSheetProps: PIXI.Spritesheet
 export let spriteSheetUI: PIXI.Spritesheet
 
 // Load spritesheet
@@ -20,7 +22,103 @@ export const loadSprites = async () => {
   spriteSheetMelee = await PIXI.Assets.load("/resources/characters/warrior.json")
   spriteSheetProducer = await PIXI.Assets.load("/resources/characters/blacksmith.json")
   spriteSheetUndead = await PIXI.Assets.load("/resources/characters/undead.json")
+  spriteSheetProps = await PIXI.Assets.load("/resources/props/props.json")
   spriteSheetUI = await PIXI.Assets.load("/resources/ui/ui.json")
+}
+
+export const createTileMap = () => {
+  const tilemap = new CompositeTilemap()
+  for (let row_index = 0; row_index < 40; ++row_index) {
+    for (let column_index = 0; column_index < 40; ++column_index) {
+      const variation = Math.floor(Math.random() * 4) + 1
+      tilemap.tile(`grass_tile_${variation}.png`, column_index * CELL_SIZE, row_index * CELL_SIZE)
+    }
+  }  
+  return tilemap
+}
+
+export const createSpriteTree = () => {
+  const variation = Math.random() > 0.5 ? 1 : 2
+  const sprite = new PIXI.AnimatedSprite([
+    spriteSheetProps.textures[`Animated Tree${variation}_frame1.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame2.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame3.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame4.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame5.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame6.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame7.png`],
+    spriteSheetProps.textures[`Animated Tree${variation}_frame8.png`],
+  ])
+  sprite.animationSpeed = ANIMATION_SPEED
+  sprite.anchor.x = 0.47
+  sprite.anchor.y = 0.62
+  sprite.play()
+  return sprite
+}
+
+export const createSpriteShadow = () => {
+  const sprite = new PIXI.Sprite(spriteSheetProps.textures["char-shadow.png"])
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.5
+  return sprite
+}
+
+export const createRandomProp = () => {
+  const props = [
+    `flowers_1.png`,
+    `flowers_2.png`,
+    `flowers_3.png`,
+    `flowers_4.png`,
+    `flowers_5.png`,
+    `flowers_6.png`,
+    `flowers_7.png`,
+    `flowers_8.png`,
+    `flowers_9.png`,
+    `flowers_10.png`,
+    `flowers_11.png`,
+    `flowers_12.png`,
+    `flowers_13.png`,
+    `flowers_14.png`,
+    `flowers_15.png`,
+    `flowers_16.png`,
+    `flowers_17.png`,
+    `flowers_18.png`,
+    `flowers_19.png`,
+    `grass as sprites - lighter_1.png`,
+    `grass as sprites - lighter_2.png`,
+    `grass as sprites - lighter_3.png`,
+    `grass as sprites - lighter_4.png`,
+    `grass as sprites - lighter_5.png`,
+    `grass as sprites - lighter_6.png`,
+    `grass as sprites - lighter_7.png`,
+    `grass as sprites - lighter_8.png`,
+    `grass as sprites - lighter_9.png`,
+    `grass as sprites - lighter_10.png`,
+    `grass as sprites - lighter_11.png`,
+    `grass as sprites - lighter_12.png`,
+    `grass as sprites - lighter_13.png`,
+    `grass as sprites - lighter_14.png`,
+    `grass as sprites - lighter_15.png`,
+    `grass as sprites - lighter_16.png`,
+    `grass as sprites - lighter_17.png`,
+    `grass as sprites - lighter_18.png`,
+    `grass as sprites - lighter_19.png`,
+    `grass as sprites - lighter_20.png`,
+    `rocks-color scheme2-grass_1.png`,
+    `rocks-color scheme2-grass_2.png`,
+    `rocks-color scheme2-grass_3.png`,
+    `rocks-color scheme2-grass_4.png`,
+    `rocks-color scheme2-grass_5.png`,
+    `rocks-color scheme2-grass_6.png`,
+    `rocks-color scheme2-grass_7.png`,
+    `rocks-color scheme2-grass_8.png`,
+    `rocks-color scheme2-grass_9.png`,
+  ]
+  const variation = Math.floor(Math.random() * props.length)
+  const sprite = new PIXI.Sprite(spriteSheetProps.textures[props[variation]])
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.5
+  return sprite
 }
 
 export const createSpriteRanged = () => {
@@ -291,17 +389,40 @@ export const createSpriteUndead = () => {
 }
 
 export const createDefenderSprite = () => {
-  const sprite = new PIXI.AnimatedSprite([
-    spriteSheet.textures["defender_1.png"],
-    spriteSheet.textures["defender_2.png"],
-    spriteSheet.textures["defender_3.png"],
-    spriteSheet.textures["defender_4.png"],
-    spriteSheet.textures["defender_5.png"],
-    spriteSheet.textures["defender_6.png"],
-    spriteSheet.textures["defender_7.png"],
-    spriteSheet.textures["defender_8.png"],
-  ])
-  sprite.anchor.set(0.5)
+  const sprite = new TimedAnimatedSprite({
+    idle: [
+      spriteSheet.textures["defender_1.png"],
+      spriteSheet.textures["defender_2.png"],
+      spriteSheet.textures["defender_3.png"],
+      spriteSheet.textures["defender_4.png"],
+      spriteSheet.textures["defender_5.png"],
+      spriteSheet.textures["defender_6.png"],
+      spriteSheet.textures["defender_7.png"],
+      spriteSheet.textures["defender_8.png"],
+    ],
+    hurt: [
+      spriteSheet.textures["defender_1.png"],
+      spriteSheet.textures["defender_2.png"],
+      spriteSheet.textures["defender_3.png"],
+      spriteSheet.textures["defender_4.png"],
+      spriteSheet.textures["defender_5.png"],
+      spriteSheet.textures["defender_6.png"],
+      spriteSheet.textures["defender_7.png"],
+      spriteSheet.textures["defender_8.png"],
+    ],
+    death: [
+      spriteSheet.textures["defender_1.png"],
+      spriteSheet.textures["defender_2.png"],
+      spriteSheet.textures["defender_3.png"],
+      spriteSheet.textures["defender_4.png"],
+      spriteSheet.textures["defender_5.png"],
+      spriteSheet.textures["defender_6.png"],
+      spriteSheet.textures["defender_7.png"],
+      spriteSheet.textures["defender_8.png"],
+    ]
+  }, "idle")
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.7
   sprite.animationSpeed = ANIMATION_SPEED
   sprite.play()
   return sprite

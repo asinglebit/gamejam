@@ -1,8 +1,20 @@
+//@ts-nocheck
 import * as PIXI from "pixi.js"
 
 import { STAGES } from "./enums/stages"
 import { StageController } from "./core/stage_controller"
 import { loadSprites } from "./utils/sprites"
+import { FONT_FAMILY } from "./constants";
+
+window.WebFont.load({
+  google: {
+    families: [FONT_FAMILY]
+  },
+  active()
+  {
+      console.log("asd")
+  },
+});
 
 // Main entry point
 const startApp = () => {
@@ -38,5 +50,5 @@ const startApp = () => {
 // Wait for the page to load, load all resources and start the game
 document.addEventListener("DOMContentLoaded", async () => {
   await loadSprites()
-  startApp()
+  startApp()  
 })

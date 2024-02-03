@@ -4,6 +4,7 @@ import { Component } from "../../core/component"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteUndead } from "../../utils/sprites"
+import { FONT_FAMILY } from "../../constants"
 
 export class Enemy extends Component {
   public sprite: TimedAnimatedSprite
@@ -140,13 +141,15 @@ export class Enemy extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(0, 0, this.getCollisionRegion().radius)
     collider.endFill()
+    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}\nDMG:${this.damage}/${this.attackSpeed}`, {
-      fontFamily: "Arial",
-      fontSize: 18,
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
       fill: 0xffffff,
       align: "center",
-      strokeThickness: 2,
+      stroke: 0x14402f,
+      strokeThickness: 5
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 50
@@ -162,6 +165,9 @@ export class Enemy extends Component {
   }
 
   hit(damage: number) {
+    // We are dead already
+    if (this.health <= 0) return
+    
     this.health -= damage
     if (this.health <= 0) {
       this.sequencer.pause("attack")
@@ -203,7 +209,7 @@ export class Enemy extends Component {
         x: this.sprite.x,
         y: this.sprite.y,
       },
-      radius: 20,
+      radius: 30,
     }
   }
 }

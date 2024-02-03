@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js"
 import { Component, IComponent } from "../../core/component"
 import { createSpriteProjectile } from "../../utils/sprites"
 import { CollisionRegion } from "../../core/collision_region"
+import { FONT_FAMILY } from "../../constants"
 
 export class Projectile extends Component {
 
@@ -33,20 +34,22 @@ export class Projectile extends Component {
     container.addChild(this.sprite)
 
     /// #if DEBUG
-        const collider = new PIXI.Graphics();
-        collider.lineStyle(2, 0xFF0000); 
-        collider.beginFill(0xFF0000, 0.5);
-        collider.drawCircle(0, 0, this.getCollisionRegion().radius);
-        collider.endFill();
-        this.sprite.addChild(collider)
-        this.debug_damage = new PIXI.Text(this.damage, {
-          fontFamily: "Arial",
-          fontSize: 18,
-          fill: 0xFFFFFF,
-          align: "center",
-        });
-        this.debug_damage.anchor.set(0.5)
-        this.sprite.addChild(this.debug_damage)
+    const collider = new PIXI.Graphics();
+    collider.lineStyle(2, 0xFF0000); 
+    collider.beginFill(0xFF0000, 0.5);
+    collider.drawCircle(0, 0, this.getCollisionRegion().radius);
+    collider.endFill();
+    this.sprite.addChild(collider)
+    this.debug_damage = new PIXI.Text(this.damage, {
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
+      fill: 0xFFFFFF,
+      align: "center",
+      stroke: 0x14402f,
+      strokeThickness: 5
+    });
+    this.debug_damage.anchor.set(0.5)
+    this.sprite.addChild(this.debug_damage)
     /// #endif
   }
   

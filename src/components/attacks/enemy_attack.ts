@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../../core/component"
 import { CollisionRegion } from "../../core/collision_region"
+import { FONT_FAMILY } from "../../constants"
 
 export class EnemyAttack extends Component {
 
@@ -40,10 +41,12 @@ export class EnemyAttack extends Component {
     collider.endFill();
     this.debug_container.addChild(collider)
     this.debug_damage = new PIXI.Text(this.damage, {
-      fontFamily: "Arial",
-      fontSize: 18,
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
       fill: 0xFFFFFF,
       align: "center",
+      stroke: 0x14402f,
+      strokeThickness: 5
     });
     this.debug_damage.anchor.set(0.5)
     this.debug_container.addChild(this.debug_damage)

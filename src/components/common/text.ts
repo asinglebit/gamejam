@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 
 import { Component } from "../../core/component"
+import { FONT_FAMILY } from "../../constants"
 
 type TextProps = {
   text: string
@@ -24,10 +25,12 @@ export class Text extends Component {
 
     // Initialize component
     this.sprite = new PIXI.Text(text, {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: color,
+      fontFamily: FONT_FAMILY,
+      fontSize: 42,
+      fill: 0xFFFFFF,
       align: "center",
+      stroke: 0x14402f,
+      strokeThickness: 7 
     })
     this.sprite.name = this.UID
     const bounds = this.sprite.getLocalBounds()

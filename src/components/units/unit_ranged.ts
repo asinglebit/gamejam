@@ -5,10 +5,13 @@ import { Sequencer } from "../../core/sequencer"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
 import { createSpriteRanged } from "../../utils/sprites"
+import { FONT_FAMILY } from "../../constants"
 
 export class UnitRanged extends Component {
+
   private sprite: TimedAnimatedSprite
   private onFireProjectile: VoidFunction = null
+  private onDie: VoidFunction
 
   // Sprite specifics
   private sequencer: Sequencer
@@ -18,12 +21,13 @@ export class UnitRanged extends Component {
   private debug_health: PIXI.Text
   /// #endif
 
-  constructor({ x, y }: Coordinates, container: PIXI.Container, onFireProjectile?: VoidFunction) {
+  constructor({ x, y }: Coordinates, container: PIXI.Container, onFireProjectile?: VoidFunction, onDie?: VoidFunction) {
     // Super constructor
     super("UnitRanged")
 
     // Store arguments
     this.onFireProjectile = onFireProjectile
+    this.onDie = onDie
 
     // Initialize component
     this.sprite = createSpriteRanged()
@@ -81,6 +85,7 @@ export class UnitRanged extends Component {
     this.sequencer.onceSequence("death", [{
       duration: 0,
       callback: () => {
+        this.onDie && this.onDie()
         this.sprite.switch("death")
         this.sprite.play()
         this.sprite.loop = false
@@ -98,13 +103,15 @@ export class UnitRanged extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(0, 0, this.getCollisionRegion().radius)
     collider.endFill()
+    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
-      fontFamily: "Arial",
-      fontSize: 18,
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
       fill: 0xffffff,
       align: "center",
-      strokeThickness: 2,
+      stroke: 0x14402f,
+      strokeThickness: 5
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
@@ -157,7 +164,7 @@ export class UnitRanged extends Component {
         x: this.sprite.x,
         y: this.sprite.y,
       },
-      radius: 10,
+      radius: 30,
     }
   }
 }

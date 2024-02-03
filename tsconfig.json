@@ -8,5 +8,8 @@
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "exclude": [
+    "src/**/*.tsx",
+  ]
 }
