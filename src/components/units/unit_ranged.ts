@@ -43,10 +43,10 @@ export class UnitRanged extends Component {
     // Initialize sequencer
     this.sequencer = new Sequencer()
 
-    this.sequencer.repeatSequence("shoot", [{
+    this.sequencer.repeatSequence("attack_2", [{
       duration: 100,
       callback: () => {
-        this.sprite.switch("attack")
+        this.sprite.switch("attack_2")
         this.sprite.play()
       }
     }, {
@@ -75,8 +75,8 @@ export class UnitRanged extends Component {
       ticker: this.sprite.getTicker(),
       callback: () => {
         this.sequencer.pause("hurt")
-        this.sequencer.unpause("shoot")
-        this.sequencer.reset("shoot")
+        this.sequencer.unpause("attack_2")
+        this.sequencer.reset("attack_2")
         this.sprite.switch("idle")
         this.sprite.play()
       }
@@ -125,13 +125,13 @@ export class UnitRanged extends Component {
     this.health -= damage
     if (this.health <= 0) {
       if (this.sequencer.isPaused("death")) {
-        this.sequencer.pause("shoot")
+        this.sequencer.pause("attack_2")
         this.sequencer.pause("hurt")
         this.sequencer.unpause("death")
       }
     } else {
       if (this.sequencer.isPaused("hurt")) {
-        this.sequencer.pause("shoot")
+        this.sequencer.pause("attack_2")
         this.sequencer.unpause("hurt")
       }
     }

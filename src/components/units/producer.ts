@@ -4,7 +4,7 @@ import { Component } from "../../core/component"
 import { Sequencer } from "../../core/sequencer"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
-import { createSpriteProducer, createSpriteAnvil } from "../../utils/sprites"
+import { createSpriteBlacksmith, createSpriteAnvil } from "../../utils/sprites"
 import { FONT_FAMILY } from "../../constants"
 import { soundAnvil, soundScream } from "../../utils/sounds"
 
@@ -45,7 +45,7 @@ export class Producer extends Component {
     this.anvil.stop()
     this.anvil.loop = false
     this.componentContainer.addChild(this.anvil)
-    this.sprite = createSpriteProducer()
+    this.sprite = createSpriteBlacksmith()
     this.sprite.name = this.UID
     this.sprite.loop = true
     this.sprite.play()

@@ -1,5 +1,7 @@
 const path = require("path")
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env) => ({
   entry: "./src/index.ts",
@@ -17,13 +19,26 @@ module.exports = (env) => ({
         ],
         exclude: /node_modules/,
       },
-      { test: /\.wav$/, use: "url-loader" },
-      { test: /\.mp3$/, use: "url-loader" },
+      { test: /\.(json|mp3)$/, use: "url-loader" },
     ],
   },
   mode: "development",
   resolve: {
     extensions: [".ts", ".js"],
   },
-  plugins: [new HtmlWebpackPlugin({ template: "./public/index.html" })],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'src'),
+    },
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({ title:"Game Title", template: "./public/index.html" }),
+    new CopyPlugin({
+      patterns: [
+        { from: "src/assets/audio", to: "assets/audio" },
+        { from: "src/assets/textures", to: "assets/textures" },
+      ],
+    })
+  ],
 })

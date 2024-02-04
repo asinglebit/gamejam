@@ -9,7 +9,7 @@ import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
-import { createSpriteUITile, createSpriteRanged, createDefenderSprite, createSpriteMelee, createSpriteProducer, createSpriteTree, createRandomProp, createTileMap } from "../utils/sprites"
+import { createSpriteUIButton, createSpriteRanged, createSpriteStoneGolem, createSpriteWarrior, createSpriteBlacksmith, createSpriteTree, createRandomProp, createTileMap } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/attacks/projectile"
 import { Enemy } from "../components/enemies/enemy"
@@ -74,8 +74,11 @@ export class Level1Stage extends Stage {
     // Tilemap
     this.tilemap = createTileMap()
     this.tilemap.zIndex = -1
-    this.tilemap.x = (this.sceneWidth / 2) - 40 * CELL_HALF_SIZE
-    this.tilemap.y = (this.sceneHeight / 2) - 40 * CELL_HALF_SIZE
+    this.tilemap.x = (this.sceneWidth / 2) - 20 * CELL_HALF_SIZE
+    this.tilemap.y = (this.sceneHeight / 2) - 20 * CELL_HALF_SIZE
+    this.tilemap.scale.x = 2
+    this.tilemap.scale.y = 2
+
     this.fieldContainer.addChild(this.tilemap)
     
     // Time remaining
@@ -123,21 +126,21 @@ export class Level1Stage extends Stage {
     // TODO: Sprites need to be fixed
     this.rangeTemp.scale.x = 2
     this.rangeTemp.scale.y = 2
-    this.meleeTemp = createSpriteMelee()
+    this.meleeTemp = createSpriteWarrior()
     this.meleeTemp.stop()
     // TODO: Sprites need to be fixed
     this.meleeTemp.scale.x = 2
     this.meleeTemp.scale.y = 2
-    this.producerTemp = createSpriteProducer()
+    this.producerTemp = createSpriteBlacksmith()
     this.producerTemp.stop()
     // TODO: Sprites need to be fixed
     this.producerTemp.scale.x = 2
     this.producerTemp.scale.y = 2
-    this.defenderTemp = createDefenderSprite()
+    this.defenderTemp = createSpriteStoneGolem()
     this.defenderTemp.stop()
 
     // Producer
-    this.uiTileProducer = createSpriteUITile()
+    this.uiTileProducer = createSpriteUIButton()
     this.uiTileProducer.name = "uiTileProducer"
     this.uiTileProducer.scale.x = 1.6
     this.uiTileProducer.scale.y = 1.6
@@ -150,7 +153,7 @@ export class Level1Stage extends Stage {
       priceProducer.visible = false
     })
     this.containerControls.addChild(this.uiTileProducer)
-    const uiProducer = createSpriteProducer()
+    const uiProducer = createSpriteBlacksmith()
     uiProducer.name = "uiProducer"
     uiProducer.x = -1
     uiProducer.y = 10
@@ -175,7 +178,7 @@ export class Level1Stage extends Stage {
     this.uiTileProducer.on('pointerdown', () => this.selectProducer())
 
     // Ranged
-    this.uiTileRanged = createSpriteUITile()
+    this.uiTileRanged = createSpriteUIButton()
     this.uiTileRanged.name = "uiTile"
     this.uiTileRanged.scale.x = 1.6
     this.uiTileRanged.scale.y = 1.6
@@ -213,7 +216,7 @@ export class Level1Stage extends Stage {
     this.uiTileRanged.on('pointerdown', () => this.selectRanged())
 
     // Melee
-    this.uiTileMelee = createSpriteUITile()
+    this.uiTileMelee = createSpriteUIButton()
     this.uiTileMelee.name = "uiTile"
     this.uiTileMelee.scale.x = 1.6
     this.uiTileMelee.scale.y = 1.6
@@ -226,7 +229,7 @@ export class Level1Stage extends Stage {
       priceMelee.visible = false
     })
     this.containerControls.addChild(this.uiTileMelee)
-    const uiMelee = createSpriteMelee()
+    const uiMelee = createSpriteWarrior()
     uiMelee.name = "uiMelee"
     uiMelee.scale.x = 0.9
     uiMelee.scale.y = 0.9
@@ -252,7 +255,7 @@ export class Level1Stage extends Stage {
     this.uiTileMelee.on('pointerdown', () => this.selectMelee())
 
     // Defender
-    this.uiTileDefender = createSpriteUITile()
+    this.uiTileDefender = createSpriteUIButton()
     this.uiTileDefender.name = "uiTile"
     this.uiTileDefender.scale.x = 1.6
     this.uiTileDefender.scale.y = 1.6
@@ -265,7 +268,7 @@ export class Level1Stage extends Stage {
       priceDefender.visible = false
     })
     this.containerControls.addChild(this.uiTileDefender)
-    const uiDefender = createDefenderSprite()
+    const uiDefender = createSpriteStoneGolem()
     uiDefender.name = "uiDefender"
     uiDefender.scale.x = 0.35
     uiDefender.scale.y = 0.35
