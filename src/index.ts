@@ -26,7 +26,7 @@ const startApp = () => {
 
   // Initialize stage controller
   const stageController = new StageController(app)
-  stageController.load(STAGES.MENU)
+  stageController.load(STAGES.LEVEL_1)
   soundOst.play()
   // Game loop
   app.ticker.add((delta) => {

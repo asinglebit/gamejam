@@ -37,10 +37,11 @@ export const loadSprites = async () => {
   spritesheets.terrain.grasslands = await PIXI.Assets.load("/assets/textures/terrain/grasslands.json")
 }
 
-export const createTileMap = () => {
+export const createTileMap = (center: Coordinates) => {
   const tilemap = new CompositeTilemap()
-  for (let row_index = 0; row_index < 40; ++row_index) {
-    for (let column_index = 0; column_index < 40; ++column_index) {
+  const tilemapRows = 40
+  for (let row_index = 0; row_index < tilemapRows; ++row_index) {
+    for (let column_index = 0; column_index < tilemapRows; ++column_index) {
       const grassTiles = [
         "grass1_to_transp_7.png",
         "grass1_to_transp_11.png",
@@ -54,7 +55,12 @@ export const createTileMap = () => {
       const variation = Math.floor(Math.random() * 7)
       tilemap.tile(grassTiles[variation], column_index * 32, row_index * 32)
     }
-  }  
+  }
+  tilemap.zIndex = -99999
+  tilemap.scale.x = 1
+  tilemap.scale.y = 1  
+  tilemap.x = center.x - tilemapRows * tilemap.scale.x * 32 / 2
+  tilemap.y = center.y - tilemapRows * tilemap.scale.y * 32 / 2
   return tilemap
 }
 
@@ -71,8 +77,8 @@ export const createSpriteTree = () => {
     spritesheets.props.grasslands.textures[`Animated Tree${variation}_frame8.png`],
   ])
   sprite.animationSpeed = ANIMATION_SPEED
-  sprite.anchor.x = 0.47
-  sprite.anchor.y = 0.62
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.745
   sprite.play()
   return sprite
 }
@@ -84,27 +90,57 @@ export const createSpriteShadow = () => {
   return sprite
 }
 
-export const createRandomProp = () => {
+export const createSpriteHouse = () => {
+  const props = [
+    `house_0.png`,
+    `house_1.png`
+  ]
+  const variation = Math.floor(Math.random() * props.length)
+  const sprite = new PIXI.Sprite(spritesheets.props.grasslands.textures[props[variation]])
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.9
+  return sprite
+}
+
+export const createSpriteFlower = () => {
   const props = [
     `flowers_1.png`,
-    `flowers_2.png`,
-    `flowers_3.png`,
     `flowers_4.png`,
-    `flowers_5.png`,
     `flowers_6.png`,
     `flowers_7.png`,
-    `flowers_8.png`,
     `flowers_9.png`,
     `flowers_10.png`,
-    `flowers_11.png`,
-    `flowers_12.png`,
     `flowers_13.png`,
-    `flowers_14.png`,
     `flowers_15.png`,
-    `flowers_16.png`,
-    `flowers_17.png`,
-    `flowers_18.png`,
-    `flowers_19.png`,
+    `flowers_17.png`
+  ]
+  const variation = Math.floor(Math.random() * props.length)
+  const sprite = new PIXI.Sprite(spritesheets.props.grasslands.textures[props[variation]])
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.5
+  return sprite
+}
+
+export const createSpriteRock = () => {
+  const props = [
+    `rocks-color scheme2-grass_1.png`,
+    `rocks-color scheme2-grass_2.png`,
+    `rocks-color scheme2-grass_3.png`,
+    `rocks-color scheme2-grass_5.png`,
+    `rocks-color scheme2-grass_6.png`,
+    `rocks-color scheme2-grass_7.png`,
+    `rocks-color scheme2-grass_8.png`,
+    `rocks-color scheme2-grass_9.png`,
+  ]
+  const variation = Math.floor(Math.random() * props.length)
+  const sprite = new PIXI.Sprite(spritesheets.props.grasslands.textures[props[variation]])
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.5
+  return sprite
+}
+
+export const createSpriteGrass = () => {
+  const props = [
     `grass as sprites - lighter_1.png`,
     `grass as sprites - lighter_2.png`,
     `grass as sprites - lighter_3.png`,
@@ -124,16 +160,7 @@ export const createRandomProp = () => {
     `grass as sprites - lighter_17.png`,
     `grass as sprites - lighter_18.png`,
     `grass as sprites - lighter_19.png`,
-    `grass as sprites - lighter_20.png`,
-    `rocks-color scheme2-grass_1.png`,
-    `rocks-color scheme2-grass_2.png`,
-    `rocks-color scheme2-grass_3.png`,
-    `rocks-color scheme2-grass_4.png`,
-    `rocks-color scheme2-grass_5.png`,
-    `rocks-color scheme2-grass_6.png`,
-    `rocks-color scheme2-grass_7.png`,
-    `rocks-color scheme2-grass_8.png`,
-    `rocks-color scheme2-grass_9.png`,
+    `grass as sprites - lighter_20.png`
   ]
   const variation = Math.floor(Math.random() * props.length)
   const sprite = new PIXI.Sprite(spritesheets.props.grasslands.textures[props[variation]])
@@ -270,6 +297,8 @@ export const createSpriteProjectile = () => {
     extract(spritesheets.effects[`ice_projectile`], `ice_projectile`, 0, 11)
   )
   sprite.animationSpeed = ANIMATION_SPEED
+  sprite.anchor.x = 0.5
+  sprite.anchor.y = 0.45
   sprite.play()
   return sprite
 }

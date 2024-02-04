@@ -37,8 +37,7 @@ export class Producer extends Component {
     this.componentContainer = new PIXI.Container()
     this.componentContainer.x = x
     this.componentContainer.y = y
-    this.componentContainer.scale.x = 2
-    this.componentContainer.scale.y = 2
+    this.componentContainer.zIndex = Math.floor(y)
     container.addChild(this.componentContainer)
     this.anvil = createSpriteAnvil()
     this.anvil.y += 15
@@ -135,7 +134,6 @@ export class Producer extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(2, -5, this.getCollisionRegion().radius)
     collider.endFill()
-    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
       fontFamily: FONT_FAMILY,
@@ -147,8 +145,6 @@ export class Producer extends Component {
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
-    this.debug_health.scale.x = 0.5
-    this.debug_health.scale.y = 0.5
     this.sprite.addChild(this.debug_health)
     /// #endif
   }

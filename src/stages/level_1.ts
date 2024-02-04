@@ -9,7 +9,7 @@ import { Stage } from "../core/stage"
 import { ComponentController } from "../core/component_controller"
 import { EventController } from "../core/event_controller"
 
-import { createSpriteUIButton, createSpriteRanged, createSpriteStoneGolem, createSpriteWarrior, createSpriteBlacksmith, createSpriteTree, createRandomProp, createTileMap } from "../utils/sprites"
+import { createSpriteUIButton, createSpriteRanged, createSpriteStoneGolem, createSpriteWarrior, createSpriteBlacksmith, createSpriteTree, createSpriteFlower, createTileMap, createSpriteRock, createSpriteGrass, createSpriteHouse } from "../utils/sprites"
 import { UnitRanged, Tile } from "../components"
 import { Projectile } from "../components/attacks/projectile"
 import { Enemy } from "../components/enemies/enemy"
@@ -24,6 +24,7 @@ import { SecondTimer } from "../core/timer";
 import { formatSeconds } from "../utils/time";
 import { TimedAnimatedSprite } from "../core/timed_animated_sprite";
 import { soundGameOver } from "../utils/sounds";
+import { range, scatter } from "../utils/math";
 
 type UnitType = 'Range' | 'Defender' | 'Melee' | 'Producer'
 
@@ -50,6 +51,7 @@ export class Level1Stage extends Stage {
   private meleeTemp: TimedAnimatedSprite
   private producerTemp: TimedAnimatedSprite
   private defenderTemp: TimedAnimatedSprite
+  private trees: PIXI.AnimatedSprite[]
 
   private isPaused = false
   private isGameOver = false
@@ -72,13 +74,7 @@ export class Level1Stage extends Stage {
     this.stage.addChild(this.fieldContainer)
 
     // Tilemap
-    this.tilemap = createTileMap()
-    this.tilemap.zIndex = -1
-    this.tilemap.x = (this.sceneWidth / 2) - 20 * CELL_HALF_SIZE
-    this.tilemap.y = (this.sceneHeight / 2) - 20 * CELL_HALF_SIZE
-    this.tilemap.scale.x = 2
-    this.tilemap.scale.y = 2
-
+    this.tilemap = createTileMap({ x: this.sceneWidth / 2, y: this.sceneHeight / 2})
     this.fieldContainer.addChild(this.tilemap)
     
     // Time remaining
@@ -120,22 +116,12 @@ export class Level1Stage extends Stage {
     this.uiTemporary = new PIXI.Container()
     this.uiTemporary.alpha = 0.4
     this.uiTemporary.visible = false;
-    // Temporary units
     this.rangeTemp = createSpriteRanged()
     this.rangeTemp.stop()
-    // TODO: Sprites need to be fixed
-    this.rangeTemp.scale.x = 2
-    this.rangeTemp.scale.y = 2
     this.meleeTemp = createSpriteWarrior()
     this.meleeTemp.stop()
-    // TODO: Sprites need to be fixed
-    this.meleeTemp.scale.x = 2
-    this.meleeTemp.scale.y = 2
     this.producerTemp = createSpriteBlacksmith()
     this.producerTemp.stop()
-    // TODO: Sprites need to be fixed
-    this.producerTemp.scale.x = 2
-    this.producerTemp.scale.y = 2
     this.defenderTemp = createSpriteStoneGolem()
     this.defenderTemp.stop()
 
@@ -323,53 +309,9 @@ export class Level1Stage extends Stage {
       }
     }
 
-    const trees: PIXI.AnimatedSprite[] = []
-
-    for (let row_index = -3; row_index < this.cellRows + 3; ++row_index) {
-      for (let column_index = -4; column_index < this.cellColumns + 4; ++column_index) {
-        if (row_index > -1 && row_index < this.cellRows + 1 && column_index > -1 && column_index < this.cellColumns ) {
-          if (row_index > 0 && row_index < this.cellRows && column_index > 0 && column_index < this.cellColumns - 1 ) {
-            if (Math.random() > 0.2) continue
-            // Tile position
-            const x = CELL_HALF_SIZE + column_index * CELL_SIZE  + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-            const y = CELL_HALF_SIZE + row_index * CELL_SIZE + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-            const flower = createRandomProp()
-            flower.x = x
-            flower.y = y
-            flower.scale.x = Math.floor(Math.random() * 2) + 1.5
-            flower.scale.y = flower.scale.x
-            this.fieldContainer.addChild(flower)
-          } else {
-            if (Math.random() > 0.9) continue
-            // Tile position
-            const x = CELL_HALF_SIZE + column_index * CELL_SIZE  + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-            const y = CELL_HALF_SIZE + row_index * CELL_SIZE + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-            const flower = createRandomProp()
-            flower.x = x
-            flower.y = y
-            flower.scale.x = Math.floor(Math.random() * 2) + 1.5
-            flower.scale.y = flower.scale.x
-            this.fieldContainer.addChild(flower)
-          }
-        } else {
-          if (Math.random() > 0.7) continue
-  
-          // Tile position
-          const x = CELL_HALF_SIZE + column_index * CELL_SIZE  + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-          const y = CELL_HALF_SIZE + row_index * CELL_SIZE + Math.floor(Math.random() * 50) -  Math.floor(Math.random() * 50)
-          const tree = createSpriteTree()
-          tree.x = x
-          tree.y = y
-          tree.scale.x = Math.floor(Math.random() * 2) + 1.5
-          tree.scale.y = tree.scale.x
-          tree.zIndex = 9999
-          this.fieldContainer.addChild(tree)
-          tree.gotoAndPlay(Math.floor(Math.random() * 7))
-          trees.push(tree)
-        }
-      }
-    }
     this.fieldContainer.addChild(this.uiTemporary)
+
+    this.decorate()
 
     // Initialize sequencer
     this.sequencer = new Sequencer()
@@ -431,7 +373,6 @@ export class Level1Stage extends Stage {
       this.textBalance.visible = false
       this.textTimeRemaining.visible = false
       this.sequencer.pause("timer")
-      console.log(1)
       this.isGameOver = true
       soundGameOver.play()
     })
@@ -451,7 +392,7 @@ export class Level1Stage extends Stage {
       uiDefender.stop()
       uiMelee.stop()
       uiProducer.stop()
-      trees.forEach(tree => tree.stop())
+      this.trees.forEach(tree => tree.stop())
     })
     this.eventController.subscribe(EVENTS.UNPAUSE, this.stageName, () => {
       this.isPaused = false
@@ -465,7 +406,7 @@ export class Level1Stage extends Stage {
       uiDefender.play()
       uiMelee.play()
       uiProducer.play()
-      trees.forEach(tree => tree.play())
+      this.trees.forEach(tree => tree.play())
     })
     this.eventController.subscribe(EVENTS.KEY_PRESS, this.stageName, (key: string) => {
       switch (key) {
@@ -487,57 +428,81 @@ export class Level1Stage extends Stage {
     this.eventController.subscribe(EVENTS.RESIZE, this.stageName, () => this.relayout())
   }
 
-  selectProducer() {
-    if (!this.isPaused) {
-      this.uiTileRanged.scale.set(1.6)
-      this.uiTileMelee.scale.set(1.6)
-      this.uiTileDefender.scale.set(1.6)
-      this.uiTileProducer.scale.set(1.8)
-      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-      this.placingUnitType = 'Producer'
-      this.uiTemporary.removeChildren()
-      this.uiTemporary.addChild(this.producerTemp)
+  /**
+   * Set dressing
+   */
+
+  decorate() {
+
+    // Trees
+    this.trees =
+      scatter(CELL_SIZE, { left: -1, width: 11, top: 0, height: 6 }, 4, 40)
+      .map(({ x, y }) => {
+        const tree: PIXI.AnimatedSprite = createSpriteTree()
+        tree.position.set(x, y)
+        const scale = range(0.3, 0.6)
+        tree.scale.set(scale)
+        tree.zIndex = Math.floor(y)
+        this.fieldContainer.addChild(tree)
+        return tree
+      })
+
+    // Flowers
+    scatter(CELL_SIZE, { left: 0, width: 10, top: 0, height: 5 }, 4, 40, false)
+    .filter(() => Math.random() > 0.7)
+    .map(({ x, y }) => {
+      const prop = createSpriteFlower()
+      prop.position.set(x, y)
+      const scale = range(4, 6) / 10
+      prop.scale.set(scale)
+      prop.scale.x *= Math.random() > 0.5 ? 1 : -1
+      prop.zIndex = Math.floor(y)
+      this.fieldContainer.addChild(prop)
+      return prop
+    })
+
+    // Rocks
+    scatter(CELL_SIZE, { left: 0, width: 10, top: 0, height: 5 }, 4, 40, false)
+    .filter(() => Math.random() > 0.9)
+    .map(({ x, y }) => {
+      const prop = createSpriteRock()
+      prop.position.set(x, y)
+      const scale = range(9, 11) / 10
+      prop.scale.set(scale)
+      prop.scale.x *= Math.random() > 0.5 ? 1 : -1
+      prop.zIndex = Math.floor(y)
+      this.fieldContainer.addChild(prop)
+      return prop
+    })
+
+    // Grass patches
+    scatter(CELL_SIZE, { left: 0, width: 10, top: 0, height: 5 }, 4, 40, false)
+    .filter(() => Math.random() > 0.5)
+    .map(({ x, y }) => {
+      const prop = createSpriteGrass()
+      prop.position.set(x, y)
+      const scale = range(5, 10) / 10
+      prop.scale.set(scale)
+      prop.scale.x *= Math.random() > 0.5 ? 1 : -1
+      prop.zIndex = Math.floor(y)
+      this.fieldContainer.addChild(prop)
+      return prop
+    })
+
+    // House
+    if (Math.random() > 0.8) {
+      const prop = createSpriteHouse()
+      const x = range(0, 10) * CELL_SIZE
+      const y = ((Math.random() > 0.5) ? -1 : 8) * CELL_SIZE + 30
+      prop.position.set(x, y)
+      prop.zIndex = Math.floor( y)
+      this.fieldContainer.addChild(prop)
     }
   }
 
-  selectMelee() {
-    if (!this.isPaused) {
-      this.uiTileProducer.scale.set(1.6)
-      this.uiTileRanged.scale.set(1.6)
-      this.uiTileDefender.scale.set(1.6)
-      this.uiTileMelee.scale.set(1.8)
-      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-      this.placingUnitType = 'Melee'
-      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
-      this.uiTemporary.addChild(this.meleeTemp)
-    }
-  }
-
-  selectRanged() {
-    if (!this.isPaused) {
-      this.uiTileProducer.scale.set(1.6)
-      this.uiTileMelee.scale.set(1.6)
-      this.uiTileDefender.scale.set(1.6)
-      this.uiTileRanged.scale.set(1.8)
-      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-      this.placingUnitType = 'Range'
-      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
-      this.uiTemporary.addChild(this.rangeTemp)
-    }
-  }
-
-  selectDefender() {
-    if (!this.isPaused) {
-      this.uiTileProducer.scale.set(1.6)
-      this.uiTileRanged.scale.set(1.6)
-      this.uiTileMelee.scale.set(1.6)
-      this.uiTileDefender.scale.set(1.8)
-      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
-      this.placingUnitType = 'Defender'
-      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
-     this.uiTemporary.addChild(this.defenderTemp)
-    }
-  }
+  /**
+   * Spawning units
+   */
 
   spawUnit(uid: string, x: number, y: number, unitType: UnitType) {
     
@@ -597,18 +562,56 @@ export class Level1Stage extends Stage {
     this.uiTileDefender.scale.set(1.6)
   }
 
-  isTileFree(uid: string): boolean {
-    return !this.occupiedTiles.includes(uid)
+  selectProducer() {
+    if (!this.isPaused) {
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileProducer.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Producer'
+      this.uiTemporary.removeChildren()
+      this.uiTemporary.addChild(this.producerTemp)
+    }
   }
 
-  occupyTile(uid: string) {
-    this.freeTile(uid)
-    this.occupiedTiles.push(uid)
+  selectMelee() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Melee'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+      this.uiTemporary.addChild(this.meleeTemp)
+    }
   }
 
-  freeTile(uid: string) {
-    const index = this.occupiedTiles.indexOf(uid);
-    if (index !== -1) this.occupiedTiles.splice(index, 1);
+  selectRanged() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Range'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+      this.uiTemporary.addChild(this.rangeTemp)
+    }
+  }
+
+  selectDefender() {
+    if (!this.isPaused) {
+      this.uiTileProducer.scale.set(1.6)
+      this.uiTileRanged.scale.set(1.6)
+      this.uiTileMelee.scale.set(1.6)
+      this.uiTileDefender.scale.set(1.8)
+      this.componentController.get("Tile").forEach((tile: Tile )=> tile.showPlaceholder())
+      this.placingUnitType = 'Defender'
+      if (this.uiTemporary.children.length) this.uiTemporary.removeChildAt(0)
+     this.uiTemporary.addChild(this.defenderTemp)
+    }
   }
 
   spawnEnemy() {
@@ -630,39 +633,49 @@ export class Level1Stage extends Stage {
     ))
   }
 
-  checkForHits() {
+  /**
+   * Tile state management
+   */
 
-    const rangedUnits: UnitRanged[] = this.componentController.get("UnitRanged") as UnitRanged[]
-    const melee: Melee[] = this.componentController.get("Melee") as Melee[]
-    const producer: Producer[] = this.componentController.get("Producer") as Producer[]
-    const defender: Defender[] = this.componentController.get("Defender") as Defender[]
-    
-    const projectiles: Projectile[] = this.componentController.get("Projectile") as Projectile[]
-    const swings: Swing[] = this.componentController.get("Swing") as Swing[]
+  isTileFree(uid: string): boolean {
+    return !this.occupiedTiles.includes(uid)
+  }
 
-    const enemies: Enemy[] = this.componentController.get("Enemy") as Enemy[]
+  occupyTile(uid: string) {
+    this.freeTile(uid)
+    this.occupiedTiles.push(uid)
+  }
 
-    const enemyAttacks: EnemyAttack[] = this.componentController.get("EnemyAttack") as EnemyAttack[]
+  freeTile(uid: string) {
+    const index = this.occupiedTiles.indexOf(uid);
+    if (index !== -1) this.occupiedTiles.splice(index, 1);
+  }
 
-    const playerUnits = [...rangedUnits, ...melee, ...producer, ...defender] as IComponent[]
-    const playerDamagingZones = [...projectiles, ...swings] as IComponent[]
+  /**
+   * Collision handling
+   */
+
+  collide() {
+    const enemies = this.componentController.get("Enemy") as Enemy[]
+    const units = this.componentController.get("UnitRanged", "Melee", "Producer", "Defender") as IComponent[]
+    const enemyAttacks = this.componentController.get("EnemyAttack") as EnemyAttack[]
+    const unitAttacks = this.componentController.get("Projectile", "Swing") as IComponent[]
    
     for (let i = 0; i < enemies.length; ++i) {
       const enemy = enemies[i]
       if (enemy.shouldBeUnmounted) continue
-      // Check projectile hits
-      for (let j = 0; j < playerDamagingZones.length; ++j) {
-        const playerDamagingZone = playerDamagingZones[j]
+      // Check unit attacks for reaching enemies
+      for (let j = 0; j < unitAttacks.length; ++j) {
+        const playerDamagingZone = unitAttacks[j]
         if (playerDamagingZone.shouldBeUnmounted) continue
         if (playerDamagingZone.isIntersecting(enemy)) {
           enemy.hit(playerDamagingZone.getDamage())
           playerDamagingZone.attack()
         }
       }
-
-      // Check ranged unit hits
-      for (let j = 0; j < playerUnits.length; ++j) {
-        const playerUnit: IComponent = playerUnits[j]
+      // Check for units in close proximity to enemies
+      for (let j = 0; j < units.length; ++j) {
+        const playerUnit: IComponent = units[j]
         if (playerUnit.shouldBeUnmounted) continue
         if (playerUnit.isIntersecting(enemy)) {
           enemy.attack()
@@ -671,10 +684,10 @@ export class Level1Stage extends Stage {
       }
     }
 
-    for (let i = 0; i < playerUnits.length; ++i) {
-      const playerUnit = playerUnits[i]
+    // Check enemy attacks for reaching units
+    for (let i = 0; i < units.length; ++i) {
+      const playerUnit = units[i]
       if (playerUnit.shouldBeUnmounted) continue
-      // Check projectile hits
       for (let j = 0; j < enemyAttacks.length; ++j) {
         const enemyAttack = enemyAttacks[j]
         if (enemyAttack.shouldBeUnmounted) continue
@@ -703,7 +716,7 @@ export class Level1Stage extends Stage {
     super.update(delta, isPaused)
     if (!isPaused) {
       this.componentController.update(delta)
-      this.checkForHits()
+      this.collide()
       this.sequencer.tick(delta)
     }
   }

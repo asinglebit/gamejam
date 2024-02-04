@@ -31,6 +31,7 @@ export class Defender extends Component {
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
+    this.sprite.zIndex = Math.floor(y)
     this.sprite.gotoAndPlay(0)
     container.addChild(this.sprite)
 

@@ -34,8 +34,7 @@ export class UnitRanged extends Component {
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.scale.x = 2
-    this.sprite.scale.y = 2
+    this.sprite.zIndex = Math.floor(y)
     this.sprite.loop = true
     this.sprite.play()
     container.addChild(this.sprite)
@@ -103,7 +102,6 @@ export class UnitRanged extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(0, 0, this.getCollisionRegion().radius)
     collider.endFill()
-    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
       fontFamily: FONT_FAMILY,
@@ -115,8 +113,6 @@ export class UnitRanged extends Component {
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
-    this.debug_health.scale.x = 0.5
-    this.debug_health.scale.y = 0.5
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
