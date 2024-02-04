@@ -7,16 +7,16 @@ import { Howl } from 'howler';
  * Creative Commons CC BY 3.0
  * https://creativecommons.org/licenses/by/3.0/
  */
-import sfxOst from "../../public/resources/sfx/ost.mp3"
+import sfxOst from "../assets/audio/ost.mp3"
 
-import sfxAnvil from "../../public/resources/sfx/anvil.mp3"
-import sfxScream from "../../public/resources/sfx/scream.mp3"
-import sfxGameOver from "../../public/resources/sfx/game_over.mp3"
-import sfxSlash from "../../public/resources/sfx/slash.mp3"
-import sfxPunch from "../../public/resources/sfx/punch.mp3"
-import sfxZombie1 from "../../public/resources/sfx/zombie_1.mp3"
-import sfxZombie2 from "../../public/resources/sfx/zombie_2.mp3"
-import sfxZombie3 from "../../public/resources/sfx/zombie_3.mp3"
+import sfxAnvil from "../assets/audio/anvil.mp3"
+import sfxScream from "../assets/audio/scream.mp3"
+import sfxGameOver from "../assets/audio/game_over.mp3"
+import sfxSlash from "../assets/audio/slash.mp3"
+import sfxPunch from "../assets/audio/punch.mp3"
+import sfxZombie1 from "../assets/audio/zombie_1.mp3"
+import sfxZombie2 from "../assets/audio/zombie_2.mp3"
+import sfxZombie3 from "../assets/audio/zombie_3.mp3"
 
 export const soundOst = new Howl({ src: [sfxOst], loop: true, volume: 0.2});
 export const soundAnvil = new Howl({ src: [sfxAnvil], volume: 0.05 });

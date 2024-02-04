@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js"
 
 import { Component } from "../../core/component"
 import { createSpriteShadow } from "../../utils/sprites";
+import { CELL_SIZE } from "../../constants";
 
 export class Tile extends Component {
 
@@ -20,8 +21,8 @@ export class Tile extends Component {
     
     // Initialize component
     this.sprite = PIXI.Sprite.from(PIXI.Texture.WHITE);
-    this.sprite.width = 218;
-    this.sprite.height = 218;
+    this.sprite.width = CELL_SIZE;
+    this.sprite.height = CELL_SIZE;
     this.sprite.tint = 0xFF0000;
     this.sprite.name = this.UID
     this.sprite.anchor.set(0.5)
@@ -40,11 +41,9 @@ export class Tile extends Component {
 
     // Setup interactive callbacks
     if (onPointerDown) {
-      this.sprite.eventMode = "dynamic"
       this.sprite.on("pointerdown", () => onPointerDown(this.UID))
     }
     if (onMouseOver) {
-      this.sprite.eventMode = "dynamic"
       this.sprite.on("mouseover", () => onMouseOver(this.UID))
     }
   }

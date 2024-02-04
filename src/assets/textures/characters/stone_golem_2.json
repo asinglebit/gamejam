@@ -1,0 +1,491 @@
+{"frames": {
+
+"stone_golem_2_attack_0.png":
+{
+	"frame": {"x":282,"y":101,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_1.png":
+{
+	"frame": {"x":90,"y":290,"w":75,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":75,"y":56,"w":75,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_2.png":
+{
+	"frame": {"x":81,"y":366,"w":79,"h":71},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":72,"y":55,"w":79,"h":71},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_3.png":
+{
+	"frame": {"x":171,"y":269,"w":79,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":71,"y":54,"w":79,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_4.png":
+{
+	"frame": {"x":81,"y":443,"w":77,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":71,"y":54,"w":77,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_5.png":
+{
+	"frame": {"x":171,"y":347,"w":77,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":71,"y":54,"w":77,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_6.png":
+{
+	"frame": {"x":267,"y":177,"w":77,"h":72},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":71,"y":54,"w":77,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_7.png":
+{
+	"frame": {"x":80,"y":521,"w":74,"h":76},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":90,"y":57,"w":74,"h":76},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_8.png":
+{
+	"frame": {"x":171,"y":177,"w":90,"h":86},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":89,"y":57,"w":90,"h":86},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_9.png":
+{
+	"frame": {"x":527,"y":3,"w":96,"h":90},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":85,"y":57,"w":96,"h":90},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_10.png":
+{
+	"frame": {"x":419,"y":3,"w":102,"h":92},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":80,"y":56,"w":102,"h":92},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_11.png":
+{
+	"frame": {"x":90,"y":192,"w":75,"h":92},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":82,"y":56,"w":75,"h":92},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_12.png":
+{
+	"frame": {"x":160,"y":573,"w":57,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":88,"y":56,"w":57,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_13.png":
+{
+	"frame": {"x":236,"y":573,"w":57,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":88,"y":56,"w":57,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_14.png":
+{
+	"frame": {"x":521,"y":101,"w":61,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":88,"y":56,"w":61,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_15.png":
+{
+	"frame": {"x":3,"y":566,"w":64,"h":71},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":84,"y":56,"w":64,"h":71},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_attack_16.png":
+{
+	"frame": {"x":407,"y":407,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_0.png":
+{
+	"frame": {"x":245,"y":498,"w":73,"h":69},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":73,"y":54,"w":73,"h":69},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_1.png":
+{
+	"frame": {"x":3,"y":465,"w":95,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":51,"y":49,"w":95,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_2.png":
+{
+	"frame": {"x":3,"y":333,"w":126,"h":72},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":25,"y":48,"w":126,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_3.png":
+{
+	"frame": {"x":283,"y":3,"w":130,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":19,"y":53,"w":130,"h":80},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_4.png":
+{
+	"frame": {"x":3,"y":100,"w":133,"h":86},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":18,"y":57,"w":133,"h":86},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_5.png":
+{
+	"frame": {"x":3,"y":3,"w":133,"h":91},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":67,"w":133,"h":91},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_6.png":
+{
+	"frame": {"x":142,"y":91,"w":134,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":134,"h":80},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_7.png":
+{
+	"frame": {"x":142,"y":3,"w":135,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":76,"w":135,"h":82},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_8.png":
+{
+	"frame": {"x":3,"y":192,"w":135,"h":81},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":135,"h":81},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_9.png":
+{
+	"frame": {"x":3,"y":192,"w":135,"h":81},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":135,"h":81},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_10.png":
+{
+	"frame": {"x":3,"y":192,"w":135,"h":81},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":135,"h":81},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_11.png":
+{
+	"frame": {"x":3,"y":192,"w":135,"h":81},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":135,"h":81},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_death_12.png":
+{
+	"frame": {"x":3,"y":192,"w":135,"h":81},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":77,"w":135,"h":81},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_0.png":
+{
+	"frame": {"x":345,"y":177,"w":74,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":73,"y":54,"w":74,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_1.png":
+{
+	"frame": {"x":425,"y":177,"w":74,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":75,"y":54,"w":74,"h":72},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_2.png":
+{
+	"frame": {"x":400,"y":557,"w":68,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_3.png":
+{
+	"frame": {"x":248,"y":425,"w":67,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":78,"y":56,"w":67,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_4.png":
+{
+	"frame": {"x":476,"y":557,"w":68,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_5.png":
+{
+	"frame": {"x":559,"y":258,"w":68,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_6.png":
+{
+	"frame": {"x":559,"y":334,"w":68,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_7.png":
+{
+	"frame": {"x":559,"y":410,"w":68,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_8.png":
+{
+	"frame": {"x":550,"y":562,"w":67,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":78,"y":56,"w":67,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_9.png":
+{
+	"frame": {"x":330,"y":340,"w":71,"h":71},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":78,"y":56,"w":71,"h":71},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_10.png":
+{
+	"frame": {"x":407,"y":330,"w":71,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":71,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_hurt_11.png":
+{
+	"frame": {"x":324,"y":491,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_0.png":
+{
+	"frame": {"x":407,"y":407,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_1.png":
+{
+	"frame": {"x":254,"y":350,"w":70,"h":69},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":57,"w":70,"h":69},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_2.png":
+{
+	"frame": {"x":407,"y":483,"w":70,"h":68},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":58,"w":70,"h":68},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_3.png":
+{
+	"frame": {"x":483,"y":410,"w":70,"h":69},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":58,"w":70,"h":69},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_4.png":
+{
+	"frame": {"x":483,"y":258,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":58,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_5.png":
+{
+	"frame": {"x":330,"y":417,"w":68,"h":71},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":78,"y":57,"w":68,"h":71},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_6.png":
+{
+	"frame": {"x":550,"y":486,"w":68,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":78,"y":56,"w":68,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_idle_7.png":
+{
+	"frame": {"x":483,"y":334,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":56,"w":70,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_shadow.png":
+{
+	"frame": {"x":80,"y":603,"w":50,"h":16},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":16,"w":50,"h":16},
+	"sourceSize": {"w":62,"h":40}
+},
+"stone_golem_2_walk_0.png":
+{
+	"frame": {"x":164,"y":498,"w":75,"h":69},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":73,"y":56,"w":75,"h":69},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_1.png":
+{
+	"frame": {"x":166,"y":425,"w":76,"h":67},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":72,"y":58,"w":76,"h":67},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_2.png":
+{
+	"frame": {"x":505,"y":177,"w":75,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":72,"y":58,"w":75,"h":67},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_3.png":
+{
+	"frame": {"x":440,"y":101,"w":75,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":72,"y":55,"w":75,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_4.png":
+{
+	"frame": {"x":358,"y":101,"w":76,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":72,"y":55,"w":76,"h":70},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_5.png":
+{
+	"frame": {"x":256,"y":269,"w":75,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":73,"y":58,"w":75,"h":67},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_6.png":
+{
+	"frame": {"x":329,"y":260,"w":74,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":74,"y":58,"w":74,"h":67},
+	"sourceSize": {"w":224,"h":192}
+},
+"stone_golem_2_walk_7.png":
+{
+	"frame": {"x":402,"y":255,"w":74,"h":69},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":74,"y":56,"w":74,"h":69},
+	"sourceSize": {"w":224,"h":192}
+}},
+"animations": {
+	"stone_golem_2_attack": ["stone_golem_2_attack_0.png","stone_golem_2_attack_1.png","stone_golem_2_attack_2.png","stone_golem_2_attack_3.png","stone_golem_2_attack_4.png","stone_golem_2_attack_5.png","stone_golem_2_attack_6.png","stone_golem_2_attack_7.png","stone_golem_2_attack_8.png","stone_golem_2_attack_9.png","stone_golem_2_attack_10.png","stone_golem_2_attack_11.png","stone_golem_2_attack_12.png","stone_golem_2_attack_13.png","stone_golem_2_attack_14.png","stone_golem_2_attack_15.png","stone_golem_2_attack_16.png"],
+	"stone_golem_2_death": ["stone_golem_2_death_0.png","stone_golem_2_death_1.png","stone_golem_2_death_2.png","stone_golem_2_death_3.png","stone_golem_2_death_4.png","stone_golem_2_death_5.png","stone_golem_2_death_6.png","stone_golem_2_death_7.png","stone_golem_2_death_8.png","stone_golem_2_death_9.png","stone_golem_2_death_10.png","stone_golem_2_death_11.png","stone_golem_2_death_12.png"],
+	"stone_golem_2_hurt": ["stone_golem_2_hurt_0.png","stone_golem_2_hurt_1.png","stone_golem_2_hurt_2.png","stone_golem_2_hurt_3.png","stone_golem_2_hurt_4.png","stone_golem_2_hurt_5.png","stone_golem_2_hurt_6.png","stone_golem_2_hurt_7.png","stone_golem_2_hurt_8.png","stone_golem_2_hurt_9.png","stone_golem_2_hurt_10.png","stone_golem_2_hurt_11.png"],
+	"stone_golem_2_idle": ["stone_golem_2_idle_0.png","stone_golem_2_idle_1.png","stone_golem_2_idle_2.png","stone_golem_2_idle_3.png","stone_golem_2_idle_4.png","stone_golem_2_idle_5.png","stone_golem_2_idle_6.png","stone_golem_2_idle_7.png"],
+	"stone_golem_2_walk": ["stone_golem_2_walk_0.png","stone_golem_2_walk_1.png","stone_golem_2_walk_2.png","stone_golem_2_walk_3.png","stone_golem_2_walk_4.png","stone_golem_2_walk_5.png","stone_golem_2_walk_6.png","stone_golem_2_walk_7.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "stone_golem_2.png",
+	"format": "RGBA8888",
+	"size": {"w":633,"h":633},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:aaeb82363475fd9da3326a646cada9da:5dee5649d34ccee349b486bcd11776ec:0ba1181553323f5540de785a04431b7a$"
+}
+}

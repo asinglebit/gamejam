@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js"
 import { Component } from "../../core/component"
 import { Sequencer } from "../../core/sequencer"
-import { createDefenderSprite } from "../../utils/sprites"
+import { createSpriteStoneGolem } from "../../utils/sprites"
 import { CollisionRegion } from "../../core/collision_region"
 import { FONT_FAMILY } from "../../constants"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
@@ -27,10 +27,11 @@ export class Defender extends Component {
     this.onDie = onDie
 
     // Initialize component
-    this.sprite = createDefenderSprite()
+    this.sprite = createSpriteStoneGolem()
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
+    this.sprite.zIndex = Math.floor(y)
     this.sprite.gotoAndPlay(0)
     container.addChild(this.sprite)
 

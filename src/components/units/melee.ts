@@ -4,7 +4,7 @@ import { Component } from "../../core/component"
 import { Sequencer } from "../../core/sequencer"
 import { CollisionRegion } from "../../core/collision_region"
 import { TimedAnimatedSprite } from "../../core/timed_animated_sprite"
-import { createSpriteMelee } from "../../utils/sprites"
+import { createSpriteWarrior } from "../../utils/sprites"
 import { FONT_FAMILY } from "../../constants"
 import { soundScream, soundSlash } from "../../utils/sounds"
 
@@ -30,12 +30,11 @@ export class Melee extends Component {
     this.onDie = onDie
 
     // Initialize component
-    this.sprite = createSpriteMelee()
+    this.sprite = createSpriteWarrior()
     this.sprite.name = this.UID
     this.sprite.x = x
     this.sprite.y = y
-    this.sprite.scale.x = 2
-    this.sprite.scale.y = 2
+    this.sprite.zIndex = Math.floor(y)
     this.sprite.loop = true
     this.sprite.play()
     container.addChild(this.sprite)
@@ -52,10 +51,10 @@ export class Melee extends Component {
     // Initialize sequencer
     this.sequencer = new Sequencer()
 
-    this.sequencer.repeatSequence("attack1", [{
+    this.sequencer.repeatSequence("attack_1", [{
       duration: 10,
       callback: () => {
-        this.sprite.switch("attack1")
+        this.sprite.switch("attack_1")
         this.sprite.play()
       }
     }, {
@@ -71,14 +70,14 @@ export class Melee extends Component {
       callback: () => {
         this.sprite.switch("idle")
         this.sprite.play()
-        this.sequencer.pause("attack1")
+        this.sequencer.pause("attack_1")
       }
     }], true)
 
-    this.sequencer.repeatSequence("attack2", [{
+    this.sequencer.repeatSequence("attack_2", [{
       duration: 10,
       callback: () => {
-        this.sprite.switch("attack2")
+        this.sprite.switch("attack_2")
         this.sprite.play()
       }
     }, {
@@ -94,15 +93,15 @@ export class Melee extends Component {
       callback: () => {
         this.sprite.switch("idle")
         this.sprite.play()
-        this.sequencer.pause("attack2")
+        this.sequencer.pause("attack_2")
       }
     }], true)
 
     this.sequencer.repeatSequence("hurt_and_stun", [{
       duration: 0,
       callback: () => {
-        this.sequencer.pause("attack1")
-        this.sequencer.pause("attack2")
+        this.sequencer.pause("attack_1")
+        this.sequencer.pause("attack_2")
         this.sprite.switch("hurt")
         this.sprite.play()
       }
@@ -158,7 +157,6 @@ export class Melee extends Component {
     collider.lineStyle(2, 0xff0000)
     collider.drawCircle(2, -5, this.getCollisionRegion().radius)
     collider.endFill()
-    collider.scale.set(0.5)
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
       fontFamily: FONT_FAMILY,
@@ -170,15 +168,13 @@ export class Melee extends Component {
     })
     this.debug_health.anchor.set(0.5)
     this.debug_health.y -= 40
-    this.debug_health.scale.x = 0.5
-    this.debug_health.scale.y = 0.5
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
   
   attack() {
-    if (this.sequencer.isPaused("attack1") && this.sequencer.isPaused("attack2")) {
-      this.sequencer.unpause(Math.random() < 0.5 ? "attack1" : "attack2")
+    if (this.sequencer.isPaused("attack_1") && this.sequencer.isPaused("attack_2")) {
+      this.sequencer.unpause(Math.random() < 0.5 ? "attack_1" : "attack_2")
     }
   }
 
@@ -186,8 +182,8 @@ export class Melee extends Component {
     this.health -= damage
     if (this.health <= 0) {
       if (this.sequencer.isPaused("death")) {
-        this.sequencer.pause("attack1")
-        this.sequencer.pause("attack2")
+        this.sequencer.pause("attack_1")
+        this.sequencer.pause("attack_2")
         this.sequencer.pause("hurt")
         this.sequencer.pause("hurt_and_stun")
         this.sequencer.unpause("death")

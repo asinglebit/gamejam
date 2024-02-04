@@ -48,9 +48,9 @@ export class ComponentController {
     })
   }
 
-  get(tag: string): IComponent[] {
+  get(...tags: string[]): IComponent[] {
     return this.components.filter(component => {
-      return component.constructor.name === tag
+      return tags.includes(component.constructor.name)
     })
   }
 }
