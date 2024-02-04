@@ -89,7 +89,7 @@ export class Defender extends Component {
     /// #if DEBUG
     const collider = new PIXI.Graphics()
     collider.lineStyle(2, 0xff0000)
-    collider.drawCircle(0, - 30, this.getCollisionRegion().radius)
+    collider.drawCircle(0, -20, this.getCollisionRegion().radius)
     collider.endFill()
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
@@ -101,7 +101,7 @@ export class Defender extends Component {
       strokeThickness: 5
     })
     this.debug_health.anchor.set(0.5)
-    this.debug_health.y -= 80
+    this.debug_health.y = -40
     this.sprite.addChild(this.debug_health)
     /// #endif
   }
@@ -146,9 +146,9 @@ export class Defender extends Component {
     return this.health <= 0 ? null : {
       center: {
         x: this.sprite.x,
-        y: this.sprite.y - 30,
+        y: this.sprite.y - 20,
       },
-      radius: 50,
+      radius: 30,
     }
   }
 }

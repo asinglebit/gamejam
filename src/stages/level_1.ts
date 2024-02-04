@@ -58,7 +58,7 @@ export class Level1Stage extends Stage {
   private placingUnitType: UnitType
   private occupiedTiles: string[] = []
 
-  private balance: number = 50
+  private balance: number = 5000
   private timeRemaining: number = 100
   private sequencer: Sequencer
   
@@ -256,10 +256,10 @@ export class Level1Stage extends Stage {
     this.containerControls.addChild(this.uiTileDefender)
     const uiDefender = createSpriteStoneGolem()
     uiDefender.name = "uiDefender"
-    uiDefender.scale.x = 0.35
-    uiDefender.scale.y = 0.35
+    uiDefender.scale.x = 0.7
+    uiDefender.scale.y = 0.7
     uiDefender.x = 80 * 3 + 2
-    uiDefender.y = 7
+    uiDefender.y = 9
     uiDefender.play()
     this.containerControls.addChild(uiDefender)
     const priceDefender = new PIXI.Text(`$300`, {
@@ -625,7 +625,7 @@ export class Level1Stage extends Stage {
     }
     this.componentController.add(new Enemy({
         x: CELL_SIZE * 13,
-        y: CELL_SIZE * Math.floor(Math.random() * 5) + 54
+        y: CELL_SIZE * Math.floor(Math.random() * 5) + 25
       },
       this.fieldContainer,
       onAttack,

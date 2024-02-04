@@ -100,7 +100,7 @@ export class UnitRanged extends Component {
     /// #if DEBUG
     const collider = new PIXI.Graphics()
     collider.lineStyle(2, 0xff0000)
-    collider.drawCircle(0, 0, this.getCollisionRegion().radius)
+    collider.drawCircle(0, -6, this.getCollisionRegion().radius)
     collider.endFill()
     this.sprite.addChild(collider)
     this.debug_health = new PIXI.Text(`HP:${this.health}`, {
@@ -158,9 +158,9 @@ export class UnitRanged extends Component {
     return this.health <= 0 ? null : {
       center: {
         x: this.sprite.x,
-        y: this.sprite.y,
+        y: this.sprite.y - 6,
       },
-      radius: 30,
+      radius: 20,
     }
   }
 }

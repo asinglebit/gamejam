@@ -222,7 +222,7 @@ export class Melee extends Component {
         x: this.sprite.x + 2,
         y: this.sprite.y - 5,
       },
-      radius: 30,
+      radius: 20,
     }
   }
 }

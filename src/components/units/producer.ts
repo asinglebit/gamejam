@@ -193,7 +193,7 @@ export class Producer extends Component {
         x: this.componentContainer.x + 2,
         y: this.componentContainer.y - 5,
       },
-      radius: 30,
+      radius: 20,
     }
   }
 }

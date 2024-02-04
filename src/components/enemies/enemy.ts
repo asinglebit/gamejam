@@ -9,7 +9,7 @@ import { soundPunch, soundZombie1, soundZombie2, soundZombie3 } from "../../util
 
 export class Enemy extends Component {
   public sprite: TimedAnimatedSprite
-  private speed: number = 2
+  private speed: number = 1
   private health: number = 15
   private sequencer: Sequencer
   private damage: number = 2
@@ -211,7 +211,7 @@ export class Enemy extends Component {
         x: this.sprite.x,
         y: this.sprite.y,
       },
-      radius: 30,
+      radius: 20,
     }
   }
 }

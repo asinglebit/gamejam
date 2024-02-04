@@ -240,7 +240,7 @@ export const createSpriteUndead = () => {
     walk: extract(spritesheets.characters[`undead`], `undead_walk`, 0, 7),
   }, "walk")
   sprite.anchor.x = 0.48
-  sprite.anchor.y = 0.44
+  sprite.anchor.y = 0.42
   sprite.animationSpeed = ANIMATION_SPEED
   return sprite
 }
@@ -254,7 +254,7 @@ export const createSpriteStoneGolem = (variation: ( 1 | 2 ) = 1) => {
     walk: extract(spritesheets.characters[`stone_golem_${variation}`], `stone_golem_${variation}_walk`, 0, 7),
   }, "idle")
   sprite.anchor.x = 0.5
-  sprite.anchor.y = 0.7
+  sprite.anchor.y = 0.58  
   sprite.animationSpeed = ANIMATION_SPEED
   sprite.play()
   return sprite
