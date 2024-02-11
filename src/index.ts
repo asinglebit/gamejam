@@ -3,8 +3,8 @@ import * as PIXI from "pixi.js"
 import { STAGES } from "./enums/stages"
 import { StageController } from "./core/stage_controller"
 import { loadSprites } from "./utils/sprites"
-import { FONT_FAMILY } from "./constants";
-import { soundOst } from "./utils/sounds";
+import { FONT_FAMILY } from "./constants"
+// import { soundOst } from "./utils/sounds"
 
 // Main entry point
 const startApp = () => {
@@ -27,10 +27,9 @@ const startApp = () => {
   // Initialize stage controller
   const stageController = new StageController(app)
   stageController.load(STAGES.LEVEL_1)
-  soundOst.play()
+  // soundOst.play()
   // Game loop
   app.ticker.add((delta) => {
-
     // Stage controller handles updates for the selected context
     stageController.update(delta)
   })
@@ -42,10 +41,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   // @ts-ignore
   window.WebFont.load({
     google: {
-      families: [FONT_FAMILY]
+      families: [FONT_FAMILY],
     },
     active() {
-      startApp()  
+      startApp()
     },
-  });
+  })
+
+  YaGames.init().then((ysdk) => {
+    console.log("Yandex SDK initialized")
+    window.ysdk = ysdk
+
+    // @ts-ignore
+    ysdk.adv.showFullscreenAdv()
+  })
 })
